@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    container_name: django_server
+    environment:
+      - DATABASE_URL
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    command: npm run dev
+    container_name: next_server
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
