@@ -15,17 +15,8 @@ services:
   frontend:
     build: ./frontend
     command: npm run dev
-    container_name: next_server
-    volumes:
-      - ./frontend:/app
-    ports:
-      - "3000:3000"
-
-  client:
-    build: ./client
-    command: npm run dev
     container_name: client_server
     volumes:
-      - ./client:/app
+      - ./frontend:/app
     ports:
       - "8080:8080"
