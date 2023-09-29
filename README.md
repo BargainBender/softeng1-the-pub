@@ -45,4 +45,10 @@ This will start the both the Django server and the Next.js server in port `8000`
 
 The project files for backend and frontend are mounted automatically into their containers. So any changes you save into your local project files will be reflected into the containers.
 
+## Some notes
+When you encounter an error installing a certain package in the `backend` folder called `mysqlclient==2.1.1`, specifically an error where a package called `wheels` is involved and you're using WSL or Ubuntu, try install these packages first:
+```sh
+sudo apt install libmysqlclient-dev default-libmysqlclient-dev
+```
+
 Happy coding!
