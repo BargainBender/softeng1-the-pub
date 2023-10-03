@@ -41,7 +41,10 @@ export default function AuthenticationPage() {
             <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex flex-1">
                 <div className="absolute inset-0 bg-zinc-900">
                     <div className="relative z-20 flex items-center text-lg font-medium">
-                        {/* Image here */}
+                        <Image 
+                        src={"/public/images/thepublogo.png"}
+                        alt="The Pub Logo"
+                        />
                         The Pub Logo
                     </div>
                 </div>
