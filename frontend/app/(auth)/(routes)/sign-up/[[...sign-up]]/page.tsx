@@ -38,19 +38,22 @@ export default function AuthenticationPage() {
                     Login
                 </Link>
             </div> */}
-            <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex flex-1">
-                <div className="absolute inset-0 bg-zinc-900">
+            <div className="relative hidden h-full flex-col p-10 text-black dark:border-r lg:flex flex-1">
+                <div className="absolute inset-0 flex items-center justify-center">
                     <div className="relative z-20 flex items-center text-lg font-medium">
-                        {/* Image here */}
-                        The Pub Logo
+                        <Image 
+                            src="/thepublogo.png"
+                            alt="The Pub Logo"
+                            width={200}
+                            height={200}
+                        />
                     </div>
                 </div>
                 <div className="relative z-20 mt-auto">
                     <blockquote className="space-y-2">
-                        <p className="text-lg">
-                            &ldquo;The Pub hosts your intricate stories and insights on a plethora of topics.&rdquo;
-                        </p>
-                        <footer className="text-sm">The Pub</footer>
+                        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                            &ldquo;Come for the Stories, Stay for the Community!&rdquo;
+                        </h2>
                     </blockquote>
                 </div>
             </div>
