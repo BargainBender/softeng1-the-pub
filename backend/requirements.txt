@@ -3,4 +3,5 @@ djangorestframework==3.14.0
 pyyaml==6.0.1
 requests==2.31.0
 django-cors-headers==4.2.0
-psycopg2==2.9.7
+wheel
+mysqlclient==2.1.1

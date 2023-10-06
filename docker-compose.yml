@@ -11,21 +11,41 @@ services:
       - ./backend:/app
     ports:
       - "8000:8000"
+    networks:
+      - pubnetwork
+    depends_on:
+      database:
+        condition: service_started
 
   frontend:
     build: ./frontend
     command: npm run dev
-    container_name: next_server
+    container_name: client_server
     volumes:
       - ./frontend:/app
     ports:
-      - "3000:3000"
-
-  client:
-    build: ./client
-    command: npm run dev
-    container_name: client_server
-    volumes:
-      - ./client:/app
-    ports:
       - "8080:8080"
+    depends_on:
+      backend:
+        condition: service_started
+
+  database:
+    container_name: database_server
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'thepub'
+      MYSQL_ROOT_PASSWORD: 'rootpw'
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - ./my-db:/var/lib/mysql
+    networks:
+      - pubnetwork
+    hostname: pubdatabase
+
+networks:
+  pubnetwork:
+    name: pubnetwork
