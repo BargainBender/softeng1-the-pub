@@ -60,7 +60,7 @@ sudo apt install libmysqlclient-dev default-libmysqlclient-dev
 
 To rerun migrations, just call the migrate command in the `backend` service (after backend has started):
 ```sh
-docker-compose run backend python manage.py migrate
+docker exec -it django_server python manage.py migrate
 ```
 
 Happy coding!
