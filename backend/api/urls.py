@@ -1,7 +1,9 @@
-from django.urls import include, path
+from django.urls import path
 
 from . import views
+from core.views import UserProfileDetailAPIView
 
 urlpatterns = [
-    path('articles/', include('articles.urls')),
+    path('articles/', views.ArticleListCreateAPIView.as_view()),
+    path('<str:username>/', UserProfileDetailAPIView.as_view())
 ]
