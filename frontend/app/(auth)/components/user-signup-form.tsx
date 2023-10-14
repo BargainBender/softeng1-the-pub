@@ -50,7 +50,7 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
         return (
           <Card>
             <CardHeader>
-              <CardTitle>Create your Account</CardTitle>
+              <CardTitle className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">Create your Account</CardTitle>
               <CardDescription>In just a few steps!</CardDescription>
             </CardHeader>
             <CardContent>
