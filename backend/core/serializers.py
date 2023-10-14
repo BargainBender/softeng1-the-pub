@@ -1,4 +1,5 @@
 from .models import UserProfile, Follower
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 class FollowerSerializer(serializers.ModelSerializer):
@@ -16,8 +17,6 @@ class ArticleUserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ["username", "name", "profile_picture", "is_active"]
-
-
 
 class UserProfileSerializer(serializers.ModelSerializer):
     followers = serializers.SerializerMethodField()
@@ -50,3 +49,27 @@ class UserProfileSerializer(serializers.ModelSerializer):
         for following_data in following:
             following_list.append(following_data.following.user.username)
         return following_list
+    
+class UserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+    confirmed_password = serializers.CharField(required=True, write_only=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
+    class Meta:
+        model = User
+        fields = ["username", "password", "confirmed_password", "first_name", "last_name", "email"]
+
+    def create(self, validated_data):
+      confirmed_password = validated_data.pop('confirmed_password')
+      if validated_data.get('password') != confirmed_password:
+          raise serializers.ValidationError("Passwords do not match")
+      return User.objects.create_user(**validated_data)
+
+    def update(self, instance, validated_data):
+      confirmed_password = validated_data.pop('confirmed_password')
+      if validated_data.get('password') != confirmed_password:
+          raise serializers.ValidationError("Passwords do not match")
+      instance.set_password(validated_data.pop('password'))
+      return super().update(instance, validated_data)
