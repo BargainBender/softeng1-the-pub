@@ -28,9 +28,9 @@ const UserSignInForm: React.FC = () => {
             <div className="flex flex-col items-center">
                 <p className="mt-6 text-sm text-gray-500">
                     Don't have an account? 
-                    <a href="#" className="font-semibold leading-6"> Sign up</a>
+                    <a href="#" className="font-semibold leading-6 text-pub hover:text-pub/80"> Sign up</a>
                 </p>
-                <a href="#" className="mt-2 text-sm text-gray-500 font-semibold leading-6">Forgot your password?</a>
+                <a href="#" className="mt-2 text-sm text-gray-500 font-semibold leading-6 text-pub hover:text-pub/80">Forgot your password?</a>
             </div>
 
         </div>        
