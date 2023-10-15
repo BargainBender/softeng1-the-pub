@@ -1,0 +1,77 @@
+@username = username
+@password = pass123abc
+@firstName = User
+@lastName = Name
+@email = username@example.com
+@host = http://localhost:8000
+
+### Sign up
+### Working progress, will be moved to /auth/signup
+POST {{host}}/api/users/
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}",
+  "confirmed_password": "{{password}}",
+  "first_name": "{{firstName}}",
+  "last_name": "{{lastName}}",
+  "email": "{{email}}"
+}
+
+
+### Log in
+### @name postLogin
+POST {{host}}/auth/
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+### Save token
+@token = {{postLogin.response.body.token}}
+
+
+### Log out
+GET {{host}}/logout/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### Get certain user profile
+GET {{host}}/api/user/tester/
+Content-Type: application/json
+
+
+### Get current user profile
+GET {{host}}/api/user/{{username}}/
+Content-Type: application/json
+
+### Get current user settings
+GET {{host}}/settings/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Change password of current user
+PUT {{host}}/change-password/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "current_password": "",
+  "new_password": "",
+  "confirmed_new_password": ""
+}
+
+
+### Update user profile
+PUT {{host}}/api/user/{{username}}/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "is_active": false,
+  "profile_picture": "https://api.dicebear.com/7.x/notionists-neutral/svg?seed=ABCDE"
+}
