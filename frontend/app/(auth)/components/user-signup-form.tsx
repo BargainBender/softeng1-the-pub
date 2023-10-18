@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,8 +17,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-interface UserSignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+
+interface UserSignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {
+}
+
+
+// TODO: Add validation to the form.
+export interface UserData {
+  email: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
 interface SignUpFormState {
   step: number;
 }
@@ -28,6 +42,15 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
     step: 0,
   });
 
+  const [userData, setUserData] = useState<UserData>({
+    email: "",
+    firstName: "",
+    lastName: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
+
   const handleContinue = () => {
     setState((prevState) => ({
       ...prevState,
@@ -36,12 +59,9 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
   };
 
   async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    alert(JSON.stringify(userData));
+    // Submit to Database
+    // await fetch("/api/user", {
   }
 
   const renderStep = () => {
@@ -50,7 +70,9 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
         return (
           <Card>
             <CardHeader>
-              <CardTitle className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">Create your Account</CardTitle>
+              <CardTitle className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                Create your Account
+              </CardTitle>
               <CardDescription>In just a few steps!</CardDescription>
             </CardHeader>
             <CardContent>
@@ -67,6 +89,10 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                     autoComplete="email"
                     autoCorrect="off"
                     disabled={isLoading}
+                    value={userData.email}
+                    onChange={(event) => {
+                      setUserData({ ...userData, email: event.target.value });
+                    }}
                   />
                   <Label htmlFor="firstname" className="sr-only padding-1">
                     First Name
@@ -79,6 +105,13 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                     autoComplete="firstname"
                     autoCorrect="off"
                     disabled={isLoading}
+                    value={userData.firstName}
+                    onChange={(event) => {
+                      setUserData({
+                        ...userData,
+                        firstName: event.target.value
+                      });
+                    }}
                   />
                   <Label htmlFor="lastname" className="sr-only padding-1">
                     Last Name
@@ -91,10 +124,28 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                     autoComplete="lastname"
                     autoCorrect="off"
                     disabled={isLoading}
+                    value={userData.lastName}
+                    onChange={(event) => {
+                      setUserData({
+                        ...userData,
+                        lastName: event.target.value
+                      });
+                    }}
                   />
                 </div>
                 <div className="flex flex-col space-y-1.5">
-                  <Button variant={"pub"} className="pub" disabled={isLoading}>
+                  <Button
+                    variant={"pub"}
+                    className="pub"
+                    disabled={isLoading}
+                    onClick={(event) => {
+                      setIsLoading(true);
+                      setTimeout(() => {
+                        setIsLoading(false);
+                        handleContinue();
+                      }, 3000);
+                    }}
+                  >
                     {isLoading && (
                       <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                     )}
@@ -127,7 +178,14 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                     autoCapitalize="none"
                     autoComplete="email"
                     autoCorrect="off"
+                    value={userData.username}
                     disabled={isLoading}
+                    onChange={(event) => {
+                      setUserData({
+                        ...userData,
+                        username: event.target.value,
+                      });
+                    }}
                   ></Input>
                   <Label htmlFor="firstname" className="sr-only padding-1">
                     Password
@@ -139,7 +197,14 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                     autoCapitalize="none"
                     autoComplete="firstname"
                     autoCorrect="off"
+                    value={userData.password}
                     disabled={isLoading}
+                    onChange={(event) => {
+                      setUserData({
+                        ...userData,
+                        password: event.target.value,
+                      });
+                    }}
                   ></Input>
                   <Label htmlFor="lastname" className="sr-only padding-1">
                     Confirm Password
@@ -151,7 +216,14 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                     autoCapitalize="none"
                     autoComplete="lastname"
                     autoCorrect="off"
+                    value={userData.confirmPassword}
                     disabled={isLoading}
+                    onChange={(event) => {
+                      setUserData({
+                        ...userData,
+                        confirmPassword: event.target.value,
+                      });
+                    }}
                   ></Input>
                 </div>
 
@@ -168,6 +240,7 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                   <p className="text-sm text-muted-foreground">
                     You agree to our{" "}
                     {
+                      // Check if the user aggrees to the terms and conditions.
                       <Link
                         href={"/terms-of-service"}
                         className="underline underline-offset-3"
@@ -189,7 +262,18 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                 </div>
 
                 <div className="flex flex-col space-y-1.5">
-                  <Button variant={"pub"} className="pub" disabled={isLoading}>
+                  <Button
+                    variant={"pub"}
+                    className="pub"
+                    disabled={isLoading}
+                    onClick={(event) => {
+                      setIsLoading(true);
+                      setTimeout(() => {
+                        setIsLoading(false);
+                        handleContinue();
+                      }, 3000);
+                    }}
+                  >
                     {isLoading && (
                       <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                     )}
@@ -201,6 +285,11 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
           </Card>
         );
       case 2:
+
+      setTimeout(() => {
+        alert('Successfully Registered!');
+      }, 5000);
+
         return (
           <Card>
             <CardHeader>
@@ -210,39 +299,15 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
               <CardDescription></CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid w-full gap-4">
-                <div className="grid gap-4">
-                  <Label htmlFor="email" className="sr-only">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    placeholder={"name@example.com"} //UserData.email
-                    type="email"
-                    autoCapitalize="none"
-                    autoComplete="email"
-                    autoCorrect="off"
+            <div className="flex flex-col space-y-1.5">
+                  <Button
+                    variant={"ghost"}
+                    className="pub"
                     disabled={true}
-                  ></Input>
-                  <Label htmlFor="username" className="sr-only padding-1">
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    placeholder={"Username"} //UserData.username
-                    type="text"
-                    autoCapitalize="none"
-                    autoComplete="username"
-                    autoCorrect="off"
-                    disabled={true}
-                  ></Input>
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Button variant={"pub"} className="pub" disabled={false}>
-                    Login
+                  >
+                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> Redirecting...
                   </Button>
                 </div>
-              </div>
             </CardContent>
           </Card>
         );
@@ -252,62 +317,12 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
     }
   };
 
-  return <form onSubmit={onSubmit}>{renderStep()}</form>;
-
-  // return (
-  //   <>
-  //     <form onSubmit={onSubmit}>
-  //       <div className="grid w-full gap-4">
-  //         <div className="grid gap-4">
-  //           <Label htmlFor="email" className="sr-only">
-  //             Email
-  //           </Label>
-  //           <Input
-  //             id="email"
-  //             placeholder="name@example.com"
-  //             type="email"
-  //             autoCapitalize="none"
-  //             autoComplete="email"
-  //             autoCorrect="off"
-  //             disabled={isLoading}
-  //           ></Input>
-  //           <Label htmlFor="firstname" className="sr-only padding-1">
-  //             First Name
-  //           </Label>
-  //           <Input
-  //             id="firstname"
-  //             placeholder="First Name"
-  //             type="text"
-  //             autoCapitalize="none"
-  //             autoComplete="firstname"
-  //             autoCorrect="off"
-  //             disabled={isLoading}
-  //           ></Input>
-  //           <Label htmlFor="lastname" className="sr-only padding-1">
-  //             Last Name
-  //           </Label>
-  //           <Input
-  //             id="lastname"
-  //             placeholder="Last Name"
-  //             type="text"
-  //             autoCapitalize="none"
-  //             autoComplete="lastname"
-  //             autoCorrect="off"
-  //             disabled={isLoading}
-  //           ></Input>
-  //         </div>
-  //         <div className="flex flex-col space-y-1.5">
-  //           <Button variant={"pub"} className="pub" disabled={isLoading}>
-  //             {isLoading && (
-  //               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-  //             )}
-  //             Continue
-  //           </Button>
-  //         </div>
-  //       </div>
-  //     </form>
-  //   </>
-  // );
+  return (
+    <>
+    {renderStep()}
+    </>
+  );
+    
 }
 
 export default UserSignUpForm;

@@ -1,42 +1,11 @@
-"use client";
+
 
 import Image from "next/image";
 
-
-import { useState } from "react";
-
 import UserSignUpForm from "@/app/(auth)/components/user-signup-form";
 
-export interface UserData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  username: string;
-  password: string;
-}
 
 export default function SignUpPage() {
-  const [userData, setUserData] = useState<UserData>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    username: "",
-    password: "",
-  });
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }
-
-  const handleFormSubmit = (data: UserData) => {
-    setUserData({ ...userData, ...data });
-  };
 
   return (
     <>
