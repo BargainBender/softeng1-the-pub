@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 
 
 
@@ -287,6 +288,7 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
       case 2:
 
       setTimeout(() => {
+        redirect('/sign-up')
         alert('Successfully Registered!');
       }, 5000);
 

@@ -10,15 +10,18 @@ export default function SignUpPage() {
   return (
     <>
       <div className="grid grid-cols-[1.05fr_1fr] w-full h-screen">
-        <div className="relative hidden h-full flex-col p-10 text-black dark:border-r lg:w-3/15 lg:flex flex-1">
+        <div className="relative hidden h-full flex-col text-black dark:border-r lg:w-3/15 lg:flex flex-1">
           <div className="absolute inset-0 flex items-center justify-end">
             <div className="relative z-20 flex items-center text-lg font-medium">
               <Image
-                src="/thepublogo.png"
+                src="/assets/thePub.svg"
                 alt="The Pub Logo"
-                width={400}
-                height={200}
+                width={600}
+                height={600}
               />
+              <h3 className="absolute text-9xl w-min text-gray-800 bottom-24 right-8 font-tanNimbus leading-[1.1]">
+              The Pub
+            </h3>
             </div>
           </div>
           <div className="flex items-center justify-end relative z-20 mt-auto">
