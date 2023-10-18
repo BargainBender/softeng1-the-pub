@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 
 interface LoadingState {
     isLoading: boolean;
@@ -27,10 +28,11 @@ const UserSignInForm: React.FC = () => {
 
             <div className="flex flex-col items-center">
                 <p className="mt-6 text-sm text-gray-500">
-                    Don't have an account? 
-                    <a href="#" className="font-semibold leading-6 text-pub hover:text-pub/80"> Sign up</a>
+                    Don{"'"}t have an account?  
+                    <Link href="/sign-up" className="font-semibold leading-6 text-pub hover:text-pub/80"> Sign Up</Link>
                 </p>
-                <a href="#" className="mt-2 text-sm text-gray-500 font-semibold leading-6 text-pub hover:text-pub/80">Forgot your password?</a>
+                <Link href="/" className="mt-2 text-sm text-gray-500 font-semibold leading-6 text-pub hover:text-pub/80">Forgot your password?</Link>
+                
             </div>
 
         </div>        

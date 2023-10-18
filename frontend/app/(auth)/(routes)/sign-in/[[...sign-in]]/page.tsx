@@ -17,7 +17,12 @@ export default function SignIn() {
             <div className="w-3/5 p-10 hidden lg:flex flex-col bg-white dark:bg-gray-800">
                 <div className="flex items-center justify-center h-full">
                     <div className="relative flex items-center text-lg font-medium">
-                        <img src="./assets/thePub.svg" alt="" className="h-[600px] w-[600px]" />
+                        <Image 
+                            src="./assets/thePub.svg"
+                            alt="The Pub"
+                            width={600}
+                            height={600}
+                        />
                         {/* FIXME change the svg file */}
 
                         <h3 className="absolute text-9xl w-min text-gray-800 bottom-24 right-8 font-tanNimbus leading-[1.1]">The Pub</h3>
