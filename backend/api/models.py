@@ -5,11 +5,11 @@ from core.models import UserProfile
 
 # Create your models here.
 class Article(models.Model):
-    title = models.CharField(max_length=70)
+    title = models.CharField(max_length=70, default="Untitled")
     content = models.TextField(blank=True)
     date_created = models.DateField(auto_now=True)
     last_edited = models.DateField(auto_now=True)
-    author = models.ForeignKey(UserProfile, null=True, on_delete=models.CASCADE, related_name="articles")
+    author = models.ForeignKey(UserProfile, blank=False, on_delete=models.CASCADE, related_name="articles")
 
     def __str__(self):
         return self.title
