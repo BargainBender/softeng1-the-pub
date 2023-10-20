@@ -1,0 +1,42 @@
+"use client";
+import React, { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Link from "next/link";
+
+interface LoadingState {
+    isLoading: boolean;
+}
+
+const UserSignInForm: React.FC = () => {
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+    return (
+        <div className="mt-2 grid w-full gap-4">
+            <div className="flex flex-col space-y-1.5 items-start">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" placeholder="Email"></Input>
+                <Label htmlFor="password">Password</Label>
+                <Input id="password" placeholder="Password" type="password"></Input>
+            </div>
+
+            <div className="flex flex-col space-y-1.5">
+                <Button variant={"pub"} className="pub">Log In</Button>
+            </div>
+
+            <div className="flex flex-col items-center">
+                <p className="mt-6 text-sm text-gray-500">
+                    Don{"'"}t have an account?  
+                    <Link href="/sign-up" className="font-semibold leading-6 text-pub hover:text-pub/80"> Sign Up</Link>
+                </p>
+                <Link href="/" className="mt-2 text-sm text-gray-500 font-semibold leading-6 text-pub hover:text-pub/80">Forgot your password?</Link>
+                
+            </div>
+
+        </div>        
+    );
+};
+
+export default UserSignInForm;
