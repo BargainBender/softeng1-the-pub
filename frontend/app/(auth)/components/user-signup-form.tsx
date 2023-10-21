@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from 'next/navigation'
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,8 +29,6 @@ interface UserSignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export interface UserData {
   email: string;
-  firstName: string;
-  lastName: string;
   username: string;
   password: string;
   confirmPassword: string;
@@ -40,6 +38,7 @@ interface SignUpFormState {
 }
 
 export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
+  const router = useRouter()
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   // These checkers could be merged into one, however, upon testing it seems that the state is not updated in time.
@@ -57,8 +56,6 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
 
   const [userData, setUserData] = useState<UserData>({
     email: "",
-    firstName: "",
-    lastName: "",
     username: "",
     password: "",
     confirmPassword: "",
@@ -149,39 +146,8 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                     >
                       Invalid email format.
                     </Label>
+                    {/* TODO: Email already used. */}
                   </div>
-                  <Input
-                    id="firstname"
-                    placeholder="First Name"
-                    type="text"
-                    autoCapitalize="none"
-                    autoComplete="firstname"
-                    autoCorrect="off"
-                    disabled={isLoading}
-                    value={userData.firstName}
-                    onChange={(event) => {
-                      setUserData({
-                        ...userData,
-                        firstName: event.target.value,
-                      });
-                    }}
-                  />
-                  <Input
-                    id="lastname"
-                    placeholder="Last Name"
-                    type="text"
-                    autoCapitalize="none"
-                    autoComplete="lastname"
-                    autoCorrect="off"
-                    disabled={isLoading}
-                    value={userData.lastName}
-                    onChange={(event) => {
-                      setUserData({
-                        ...userData,
-                        lastName: event.target.value,
-                      });
-                    }}
-                  />
                 </div>
                 <div className="flex flex-col space-y-1.5">
                   <Button
@@ -330,7 +296,6 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                     .
                   </p>
                 </div>
-
                 <div className="flex flex-col space-y-1.5">
                   <Button
                     variant={"pub"}
@@ -356,9 +321,8 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
         );
       case 2:
         setTimeout(() => {
-          redirect("/sign-up");
-          alert("Successfully Registered!");
-        }, 5000);
+          router.push('/sign-in');
+        }, 3000);
         return (
           <Card>
             <CardHeader>
@@ -378,7 +342,6 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
           </Card>
         );
       default:
-        // Render the last step of the form here.
         break;
     }
   };
