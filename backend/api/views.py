@@ -5,7 +5,7 @@ from rest_framework.renderers import StaticHTMLRenderer
 
 from django.shortcuts import render
 
-from .models import Article
+from .models import Article, Thread
 from .serializers import ListArticleSerializer, CreateArticleSerializer
 from .permissions import IsStaffEditorPermission
 from .authentication import TokenAuthentication
@@ -28,6 +28,11 @@ class ArticleListCreateView(generics.ListCreateAPIView):
             return ListArticleSerializer
         elif self.request.method == "POST":
             return CreateArticleSerializer
+        
+    
+class ThreadListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Thread.objects.all()
+
 
 @api_view(['GET'])
 @renderer_classes([StaticHTMLRenderer])
