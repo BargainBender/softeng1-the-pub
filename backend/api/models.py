@@ -13,3 +13,12 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+    
+    
+class Thread(models.Model):
+    content = models.TextField(blank=True)
+    date_created = models.DateField(auto_now=True)
+    last_edited = models.DateField(auto_now=True)
+    author = models.ForeignKey(UserProfile, blank=False, on_delete=models.CASCADE, related_name="threads")
+    depth = models.IntegerField()
+    parent = models.ForeignKey(to='Thread', blank=True, null=True, on_delete=models.CASCADE, related_name="children")
