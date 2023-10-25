@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,13 +20,12 @@ import { emailRegex } from "@/lib/utils";
 import { strongPasswordRegex } from "@/lib/utils";
 import {
   lowerCaseRegex,
-  upperCaseRegex, 
+  upperCaseRegex,
   numberRegex,
   specialCharacterRegex,
 } from "@/lib/utils";
 
 interface UserSignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}
-
 
 export interface UserData {
   email: string;
@@ -38,7 +38,7 @@ interface SignUpFormState {
 }
 
 export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
-  const router = useRouter()
+  const router = useRouter();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   // These checkers could be merged into one, however, upon testing it seems that the state is not updated in time.
@@ -84,23 +84,25 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
 
   const handleConfirm = () => {
     // Check if the password is valid.
-    if (userData.password !== "" && userData.password !== userData.confirmPassword){
+    if (
+      userData.password !== "" &&
+      userData.password !== userData.confirmPassword
+    ) {
       throw new Error("Passwords do not match.");
     } else {
       setState((prevState) => ({
         ...prevState,
         step: prevState.step + 1,
       }));
-      // onSubmit;
+      submit_user_data(userData);
     }
-    
-  };  
+  };
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    alert(JSON.stringify(userData));
-    // Submit to Database
-    // await fetch("/api/user", {
-  }
+  const submit_user_data = async (userData : UserData) => {
+    const response = await axios.post("http://localhost:8000/api/users/", userData);
+    console.log(response);
+    return response;
+  };
 
   const renderStep = () => {
     switch (state.step) {
@@ -184,28 +186,27 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
             <CardContent>
               <div className="grid w-full gap-4">
                 <div className="grid gap-4">
-                <div className="grid w-full max-w-sm place-items-start gap-1.5">
-                  <Input
-                    id="username"
-                    placeholder="Username"
-                    type="text"
-                    autoCapitalize="none"
-                    autoComplete="email"
-                    autoCorrect="off"
-                    value={userData.username}
-                    disabled={isLoading}
-                    onChange={(event) => {
-                      setUserData({
-                        ...userData,
-                        username: event.target.value,
-                      });
-                    }}
-                  />
-                   <Label className="ml-3 text-xs text-muted-foreground">
-                  {userData.username === "" ? "Username is required." : ""}
-                  </Label>
-                  {/* TODO: Add username is taken */}
-
+                  <div className="grid w-full max-w-sm place-items-start gap-1.5">
+                    <Input
+                      id="username"
+                      placeholder="Username"
+                      type="text"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      autoCorrect="off"
+                      value={userData.username}
+                      disabled={isLoading}
+                      onChange={(event) => {
+                        setUserData({
+                          ...userData,
+                          username: event.target.value,
+                        });
+                      }}
+                    />
+                    <Label className="ml-3 text-xs text-muted-foreground">
+                      {userData.username === "" ? "Username is required." : ""}
+                    </Label>
+                    {/* TODO: Add username is taken */}
                   </div>
                   <div className="grid w-full max-w-sm place-items-start gap-1.5">
                     <Input
@@ -224,52 +225,96 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                         });
                       }}
                     />
-                    
+
                     <Label className="ml-3 text-xs text-muted-foreground">
                       The password must be:
                     </Label>
-                    <Label className={`ml-9 text-xs text-muted-foreground ${!lowerCaseRegex.test(userData.password) ? "text-red-600" : ""}`}>
-              
+                    <Label
+                      className={`ml-9 text-xs text-muted-foreground ${
+                        !lowerCaseRegex.test(userData.password)
+                          ? "text-red-600"
+                          : ""
+                      }`}
+                    >
                       One lowercase letter
                     </Label>
-                    <Label className={`ml-9 text-xs text-muted-foreground ${!upperCaseRegex.test(userData.password) ? "text-red-600" : ""}`}>
-                
+                    <Label
+                      className={`ml-9 text-xs text-muted-foreground ${
+                        !upperCaseRegex.test(userData.password)
+                          ? "text-red-600"
+                          : ""
+                      }`}
+                    >
                       One uppercase letter
                     </Label>
-                    <Label className={`ml-9 text-xs text-muted-foreground ${!numberRegex.test(userData.password) ? "text-red-600" : ""}`}>
+                    <Label
+                      className={`ml-9 text-xs text-muted-foreground ${
+                        !numberRegex.test(userData.password)
+                          ? "text-red-600"
+                          : ""
+                      }`}
+                    >
                       One number
                     </Label>
-                    <Label className={`ml-9 text-xs text-muted-foreground ${!specialCharacterRegex.test(userData.password) ? "text-red-600" : ""}`}>
+                    <Label
+                      className={`ml-9 text-xs text-muted-foreground ${
+                        !specialCharacterRegex.test(userData.password)
+                          ? "text-red-600"
+                          : ""
+                      }`}
+                    >
                       One special character
                     </Label>
-                    <Label className={`ml-9 text-xs text-muted-foreground ${userData.password.length >= 8 ? "" : "text-red-600"}`}>
+                    <Label
+                      className={`ml-9 text-xs text-muted-foreground ${
+                        userData.password.length >= 8 ? "" : "text-red-600"
+                      }`}
+                    >
                       Be at least 8 characters long
                     </Label>
                   </div>
                   <div className="grid w-full max-w-sm place-items-start gap-1.5">
-                  <Input
-                    id="confirm-password"
-                    placeholder="Confirm Password"
-                    type="password"
-                    autoCapitalize="none"
-                    autoComplete="lastname"
-                    autoCorrect="off"
-                    value={userData.confirmPassword}
-                    disabled={isLoading}
-                    onChange={(event) => {
-                      setUserData({
-                        ...userData,
-                        confirmPassword: event.target.value,
-                      });
-                    }}
-                  />
-                  <Label className="ml-3 text-xs text-muted-foreground">
-                  {userData.password === "" ? "Password required." : ""}
-                  </Label>
-                  <Label className={`ml-3 text-xs text-muted-foreground ${userData.password === "" ? "hidden" : ""}`}> {userData.password !== "" &&
-    (userData.password !== userData.confirmPassword
-      ? <span className="text-red-600">Passwords do not match</span>
-      : "Passwords match")}</Label>
+                    <Input
+                      id="confirm-password"
+                      placeholder="Confirm Password"
+                      type="password"
+                      autoCapitalize="none"
+                      autoComplete="lastname"
+                      autoCorrect="off"
+                      value={userData.confirmPassword}
+                      disabled={isLoading}
+                      onChange={(event) => {
+                        setUserData({
+                          ...userData,
+                          confirmPassword: event.target.value,
+                        });
+                      }}
+                    />
+                    <Label className="ml-3 text-xs text-muted-foreground">
+                      {userData.password === "" ? "Password required." : ""}
+                    </Label>
+                    <Label
+                      className={`ml-3 text-xs text-muted-foreground ${
+                        userData.password === "" ? "hidden" : ""
+                      }`}
+                    >
+                      {" "}
+                      {userData.password !== "" &&
+                        (userData.password !== userData.confirmPassword ? (
+                          <span className="text-red-600">
+                            Passwords do not match
+                          </span>
+                        ) : (
+                          "Passwords match"
+                        ))}
+                    </Label>
+                    <Label
+                      className={`ml-3 text-xs text-muted-foreground text-red-600 ${
+                        userData.password === userData.username ? "" : "hidden"
+                      }`}
+                    >
+                      Password cannot be the same as username.
+                    </Label>
                   </div>
                 </div>
                 <div className="flex items-start space-x-2 my-3">
@@ -300,7 +345,14 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                   <Button
                     variant={"pub"}
                     className="pub"
-                    disabled={isLoading || userData.password === "" || userData.password !== userData.confirmPassword || userData.username === "" && !strongPasswordRegex.test(userData.password)}
+                    disabled={
+                      isLoading ||
+                      userData.password === "" ||
+                      userData.password !== userData.confirmPassword ||
+                      (userData.username === "" &&
+                        !strongPasswordRegex.test(userData.password)) ||
+                      userData.password === userData.username
+                    }
                     onClick={(event) => {
                       setIsLoading(true);
                       setTimeout(() => {
@@ -321,7 +373,7 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
         );
       case 2:
         setTimeout(() => {
-          router.push('/sign-in');
+          router.push("/sign-in");
         }, 3000);
         return (
           <Card>
