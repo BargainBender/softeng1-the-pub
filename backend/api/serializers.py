@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Article
+from .models import Article, Thread
 from core.serializers import ArticleUserProfileSerializer
 
 class ListArticleSerializer(serializers.ModelSerializer):
@@ -15,3 +15,10 @@ class CreateArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ["title", "content"]
+        
+
+class ThreadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Thread
+        fields = '__all__'
+        
