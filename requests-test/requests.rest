@@ -1,4 +1,4 @@
-@username = raymond
+@username = raymond1
 @password = ray123abc
 @firstName = Raymond
 @lastName = Postrero
@@ -16,10 +16,17 @@ Content-Type: application/json
   "username": "{{username}}",
   "password": "{{password}}",
   "confirmed_password": "{{password}}",
-  "first_name": "{{firstName}}",
-  "last_name": "{{lastName}}",
   "email": "{{email}}"
 }
+
+# {
+#   "username": "{{username}}",
+#   "password": "{{password}}",
+#   "confirmed_password": "{{password}}",
+#   "first_name": "{{firstName}}",
+#   "last_name": "{{lastName}}",
+#   "email": "{{email}}"
+# }
 
 
 ### Log in
