@@ -11,6 +11,6 @@ data = {
   "email": input("Email: ")
 }
 
-post_response = requests.post(endpoint, json=data) 
+post_response = requests.post(endpoint, json=data)  
 print(post_response.text)
 print(post_response.status_code)
