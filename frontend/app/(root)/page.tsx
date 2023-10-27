@@ -1,19 +1,40 @@
 
+"use client"; 
+
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { use } from "react";
 import Link from "next/link";
 import { Bookmark, Dot, Ear, ExternalLink, Heart, Lasso } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useArticle } from "../hooks/useArticle";
 
-export default async function UserArticlePage() {
+export default function UserArticlePage() {
   // Get the userID and artlcleID from the URL
   // const { userID, articleID } = useRouter();
 
   // Fetch the user and article data from the API placeholder to JSON
   // const article = await fetch(`/api/articles/${articleID}`).then((response) => response.json());
   // Render the article data
+
+
+  // useArticle({article.id}, {user.id});
+
+
+  
+  const article = {
+    title: "Hello World",
+    content: "Lorem ipsum, dolor sit amet consectetur adi",
+    category: "Programming",
+
+
+  }
+
+  const user = {
+     avatar: "",
+     
+  }
 
 
   async function handeOnClick() {
@@ -46,7 +67,7 @@ export default async function UserArticlePage() {
           <small className="text-sm font-medium leading-none md:hover:border-b-2 border-pub">
             <Link href={"/"}>Jace Gonzales</Link>
           </small>
-          <small className="text-lg font-medium leading-none mx-5 text-muted-foreground">
+          <small className="text-lg font-medium leading-none mx-2 text-muted-foreground">
             ·
           </small>
           <small className="text-sm font-medium leading none text-pub hover:text-pub-darker">
@@ -57,7 +78,7 @@ export default async function UserArticlePage() {
           <small className="text-sm font-medium leading-none text-muted-foreground">
             12 min read
           </small>
-          <small className="text-sm font-medium leading-none mx-5 text-muted-foreground">
+          <small className="text-sm font-medium leading-none mx-2 text-muted-foreground">
             ·
           </small>
           <small className="text-sm font-medium leading-none text-muted-foreground">
@@ -83,6 +104,6 @@ export default async function UserArticlePage() {
       <Separator className="max-w-prose mt-3" />
 
       <p>{/* article.content */}</p>
-    </div>
+    </div>  
   );
 }
