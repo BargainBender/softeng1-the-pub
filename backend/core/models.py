@@ -65,3 +65,8 @@ class Follower(models.Model):
         if self.follower == self.following:
             raise ValidationError("A user cannot follow themselves")
         return super().save(*args, **kwargs)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["follower", "following"], name="unique_follower")
+        ]
