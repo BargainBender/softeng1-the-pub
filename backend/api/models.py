@@ -20,5 +20,17 @@ class Thread(models.Model):
     date_created = models.DateField(auto_now=True)
     last_edited = models.DateField(auto_now=True)
     author = models.ForeignKey(UserProfile, blank=False, on_delete=models.CASCADE, related_name="threads")
-    depth = models.IntegerField()
+    article = models.ForeignKey(Article, blank=True, null=True, on_delete=models.CASCADE, related_name="threads")
     parent = models.ForeignKey(to='Thread', blank=True, null=True, on_delete=models.CASCADE, related_name="children")
+
+    DEPTH = (
+        (0, "Top level thread"),
+        (1, "Sub thread"),
+        (2, "Comments"),
+    )
+    
+    depth = models.IntegerField(choices=DEPTH)
+
+    @property
+    def children(self):
+        return Thread.objects.all()

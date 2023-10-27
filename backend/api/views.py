@@ -6,12 +6,11 @@ from rest_framework.renderers import StaticHTMLRenderer
 from django.shortcuts import render
 
 from .models import Article, Thread
-from .serializers import ListArticleSerializer, CreateArticleSerializer
+from .serializers import ListArticleSerializer, CreateArticleSerializer, ThreadSerializer
 from .permissions import IsStaffEditorPermission
 from .authentication import TokenAuthentication
 
 # Create your views here.
-
 
 class ArticleListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -28,10 +27,14 @@ class ArticleListCreateView(generics.ListCreateAPIView):
             return ListArticleSerializer
         elif self.request.method == "POST":
             return CreateArticleSerializer
-        
-    
+
+
 class ThreadListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = ThreadSerializer
     queryset = Thread.objects.all()
+    
+    def get_queryset(self):
+      return Thread.objects.filter(parent__isnull=True)
 
 
 @api_view(['GET'])
