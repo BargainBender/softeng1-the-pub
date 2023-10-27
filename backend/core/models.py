@@ -49,7 +49,7 @@ class UserProfile(models.Model):
         instance.profile.save()
 
     def __str__(self):
-        return self.user.first_name + " " + self.user.last_name
+        return self.user.username
 
 
 class Follower(models.Model):

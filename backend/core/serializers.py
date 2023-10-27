@@ -20,6 +20,11 @@ class ArticleUserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ["username", "name", "profile_picture", "is_active"]
 
+class ThreadUserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ["username", "profile_picture"]
+
 class UserProfileSerializer(serializers.ModelSerializer):
     followers = serializers.SerializerMethodField()
     following = serializers.SerializerMethodField()
