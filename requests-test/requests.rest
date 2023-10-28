@@ -38,12 +38,12 @@ Authorization: Bearer {{token}}
 
 
 ### Get certain user profile
-GET {{host}}/api/user/tester/
+GET {{host}}/api/tester/
 Content-Type: application/json
 
 
 ### Get current user profile
-GET {{host}}/api/user/{{username}}/
+GET {{host}}/api/{{username}}/
 Content-Type: application/json
 
 ### Get current user settings
@@ -64,7 +64,7 @@ Authorization: Bearer {{token}}
 
 
 ### Update user profile
-PUT {{host}}/api/user/{{username}}/
+PUT {{host}}/api/{{username}}/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
