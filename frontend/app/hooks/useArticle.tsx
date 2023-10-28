@@ -22,8 +22,8 @@ export function useArticle(articleId: string, userId: string): { article: Articl
   
     useEffect(() => {
       async function fetchArticle() {
-        const articleResponse = await fetch(`/api/articles/${articleId}`);
-        const authorResponse = await fetch(`/api/users/${userId}`);
+        const articleResponse = await fetch(`http://localhost:8000/api/articles/${articleId}`);
+        const authorResponse = await fetch(`http://localhost:8000/api/user/${userId}`);
   
         const articleData = await articleResponse.json();
         const authorData = await authorResponse.json();
