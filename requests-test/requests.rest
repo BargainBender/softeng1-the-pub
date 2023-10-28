@@ -6,10 +6,7 @@
 @host = http://localhost:8000
 
 ### Sign up
-### Working progress, will be moved to /auth/signup
-### TODO: Fix duplicate entry -> 400 instead of 500
-### TODO: Remove password hash from 200 response body
-POST {{host}}/api/users/
+POST {{host}}/auth/signup/
 Content-Type: application/json
 
 {
@@ -19,18 +16,7 @@ Content-Type: application/json
   "email": "{{email}}"
 }
 
-# {
-#   "username": "{{username}}",
-#   "password": "{{password}}",
-#   "confirmed_password": "{{password}}",
-#   "first_name": "{{firstName}}",
-#   "last_name": "{{lastName}}",
-#   "email": "{{email}}"
-# }
-
-
-### Log in
-### TODO: move to auth/login
+### Login
 # @name postLogin
 POST {{host}}/auth/
 Content-Type: application/json
@@ -40,13 +26,13 @@ Content-Type: application/json
   "password": "{{password}}"
 }
 
+
 ### Save token
 @token = {{postLogin.response.body.token}}
 
 
 ### Log out
-### TODO: move to auth/logout
-GET {{host}}/logout/
+GET {{host}}/auth/logout/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -66,7 +52,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Change password of current user
-PUT {{host}}/change-password/
+PUT {{host}}/settings/change-password/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 

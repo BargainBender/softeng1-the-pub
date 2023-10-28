@@ -27,14 +27,22 @@ class UserProfileDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
         # Get the UserProfile object related to the User
         return get_object_or_404(UserProfile, user=user)
 
-class UserListCreateAPIView(generics.ListCreateAPIView):
-    queryset = User.objects.all()
+# class UserListCreateAPIView(generics.ListCreateAPIView):
+#     queryset = User.objects.all()
 
-    def get_serializer_class(self):
-      if self.request.method == "GET":
-          return UserDetailsSerializer
-      elif self.request.method == "POST":
-          return CreateUserSerializer
+#     def get_serializer_class(self):
+#       if self.request.method == "GET":
+#           return UserDetailsSerializer
+#       elif self.request.method == "POST":
+#           return CreateUserSerializer
+
+class UserListAPIView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserDetailsSerializer
+
+class UserCreateAPIView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = CreateUserSerializer
 
 class UserSettingsRetrieveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
