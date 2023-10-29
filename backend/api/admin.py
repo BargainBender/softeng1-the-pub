@@ -8,4 +8,11 @@ class ArticleModelAdmin(admin.ModelAdmin):
 
 @admin.register(Thread)
 class ThreadModelAdmin(admin.ModelAdmin):
-  list_display = ("content", "author", "date_created", "last_edited", "depth")
+  list_display = ("content_substr", "author", "date_created", "last_edited")
+  
+  def content_substr(self, obj):
+    if len(obj.content) > 40:
+        return obj.content[0:250].strip() + "..."
+    return obj.content
+  
+  content_substr.short_description = "content"
