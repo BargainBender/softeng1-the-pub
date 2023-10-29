@@ -18,7 +18,7 @@ class FollowingSerializer(serializers.ModelSerializer):
 class ArticleUserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ["username", "name", "profile_picture", "is_active"]
+        fields = ["id", "username", "name", "profile_picture", "is_active"]
 
 class ThreadUserProfileSerializer(serializers.ModelSerializer):
     class Meta:

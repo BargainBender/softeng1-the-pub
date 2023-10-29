@@ -23,7 +23,8 @@ class CreateArticleSerializer(serializers.ModelSerializer):
 # authors: [1,2,3,4]
 # threads: [ {...author: 1}, {...author: 3}, ...]
 class ThreadSerializer(serializers.ModelSerializer):
-    author = ArticleUserProfileSerializer(read_only=True, many=False)
+    # author = ArticleUserProfileSerializer(read_only=True, many=False)
+    author = serializers.PrimaryKeyRelatedField(read_only=True)
     children = serializers.SerializerMethodField()
 
     class Meta:
