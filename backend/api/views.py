@@ -6,13 +6,12 @@ from rest_framework.renderers import StaticHTMLRenderer
 from django.shortcuts import render
 
 from .models import Article, Thread
-from .serializers import ListArticleSerializer, CreateArticleSerializer, ThreadSerializer
+from .serializers import ListArticleSerializer, CreateArticleSerializer, ListThreadSerializer, CreateThreadSerializer
 from .permissions import IsStaffEditorPermission
 from .authentication import TokenAuthentication
 
 from core.models import UserProfile
 from core.serializers import ArticleUserProfileSerializer
-
 # Create your views here.
 
 class ArticleListCreateView(generics.ListCreateAPIView):
@@ -38,7 +37,10 @@ class ThreadListCreateAPIView(generics.ListCreateAPIView):
     #   return Thread.objects.filter(parent__isnull=True)
     
     def get_serializer_class(self):
-        return ThreadSerializer
+        if self.request.method == "GET":
+            return ListThreadSerializer
+        elif self.request.method == "POST":
+            return CreateThreadSerializer
     
     # TODO: Needs Optimization
     def get_all_authors(self, thread):
@@ -60,7 +62,7 @@ class ThreadListCreateAPIView(generics.ListCreateAPIView):
             author['id']: author for author in author_serializer.data
         }
 
-        thread_serializer = ThreadSerializer(threads, many=True)
+        thread_serializer = ListThreadSerializer(threads, many=True)
         thread_data = thread_serializer.data
         for author in author_data:
             del author_data[author]['id']

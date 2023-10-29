@@ -23,14 +23,11 @@ class Thread(models.Model):
     article = models.ForeignKey(Article, blank=True, null=True, on_delete=models.CASCADE, related_name="threads")
     parent = models.ForeignKey(to='Thread', blank=True, null=True, on_delete=models.CASCADE, related_name="children")
 
-    DEPTH = (
-        (0, "Top level thread"),
-        (1, "Sub thread"),
-        (2, "Comments"),
-    )
-    
-    depth = models.IntegerField(choices=DEPTH)
-
     @property
     def children(self):
         return Thread.objects.all()
+    
+    def __str__(self):
+        if len(self.content) > 40:
+            return self.author.username + ": " + self.content[0:40].strip() + "..."
+        return self.author.username + ": " + self.content
