@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 from django.db import IntegrityError
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
@@ -98,12 +99,16 @@ class FollowAPIView(APIView):
     lookup_field = "username"
     
     def get(self, request, username):
-        user_to_follow = get_object_or_404(User, username=username)
-        user_profile_to_follow = get_object_or_404(UserProfile, user=user_to_follow)
         try:
+            user_to_follow = get_object_or_404(User, username=username)
+            user_profile_to_follow = get_object_or_404(UserProfile, user=user_to_follow)
             Follower.objects.create(follower=request.user.profile, following=user_profile_to_follow)
         except IntegrityError:
             return Response({"error": "You are already following this user"}, status=status.HTTP_200_OK)
+        except Http404:
+            return Response({"error": f"User '{username}' not found"}, status=status.HTTP_200_OK)
+
+            
         return Response({"message": f"Followed {username}"}, status=status.HTTP_200_OK)
     
     def delete(self, request, username):
