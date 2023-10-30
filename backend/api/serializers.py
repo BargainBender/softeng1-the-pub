@@ -34,7 +34,7 @@ class ListThreadSerializer(serializers.ModelSerializer):
 class CreateThreadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Thread
-        fields = ['content', 'date_created', 'last_edited', 'author', 'article', 'parent']
+        fields = ['content', 'date_created', 'last_edited', 'article', 'parent']
 
     def validate_parent(self, parent_thread):
         # Define your maximum depth limit here

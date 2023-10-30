@@ -1,4 +1,4 @@
-from rest_framework import authentication, generics, mixins, permissions
+from rest_framework import authentication, generics, mixins, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, renderer_classes, permission_classes
 from rest_framework.renderers import StaticHTMLRenderer
@@ -31,11 +31,9 @@ class ArticleListCreateView(generics.ListCreateAPIView):
             return CreateArticleSerializer
 
 class ThreadListCreateAPIView(generics.ListCreateAPIView):
-    # queryset = Thread.objects.all()
-    
-    # def get_queryset(self):
-    #   return Thread.objects.filter(parent__isnull=True)
-    
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+
     def get_serializer_class(self):
         if self.request.method == "GET":
             return ListThreadSerializer
@@ -71,6 +69,11 @@ class ThreadListCreateAPIView(generics.ListCreateAPIView):
             "authors": author_data,
             "threads": thread_data
         })
+
+    def perform_create(self, serializer):
+        # Get UserProfile from User
+        user_profile = self.request.user.profile
+        serializer.save(author=user_profile)
 
 
 @api_view(['GET'])
