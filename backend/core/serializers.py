@@ -14,6 +14,11 @@ class FollowingSerializer(serializers.ModelSerializer):
         model = Follower
         fields = ["following"]
 
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follower
+        fields = ["follower", "following"]
+
 
 class ArticleUserProfileSerializer(serializers.ModelSerializer):
     class Meta:
