@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 
@@ -9,16 +10,20 @@ from rest_framework.authtoken.models import Token
 
 from api.authentication import TokenAuthentication
 
-from .models import UserProfile
-from .serializers import UserProfileSerializer, UserDetailsSerializer, CreateUserSerializer, ChangeUserPasswordSerializer
+from .models import UserProfile, Follower
 from .permissions import EditProfilePermission
+from . import serializers
+
+# import logging
+# logger = logging.getLogger(__name__)
+
 # Create your views here.
 
 class UserProfileDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, EditProfilePermission]
     authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
     queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+    serializer_class = serializers.UserProfileSerializer
     lookup_field = 'username'
     
     def get_object(self):
@@ -38,15 +43,15 @@ class UserProfileDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
 
 class UserListAPIView(generics.ListAPIView):
     queryset = User.objects.all()
-    serializer_class = UserDetailsSerializer
+    serializer_class = serializers.UserDetailsSerializer
 
 class UserCreateAPIView(generics.CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = CreateUserSerializer
+    serializer_class = serializers.CreateUserSerializer
 
 class UserSettingsRetrieveAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
-    serializer_class = UserDetailsSerializer
+    serializer_class = serializers.UserDetailsSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
     
@@ -55,7 +60,7 @@ class UserSettingsRetrieveAPIView(generics.RetrieveAPIView):
     
 class ChangeUserPasswordAPIView(generics.UpdateAPIView):
     queryset = User.objects.all()
-    serializer_class = ChangeUserPasswordSerializer
+    serializer_class = serializers.ChangeUserPasswordSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
     
@@ -85,3 +90,28 @@ class LogoutAPIView(APIView):
         request.user.auth_token.delete()
         logout(request)
         return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
+
+class FollowAPIView(APIView):
+    queryset = UserProfile.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+    lookup_field = "username"
+    
+    def get(self, request, username):
+        user_to_follow = get_object_or_404(User, username=username)
+        user_profile_to_follow = get_object_or_404(UserProfile, user=user_to_follow)
+        try:
+            Follower.objects.create(follower=request.user.profile, following=user_profile_to_follow)
+        except IntegrityError:
+            return Response({"error": "You are already following this user"}, status=status.HTTP_200_OK)
+        return Response({"message": f"Followed {username}"}, status=status.HTTP_200_OK)
+    
+    def delete(self, request, username):
+        user_to_unfollow = get_object_or_404(User, username=username)
+        user_profile_to_unfollow = get_object_or_404(UserProfile, user=user_to_unfollow)
+        try:
+            following = Follower.objects.get(follower=request.user.profile, following=user_profile_to_unfollow)
+            following.delete()
+        except IntegrityError:
+            return Response({"error": "You are already following this user"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": f"Unfollowed {username}"}, status=status.HTTP_200_OK)
