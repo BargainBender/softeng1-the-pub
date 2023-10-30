@@ -104,19 +104,21 @@ class FollowAPIView(APIView):
             user_profile_to_follow = get_object_or_404(UserProfile, user=user_to_follow)
             Follower.objects.create(follower=request.user.profile, following=user_profile_to_follow)
         except IntegrityError:
-            return Response({"error": "You are already following this user"}, status=status.HTTP_200_OK)
+            return Response({"error": "You are already following this user"}, status=status.HTTP_400_BAD_REQUEST)
         except Http404:
-            return Response({"error": f"User '{username}' not found"}, status=status.HTTP_200_OK)
+            return Response({"error": f"User '{username}' not found"}, status=status.HTTP_404_NOT_FOUND)
 
-            
         return Response({"message": f"Followed {username}"}, status=status.HTTP_200_OK)
     
     def delete(self, request, username):
-        user_to_unfollow = get_object_or_404(User, username=username)
-        user_profile_to_unfollow = get_object_or_404(UserProfile, user=user_to_unfollow)
         try:
+            user_to_unfollow = get_object_or_404(User, username=username)
+            user_profile_to_unfollow = get_object_or_404(UserProfile, user=user_to_unfollow)
             following = Follower.objects.get(follower=request.user.profile, following=user_profile_to_unfollow)
             following.delete()
         except IntegrityError:
-            return Response({"error": "You are already following this user"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "You are not following this user"}, status=status.HTTP_400_BAD_REQUEST)
+        except Http404:
+            return Response({"error": f"User '{username}' not found"}, status=status.HTTP_404_NOT_FOUND)
+
         return Response({"message": f"Unfollowed {username}"}, status=status.HTTP_200_OK)
