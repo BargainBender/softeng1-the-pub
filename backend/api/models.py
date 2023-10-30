@@ -20,7 +20,6 @@ class Thread(models.Model):
     date_created = models.DateField(auto_now=True)
     last_edited = models.DateField(auto_now=True)
     author = models.ForeignKey(UserProfile, blank=False, on_delete=models.CASCADE, related_name="threads")
-    article = models.ForeignKey(Article, blank=True, null=True, on_delete=models.CASCADE, related_name="threads")
     parent = models.ForeignKey(to='Thread', blank=True, null=True, on_delete=models.CASCADE, related_name="children")
 
     @property
@@ -31,3 +30,8 @@ class Thread(models.Model):
         if len(self.content) > 40:
             return self.author.username + ": " + self.content[0:40].strip() + "..."
         return self.author.username + ": " + self.content
+    
+
+class ArticleThread(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="threads")
+    thread = models.OneToOneField(Thread, on_delete=models.CASCADE, related_name="+")

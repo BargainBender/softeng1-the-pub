@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article, Thread
+from .models import Article, Thread, ArticleThread
 # Register your models here.
 
 @admin.register(Article)
@@ -16,3 +16,8 @@ class ThreadModelAdmin(admin.ModelAdmin):
     return obj.content
   
   content_substr.short_description = "content"
+
+
+@admin.register(ArticleThread)
+class ArticleThreadModelAdmin(admin.ModelAdmin):
+   list_display = ("article", "thread")
