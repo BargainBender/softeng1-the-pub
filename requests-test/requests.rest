@@ -5,6 +5,7 @@
 @email = raymond@example.com
 @host = http://localhost:8000
 
+### ========================= Authentication =========================
 ### Sign up
 POST {{host}}/auth/signup/
 Content-Type: application/json
@@ -29,18 +30,17 @@ Content-Type: application/json
 
 ### Save token
 @token = {{postLogin.response.body.token}}
+### ========================= Authentication =========================
 
-
+### ========================= Account / Profile actions =========================
 ### Log out
 GET {{host}}/auth/logout/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-
 ### Get certain user profile
 GET {{host}}/api/tester/
 Content-Type: application/json
-
 
 ### Get current user profile
 GET {{host}}/api/{{username}}/
@@ -72,3 +72,75 @@ Authorization: Bearer {{token}}
   "is_active": false,
   "profile_picture": "https://api.dicebear.com/7.x/notionists-neutral/svg?seed=ABCDE"
 }
+
+### Follow a user
+GET {{host}}/api/follow/sebastian/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Unfollow a user
+DELETE {{host}}/api/follow/sebastian/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+### ========================= Account / Profile actions =========================
+
+### ========================= Content actions ========================= 
+### Get articles
+GET {{host}}/api/articles/
+Content-Type: application/json
+
+### Create article
+# @name postArticle
+POST {{host}}/api/articles/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "A title",
+    "content": "Some content"
+}
+
+### ID of created article
+@articleId = {{postArticle.response.body.id}}
+
+### Get threads
+GET {{host}}/api/threads/
+Content-Type: application/json
+
+### Create thread associated with article
+# @name postArticleThread
+POST {{host}}/api/threads/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "article": {{articleId}},
+    "content": "A thread associated with an article"
+}
+
+### Aricle associated Thread ID
+@postArticleThreadId = {{postArticleThread.response.body.id}}
+
+### Create standalone thread
+# @name postStandaloneThread
+POST {{host}}/api/threads/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "content": "A standalone thread"
+}
+
+### Standalone thread ID
+@standaloneThreadId = {{postStandaloneThread.response.body.id}}
+
+### Create subthread
+POST {{host}}/api/threads/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "parent": {{standaloneThreadId}},
+    "content": "A standalone thread"
+}
+### ========================= Content actions ========================= 
