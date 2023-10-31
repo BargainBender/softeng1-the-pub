@@ -7,6 +7,7 @@ from core.models import UserProfile
 class Article(models.Model):
     title = models.CharField(max_length=70, default="Untitled")
     content = models.TextField(blank=True)
+    content_preview = models.TextField(blank=True)
     date_created = models.DateField(auto_now=True)
     last_edited = models.DateField(auto_now=True)
     author = models.ForeignKey(UserProfile, blank=False, on_delete=models.CASCADE, related_name="articles")

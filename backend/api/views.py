@@ -29,6 +29,15 @@ class ArticleListCreateView(generics.ListCreateAPIView):
             return ListArticleSerializer
         elif self.request.method == "POST":
             return CreateArticleSerializer
+        
+class UserArticlesView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        username = self.kwargs.get('username')
+        return Article.objects.filter(author__user__username=username)
+
+    serializer_class = ListArticleSerializer
 
 class ThreadListCreateAPIView(generics.ListCreateAPIView):
     # queryset = Thread.objects.all()

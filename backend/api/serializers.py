@@ -5,17 +5,24 @@ from core.serializers import ArticleUserProfileSerializer
 
 class ListArticleSerializer(serializers.ModelSerializer):
     author = ArticleUserProfileSerializer(read_only=True, many=False)
+    content_preview = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
-        fields = ["title", "content", "date_created", "last_edited", "author"]
-
+        fields = ["title", "content_preview", "content", "date_created", "last_edited", "author"]
+        
+    def get_content_preview(self, obj):
+        # Limit the content to a certain number of characters for the preview
+        max_length = 200
+        if len(obj.content) > max_length:
+            return obj.content[:max_length] + '...'
+        return obj.content
 
 class CreateArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ["title", "content"]
- 
+
 
 class ListThreadSerializer(serializers.ModelSerializer):
     # author = ArticleUserProfileSerializer(read_only=True, many=False)
