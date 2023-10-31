@@ -1,18 +1,15 @@
-from django.shortcuts import get_object_or_404
-
 from rest_framework import serializers
 
-from .models import Article, Thread, ArticleThread
+from .models import Article, Thread
 from core.serializers import ArticleUserProfileSerializer
-import logging
-logger = logging.getLogger(__name__)
+
 class ListArticleSerializer(serializers.ModelSerializer):
     author = ArticleUserProfileSerializer(read_only=True, many=False)
     content_preview = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
-        fields = ["title", "content_preview", "content", "date_created", "last_edited", "author"]
+        fields = ["title", "content_preview", "date_created", "last_edited", "author"]
         
     def get_content_preview(self, obj):
         # Limit the content to a certain number of characters for the preview
@@ -24,8 +21,8 @@ class ListArticleSerializer(serializers.ModelSerializer):
 class CreateArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ["id", "title", "content"]
- 
+        fields = ["title", "content"]
+
 
 class ListThreadSerializer(serializers.ModelSerializer):
     # author = ArticleUserProfileSerializer(read_only=True, many=False)
@@ -34,7 +31,7 @@ class ListThreadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Thread
-        fields = ['id', 'content', 'date_created', 'last_edited', 'author', 'parent', 'children']
+        fields = ['content', 'date_created', 'last_edited', 'author', 'article', 'parent', 'children']
 
     def get_children(self, obj):
         if obj.children.all().exists():
@@ -42,10 +39,9 @@ class ListThreadSerializer(serializers.ModelSerializer):
         return []
     
 class CreateThreadSerializer(serializers.ModelSerializer):
-    article = serializers.PrimaryKeyRelatedField(required=False, allow_null=True, queryset=Article.objects.all())
     class Meta:
         model = Thread
-        fields = ['id', 'content', 'date_created', 'last_edited', 'parent', 'article']
+        fields = ['content', 'date_created', 'last_edited', 'author', 'article', 'parent']
 
     def validate_parent(self, parent_thread):
         # Define your maximum depth limit here
@@ -67,25 +63,3 @@ class CreateThreadSerializer(serializers.ModelSerializer):
         parent_thread = data.get('parent', None)
         self.validate_parent(parent_thread)
         return data
-    
-    def create(self, validated_data):
-        article = validated_data.pop('article', None)
-        thread = Thread(**validated_data)
-        
-        if article:
-            if thread.parent:
-                raise serializers.ValidationError({
-                    "error": "Article and parent are mutually exclusive"
-                })
-
-            # If an article is provided, associate the thread with it
-            try:
-                Article.objects.get(pk=article.id)
-                thread.save()
-                ArticleThread.objects.create(article=article, thread=thread)
-                return thread
-            except Article.DoesNotExist as e:
-                raise serializers.ValidationError(e)
-        
-        thread.save()
-        return thread
