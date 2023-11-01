@@ -35,9 +35,9 @@ class UserProfile(models.Model):
     def followers(self):
         return Follower.objects.all()
     
-    @property
-    def following(self):
-        return Follower.objects.all()
+    # @property
+    # def following(self):
+    #     return Follower.objects.all()
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
