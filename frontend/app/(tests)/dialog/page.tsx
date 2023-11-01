@@ -11,19 +11,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { InputForm } from "@/components/ui/dialogues/components/profile-edit-form";
-import { useState } from "react";
-
-
+import { EditProfileForm } from "@/components/ui/dialogues/components/profile-edit-form";
 
 
 export default function DialogTest() {
-  let [open, setOpen ] = useState(false);
-
-
   return (
     <>
       <div>
@@ -71,10 +63,7 @@ export default function DialogTest() {
                     </p>
                 </div>
               </div>
-              <DialogClose>
-             
-              </DialogClose>
-              <InputForm/> 
+              <EditProfileForm/> 
             </div>
             
               

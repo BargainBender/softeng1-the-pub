@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +17,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { DialogClose } from "@/components/ui/dialog";
+import { Icons } from "@/components/ui/icons";
+
 
 const FormSchema = z.object({
   bio: z
@@ -34,7 +38,7 @@ const FormSchema = z.object({
     }),
 });
 
-export function InputForm() {
+export function EditProfileForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -42,7 +46,16 @@ export function InputForm() {
     },
   });
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setIsLoading(true);
+    // Refresh the page after a delay of 3 seconds
+    setTimeout(function () {
+      location.reload();
+    }, 3000); // 3000 milliseconds = 3 seconds
+
     toast({
       title: "You submitted the following values:",
       description: (
@@ -90,10 +103,15 @@ export function InputForm() {
           )}
         />
         <div className="flex flex-row justify-end space-x-4">
-          <Button type="reset" variant="outline" className="">
-            Cancel
-          </Button>
+          <DialogClose>
+            <Button type="reset" variant="outline">
+              Cancel
+            </Button>
+          </DialogClose>
           <Button type="submit" variant="pub">
+          {isLoading && (
+                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                    )}
             Save changes
           </Button>
         </div>
