@@ -20,7 +20,7 @@ from . import serializers
 
 # Create your views here.
 
-class UserProfileDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
+class UserProfileDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, EditProfilePermission]
     authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
     queryset = UserProfile.objects.all()
@@ -32,15 +32,16 @@ class UserProfileDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         # Get the UserProfile object related to the User
         return get_object_or_404(UserProfile, user=user)
-
-# class UserListCreateAPIView(generics.ListCreateAPIView):
-#     queryset = User.objects.all()
-
-#     def get_serializer_class(self):
-#       if self.request.method == "GET":
-#           return UserDetailsSerializer
-#       elif self.request.method == "POST":
-#           return CreateUserSerializer
+    
+class UserProfileSettingsAPIView(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, EditProfilePermission]
+    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+    queryset = UserProfile.objects.all()
+    serializer_class = serializers.UserProfileSerializer
+    lookup_field = 'username'
+    
+    def get_object(self):
+        return self.request.user.profile
 
 class UserListAPIView(generics.ListAPIView):
     queryset = User.objects.all()
@@ -50,7 +51,7 @@ class UserCreateAPIView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.CreateUserSerializer
 
-class UserSettingsRetrieveAPIView(generics.RetrieveAPIView):
+class UserAccountSettingsAPIView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.UserDetailsSerializer
     permission_classes = [permissions.IsAuthenticated]

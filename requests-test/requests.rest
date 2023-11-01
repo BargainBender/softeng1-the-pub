@@ -46,8 +46,13 @@ Content-Type: application/json
 GET {{host}}/api/{{username}}/
 Content-Type: application/json
 
-### Get current user settings
-GET {{host}}/settings/
+### Get current user account settings
+GET {{host}}/settings/account/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get current user profile settings
+GET {{host}}/settings/profile/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -64,7 +69,7 @@ Authorization: Bearer {{token}}
 
 
 ### Update user profile
-PUT {{host}}/api/{{username}}/
+PUT {{host}}/settings/profile/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
