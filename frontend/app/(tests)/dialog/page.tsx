@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,8 +14,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { InputForm } from "@/components/ui/dialogues/components/profile-edit-form";
+import { useState } from "react";
+
+
+
 
 export default function DialogTest() {
+  let [open, setOpen ] = useState(false);
+
+
   return (
     <>
       <div>
@@ -61,28 +71,13 @@ export default function DialogTest() {
                     </p>
                 </div>
               </div>
-
-              <div className="grid grid-cols-4 items-start gap-2">
-                <Label htmlFor="name" className="text-left">
-                  Name*
-                </Label>
-                <Input id="name" defaultValue="Name" className="col-span-4" />
-              </div>
-              <div className="grid grid-cols-4 items-start gap-4">
-                <Label htmlFor="bio" className="text-left">
-                  Bio
-                </Label>
-                <Input id="bio" defaultValue="Bio" className="col-span-4" />
-              </div>
-            </div>
-            <DialogFooter>
               <DialogClose>
-                <Button type="button" variant="secondary">
-                  Close
-                </Button>
-                <Button type="submit">Save changes</Button>
+             
               </DialogClose>
-            </DialogFooter>
+              <InputForm/> 
+            </div>
+            
+              
           </DialogContent>
         </Dialog>
       </div>
