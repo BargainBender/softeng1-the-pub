@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from django.urls import reverse
+
 from .models import Article, Thread, ArticleThread
 from core.serializers import ArticleUserProfileSerializer
 # import logging
@@ -7,10 +9,11 @@ from core.serializers import ArticleUserProfileSerializer
 class ListArticleSerializer(serializers.ModelSerializer):
     author = ArticleUserProfileSerializer(read_only=True, many=False)
     content_preview = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
-        fields = ["id", "title", "content_preview", "date_created", "last_edited", "author"]
+        fields = ["id", "title", "content_preview", "date_created", "last_edited", "author", "url"]
         
     def get_content_preview(self, obj):
         # Limit the content to a certain number of characters for the preview
@@ -18,6 +21,9 @@ class ListArticleSerializer(serializers.ModelSerializer):
         if len(obj.content) > max_length:
             return obj.content[:max_length] + '...'
         return obj.content
+
+    def get_url(self, obj):
+        return reverse('article', kwargs={'username': obj.author.user.username, 'pk': obj.id, 'title': obj.title})
     
 class ArticleSerializer(serializers.ModelSerializer):
     author = ArticleUserProfileSerializer(read_only=True, many=False)
