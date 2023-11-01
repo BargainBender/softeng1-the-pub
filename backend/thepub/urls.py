@@ -23,8 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('auth/', obtain_auth_token), # Has POST to this endpoint is login
-    path('auth/logout/', LogoutAPIView.as_view()),
-    path('auth/signup/', UserCreateAPIView.as_view()),
-    path('settings/', UserSettingsRetrieveAPIView.as_view()),
-    path('settings/change-password/', ChangeUserPasswordAPIView.as_view()),
+    path('auth/logout/', LogoutAPIView.as_view(), name="logout"),
+    path('auth/signup/', UserCreateAPIView.as_view(), name="signup"),
+    path('settings/', UserSettingsRetrieveAPIView.as_view(), name="settings"),
+    path('settings/change-password/', ChangeUserPasswordAPIView.as_view(), name="change_password"),
 ]
