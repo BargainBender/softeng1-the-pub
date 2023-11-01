@@ -20,11 +20,10 @@ import { toast } from "@/components/ui/use-toast";
 import { DialogClose } from "@/components/ui/dialog";
 import { Icons } from "@/components/ui/icons";
 
-
 const FormSchema = z.object({
   bio: z
     .string()
-    .max(50, {
+    .max(160, {
       message: "Maximum number of characters reached",
     })
     .optional(),
@@ -42,12 +41,13 @@ export function EditProfileForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      // Add fetched user data here
       name: "",
+      bio: "",
     },
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
@@ -78,9 +78,17 @@ export function EditProfileForm() {
               <FormControl>
                 <Input placeholder="" {...field} />
               </FormControl>
-              <FormDescription className="flex flex-row">
+              <FormDescription className="flex flex-row items-center">
                 Appears on your Profile page, as your byline and in your
                 responses.
+                <div className="flex-grow"></div>
+                <div
+                  className={`p-2 text-sm ${
+                    field.value.length > 50 ? "text-red-500" : ""
+                  }`}
+                >
+                  {field.value.length}/{50}
+                </div>
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -95,8 +103,16 @@ export function EditProfileForm() {
               <FormControl>
                 <Input placeholder="" {...field} />
               </FormControl>
-              <FormDescription>
+              <FormDescription className="flex flex-row items-center">
                 Appears on your Profile and next to your stories.
+                <div className="flex-grow"></div>
+                <div
+                  className={`p-2 text-sm ${
+                    (field.value ?? "").length >  160? "text-red-500" : ""
+                  }`}
+                >
+                  {(field.value ?? "").length}/{160}
+                </div>
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -109,9 +125,9 @@ export function EditProfileForm() {
             </Button>
           </DialogClose>
           <Button type="submit" variant="pub">
-          {isLoading && (
-                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                    )}
+            {isLoading && (
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            )}
             Save changes
           </Button>
         </div>
