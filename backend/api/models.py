@@ -29,7 +29,7 @@ class Thread(models.Model):
     def __str__(self):
         if len(self.content) > 40:
             return self.author.username + ": " + self.content[0:40].strip() + "..."
-        return self.author.username + ": " + self.content
+        return self.author.username + f"({self.id}): " + self.content
     
 
 class ArticleThread(models.Model):

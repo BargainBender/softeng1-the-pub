@@ -3,20 +3,18 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, renderer_classes, permission_classes
 from rest_framework.renderers import StaticHTMLRenderer
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from .models import Article, Thread
-from .serializers import ListArticleSerializer, CreateArticleSerializer, ListThreadSerializer, CreateThreadSerializer
-from .permissions import IsStaffEditorPermission
+from .serializers import ListArticleSerializer, CreateArticleSerializer, ListThreadSerializer, CreateThreadSerializer, ArticleSerializer
+from .permissions import IsOwnerOrReadOnly
 from .authentication import TokenAuthentication
 
 from core.models import UserProfile
 from core.serializers import ArticleUserProfileSerializer
 # Create your views here.
 
-class ArticleListCreateView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+class ArticleListView(generics.ListAPIView):
     queryset = Article.objects.all()
 
     def perform_create(self, serializer):
@@ -29,6 +27,40 @@ class ArticleListCreateView(generics.ListCreateAPIView):
             return ListArticleSerializer
         elif self.request.method == "POST":
             return CreateArticleSerializer
+
+class UserArticleListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+
+    def get_queryset(self):
+        username = self.kwargs.get('username')
+        return Article.objects.filter(author__user__username=username)
+
+    def perform_create(self, serializer):
+        # Get UserProfile from User
+        user_profile = self.request.user.profile
+        serializer.save(author=user_profile)
+    
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return ListArticleSerializer
+        elif self.request.method == "POST":
+            return CreateArticleSerializer
+
+class ArticleRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+    serializer_class = ArticleSerializer
+
+    def get_queryset(self):
+        username = self.kwargs.get('username')
+        return Article.objects.filter(author__user__username=username)
+    
+    def get_object(self):
+        article = get_object_or_404(Article, pk=self.kwargs.get('pk'), title=self.kwargs.get('title'))
+
+        return article
+
 
 class ThreadListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
