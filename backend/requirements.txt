@@ -5,3 +5,7 @@ requests==2.31.0
 django-cors-headers==4.2.0
 wheel
 mysqlclient==2.1.1
+mixer==7.2.2
+pytest
+pytest-django
+pytest-cov
