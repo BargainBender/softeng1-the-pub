@@ -1,5 +1,25 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import Link from "next/link";
+
+import {
+  Cloud,
+  CreditCard,
+  Github,
+  Keyboard,
+  LifeBuoy,
+  LogOut,
+  Mail,
+  MessageSquare,
+  Plus,
+  PlusCircle,
+  Settings,
+  User,
+  UserPlus,
+  Users,
+} from "lucide-react"
+
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,63 +30,52 @@ import {
   NavigationMenuTrigger,
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
-import Link from "next/link";
 
-import { Icons } from "@/components/ui/icons";
 import { Button } from "../button";
+import { Avatar, AvatarImage, AvatarFallback } from "../avatar";
+
 
 export default function NavigationMenuBar() {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+
+
+
   return (
     <>
-      <NavigationMenu className="grid gap-3 p-6 ">
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <Link href="/">The Pub</Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <Link href="/">
-              <Button
-                variant={"pub"}
-                className="pub"
-                onClick={() => {
-                  console.log("clicked");
-                }}
-              >
-                Write
-              </Button>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>User</NavigationMenuTrigger>
-            <NavigationMenuContent className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-              <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
-                <div className="row-span-3">
-                  <NavigationMenuLink>
-                    <Link
-                      href="/"
-                      className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    >
-                      Edit Profile
-                      <Icons.logo className="h-6 w-6" />
-                      <div className="mb-2 mt-4 text-lg font-medium">
-                        shadcn/ui
-                      </div>
-                      <p className="text-sm leading-tight text-muted-foreground">
-                        Beautifully designed components built with Radix UI and
-                        Tailwind CSS.
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </div>
-              </div>
-              <div>
-                <span>Edit Profile</span>
-                <span>Edit Profile</span>
-                <span>Edit Profile</span></div>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+      <div className="shadow-xl flex justify-between items-center px-6 my-3">
+        <div className="flex space-x-4 my-2">
+          <NavigationMenu className="flex space-x-4">
+            <NavigationMenuList className="flex flex-row space-x-4">
+              <NavigationMenuItem>
+                <Link href={"/"}>The Pub</Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+        <div className="flex space-x-4 py-2">
+        <NavigationMenu className="flex space-x-4">
+            <NavigationMenuList className="flex flex-row space-x-4">
+              <NavigationMenuItem>
+                <Button variant={"pub"}>Write</Button>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+              <Button variant={"default"}>Sign In</Button>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+              <Avatar>
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt="@shadcn"
+                      className="rounded-full"
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+      </div>
     </>
   );
 }

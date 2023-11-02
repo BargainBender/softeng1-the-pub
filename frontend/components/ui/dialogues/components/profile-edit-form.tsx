@@ -50,20 +50,15 @@ export function EditProfileForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    
+    console.log(JSON.stringify(data, null, 2))
+
     setIsLoading(true);
     // Refresh the page after a delay of 3 seconds
     setTimeout(function () {
       location.reload();
     }, 3000); // 3000 milliseconds = 3 seconds
 
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
   }
 
   return (
