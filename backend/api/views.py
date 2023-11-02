@@ -93,11 +93,3 @@ class ThreadListCreateAPIView(generics.ListCreateAPIView):
         # Get UserProfile from User
         user_profile = self.request.user.profile
         serializer.save(author=user_profile)
-
-
-@api_view(['GET'])
-@renderer_classes([StaticHTMLRenderer])
-@permission_classes([permissions.IsAuthenticated])
-def simple_html_view(request):
-    data = '<html><body><h1>This page is secured</h1></body></html>'
-    return Response(data)
