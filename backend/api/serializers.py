@@ -32,9 +32,13 @@ class ArticleSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "content", "date_created", "last_edited", "author"]
 
 class CreateArticleSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
     class Meta:
         model = Article
-        fields = ["id", "title", "content"]
+        fields = ["id", "title", "content", "url"]
+
+    def get_url(self, obj):
+        return reverse('article', kwargs={'username': obj.author.user.username, 'pk': obj.id, 'title': obj.title})
 
 
 class ListThreadSerializer(serializers.ModelSerializer):
