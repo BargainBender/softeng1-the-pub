@@ -16,17 +16,7 @@ from core.serializers import ArticleUserProfileSerializer
 
 class ArticleListView(generics.ListAPIView):
     queryset = Article.objects.all()
-
-    def perform_create(self, serializer):
-        # Get UserProfile from User
-        user_profile = self.request.user.profile
-        serializer.save(author=user_profile)
-    
-    def get_serializer_class(self):
-        if self.request.method == "GET":
-            return ListArticleSerializer
-        elif self.request.method == "POST":
-            return CreateArticleSerializer
+    serializer_class = ListArticleSerializer
 
 class UserArticleListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
