@@ -34,7 +34,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 class CreateArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ["title", "content"]
+        fields = ["id", "title", "content"]
 
 
 class ListThreadSerializer(serializers.ModelSerializer):
