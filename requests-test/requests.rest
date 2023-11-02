@@ -94,9 +94,13 @@ Authorization: Bearer {{token}}
 GET {{host}}/api/articles/
 Content-Type: application/json
 
+### Get user articles
+GET {{host}}/api/{{username}}/articles/
+Content-Type: application/json
+
 ### Create article
 # @name postArticle
-POST {{host}}/api/articles/
+POST {{host}}/api/{{username}}/articles/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -107,6 +111,26 @@ Authorization: Bearer {{token}}
 
 ### ID of created article
 @articleId = {{postArticle.response.body.id}}
+@articleUrl = {{postArticle.response.body.url}}
+
+### Retrieve article
+GET {{host}}{{articleUrl}}
+Content-Type: application/json
+
+### Update article
+PUT {{host}}{{articleUrl}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "New title",
+    "content": "New content"
+}
+
+### Delete article
+DELETE {{host}}{{articleUrl}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ### Get threads
 GET {{host}}/api/threads/
