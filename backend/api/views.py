@@ -41,10 +41,7 @@ class ArticleRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
     serializer_class = ArticleSerializer
-
-    def get_queryset(self):
-        username = self.kwargs.get('username')
-        return Article.objects.filter(author__user__username=username)
+    queryset = Article.objects.all()
     
     def get_object(self):
         article = get_object_or_404(Article, pk=self.kwargs.get('pk'), title=self.kwargs.get('title'))
