@@ -62,7 +62,6 @@ import {
 
 import { Button } from "../button";
 import { Avatar, AvatarImage, AvatarFallback } from "../avatar";
-import Logout from "../dialogues/logout";
 
 export default function NavigationMenuBar() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
