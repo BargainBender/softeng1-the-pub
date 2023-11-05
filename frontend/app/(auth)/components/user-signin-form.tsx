@@ -11,16 +11,20 @@ import Link from "next/link";
 interface UserSignInForm extends React.HTMLAttributes<HTMLDivElement> {
 }
 
+interface UserSignInFormProps {
+    className: string;
+}
+
 export interface UserData {
-    email: string;
+    username: string;
     password: string;
 }
 
 export function UserSignInForm({ className }: { className: string }): JSX.Element {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
-    const [userData, setUserData] = useState<{ email: string; password: string }>({
-        email: '',
+    const [userData, setUserData] = useState<{ username: string; password: string }>({
+        username: '',
         password: '',
     });
 
@@ -31,42 +35,63 @@ export function UserSignInForm({ className }: { className: string }): JSX.Elemen
 
     const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        //const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (userData.email.trim() === '' || userData.password.trim() === '') {
-            setError('Please enter both email and password');
+        if (userData.username.trim() === '' || userData.password.trim() === '') {
+            setError('Please enter both username and password');
             return;
         }
 
         // Email validation logic
-        else if (!emailRegex.test(userData.email)) {
-            setError('Please enter a valid email address');
-            return;
-        }
-
-        console.log('Email:', userData.email);
-        console.log('Password:', userData.password);
+        // else if (!emailRegex.test(userData.email)) {
+        //     setError('Please enter a valid email address');
+        //     return;
+        // }
 
         setIsLoading(true);
-        setTimeout(() => {
+
+        // Send a POST request to the Django API for sign-in
+        fetch('http://localhost:8000/auth/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+        .then((response) => {
+            if (response.status === 200) {
+            // Sign-in was successful, you can redirect or perform other actions here.
+            console.log('Sign-in successful');
+            console.log(response.status);
+            } else {
+            // Handle sign-in error
+            setError('Invalid credentials');
+            console.log(response.status);
+            }
+        })
+        .catch((error) => {
+            console.error('An error occurred while signing in:', error);
+            setError('An error occurred while signing in');
+        })
+        .finally(() => {
             setIsLoading(false);
-        }, 3000);
+        });
     };
 
     return (
         <form className="mt-2 grid w-full gap-4" onSubmit={handleFormSubmit}>
             <div className="flex flex-col space-y-1.5 items-start">
-                <Label htmlFor="email">Email</Label>
+                <Label>Username</Label>
                 <Input
-                    id="email"
-                    name="email"
-                    placeholder="name@example.com"
-                    type="email"
+                    id="username"
+                    name="username"
+                    placeholder="username"
+                    type="username"
                     autoCapitalize="none"
-                    autoComplete="email"
+                    autoComplete="username"
                     autoCorrect="off"
                     disabled={isLoading}
-                    value={userData.email}
+                    value={userData.username}
                     onChange={handleInputChange}
                 />
 
