@@ -26,14 +26,13 @@ import {
   specialCharacterRegex,
 } from "@/lib/utils";
 
-
 interface UserSignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export interface UserData {
-  email: string;
   username: string;
   password: string;
-  confirmPassword: string;
+  confirmed_password: string;
+  email: string;
 }
 interface SignUpFormState {
   step: number;
@@ -57,10 +56,10 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
   });
 
   const [userData, setUserData] = useState<UserData>({
-    email: "",
     username: "",
     password: "",
-    confirmPassword: "",
+    confirmed_password: "",
+    email: "",
   });
 
   const handleContinue = () => {
@@ -88,7 +87,7 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
     // Check if the password is valid.
     if (
       userData.password !== "" &&
-      userData.password !== userData.confirmPassword
+      userData.password !== userData.confirmed_password
     ) {
       throw new Error("Passwords do not match.");
     } else {
@@ -100,18 +99,34 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
     }
   };
 
-  const submit_user_data = async (userData : UserData) => {
-    // const response = await axios.post("http://localhost:8000/api/users/", userData);
-    // console.log(response);
-    // return response;
+  const submit_user_data = async (userData: UserData) => {
     toast({
       title: "You submitted the following values:",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(userData, null, 2)}</code>
+          <code className="text-white">
+            {JSON.stringify(userData, null, 2)}
+          </code>
         </pre>
       ),
-    })
+    });
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/auth/signup",
+        userData
+      );
+      console.log(response);
+      return response;
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">{error.message}</code>
+          </pre>
+        ),
+      });
+    }
   };
 
   const renderStep = () => {
@@ -291,12 +306,12 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                       autoCapitalize="none"
                       autoComplete="lastname"
                       autoCorrect="off"
-                      value={userData.confirmPassword}
+                      value={userData.confirmed_password}
                       disabled={isLoading}
                       onChange={(event) => {
                         setUserData({
                           ...userData,
-                          confirmPassword: event.target.value,
+                          confirmed_password: event.target.value,
                         });
                       }}
                     />
@@ -310,7 +325,7 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                     >
                       {" "}
                       {userData.password !== "" &&
-                        (userData.password !== userData.confirmPassword ? (
+                        (userData.password !== userData.confirmed_password ? (
                           <span className="text-red-600">
                             Passwords do not match
                           </span>
@@ -358,7 +373,7 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
                     disabled={
                       isLoading ||
                       userData.password === "" ||
-                      userData.password !== userData.confirmPassword ||
+                      userData.password !== userData.confirmed_password ||
                       (userData.username === "" &&
                         !strongPasswordRegex.test(userData.password)) ||
                       userData.password === userData.username
