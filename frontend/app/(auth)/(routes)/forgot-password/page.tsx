@@ -7,10 +7,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
+import UserForgotPasswordForm from "@/app/(auth)/components/user-forgotpassword-form";
 import UserSignInForm from "@/app/(auth)/components/user-signin-form";
+
 import { default as thePubGradient } from "*.svg";
 
-export default function SignIn() {
+export default function ForgotPassword() {
   return (
     <div className="flex">
       <div className="w-3/5 p-10 hidden lg:flex flex-col bg-white dark:bg-gray-800">
@@ -39,18 +41,23 @@ export default function SignIn() {
       </div>
 
       {/* Card Column */}
-      <div className="py-10 flex-auto">
+      <div className="py-10  flex-auto">
         <div className="container mx-auto flex-col space-y-2 text-center my-28">
           <Card className="w-96">
             <CardHeader>
-              <CardTitle className="mt-6 font-bold">Welcome Back!</CardTitle>
+              <CardTitle className="mt-6 mb-2 font-bold">Forgot password</CardTitle>
+              <div className="w-fit">
+                <h1 className="text-gray-800 text-left text-slate-400 text-[12px]">
+                    Enter the email associated to your account and we'll send you the instructions to reset your password.
+                </h1>
+            </div>
             </CardHeader>
             <CardContent>
-              <UserSignInForm />
+              <UserForgotPasswordForm />
             </CardContent>
           </Card>
         </div>
       </div>
     </div>
   );
-}
+  }

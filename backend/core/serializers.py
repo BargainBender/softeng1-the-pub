@@ -14,11 +14,21 @@ class FollowingSerializer(serializers.ModelSerializer):
         model = Follower
         fields = ["following"]
 
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follower
+        fields = ["follower", "following"]
+
 
 class ArticleUserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ["username", "name", "profile_picture", "is_active"]
+        fields = ["id", "username", "name", "profile_picture", "is_active"]
+
+class ThreadUserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ["username", "profile_picture"]
 
 class UserProfileSerializer(serializers.ModelSerializer):
     followers = serializers.SerializerMethodField()
@@ -33,16 +43,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         follower_list = []
         for follower_data in followers:
             follower_list.append(follower_data.follower.user.username)
-            # if user_profile.following == obj:
-            #     follower_data.append({
-            #     "follower": {
-            #         "username": user_profile.follower.user.username,
-            #         "name": user_profile.follower.user.first_name + " " + user_profile.follower.user.last_name,
-            #         "profile_picture": user_profile.follower.profile_picture,
-            #         "is_active": user_profile.follower.is_active,
-            #     },
-            #     "created": user_profile.created
-            # })
         return follower_list
 
     def get_following(self, obj):
@@ -54,20 +54,25 @@ class UserProfileSerializer(serializers.ModelSerializer):
     
 class CreateUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)
-    password = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
     confirmed_password = serializers.CharField(required=True, write_only=True)
-    first_name = serializers.CharField(required=False)
-    last_name = serializers.CharField(required=False)
+    #first_name = serializers.CharField(required=False)
+    #last_name = serializers.CharField(required=False)
     email = serializers.EmailField(required=True)
     class Meta:
         model = User
-        fields = ["username", "password", "confirmed_password", "first_name", "last_name", "email"]
+        fields = ["username", "password", "confirmed_password", "email"]
+
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError(f"Username '{value}' is not available")
+        return value
 
     def create(self, validated_data):
-      confirmed_password = validated_data.pop('confirmed_password')
-      if validated_data.get('password') != confirmed_password:
-          raise serializers.ValidationError("Passwords do not match")
-      return User.objects.create_user(**validated_data)
+        confirmed_password = validated_data.pop('confirmed_password')
+        if validated_data.get('password') != confirmed_password:
+            raise serializers.ValidationError("Passwords do not match")
+        return User.objects.create_user(**validated_data)
     
 class UserDetailsSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)

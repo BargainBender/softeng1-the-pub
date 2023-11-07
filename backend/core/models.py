@@ -35,9 +35,9 @@ class UserProfile(models.Model):
     def followers(self):
         return Follower.objects.all()
     
-    @property
-    def following(self):
-        return Follower.objects.all()
+    # @property
+    # def following(self):
+    #     return Follower.objects.all()
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
@@ -49,7 +49,7 @@ class UserProfile(models.Model):
         instance.profile.save()
 
     def __str__(self):
-        return self.user.first_name + " " + self.user.last_name
+        return self.user.username
 
 
 class Follower(models.Model):
@@ -65,3 +65,8 @@ class Follower(models.Model):
         if self.follower == self.following:
             raise ValidationError("A user cannot follow themselves")
         return super().save(*args, **kwargs)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["follower", "following"], name="unique_follower")
+        ]

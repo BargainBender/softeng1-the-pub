@@ -5,11 +5,9 @@
 @email = raymond@example.com
 @host = http://localhost:8000
 
+### ========================= Authentication =========================
 ### Sign up
-### Working progress, will be moved to /auth/signup
-### TODO: Fix duplicate entry -> 400 instead of 500
-### TODO: Remove password hash from 200 response body
-POST {{host}}/api/users/
+POST {{host}}/auth/signup/
 Content-Type: application/json
 
 {
@@ -19,18 +17,7 @@ Content-Type: application/json
   "email": "{{email}}"
 }
 
-# {
-#   "username": "{{username}}",
-#   "password": "{{password}}",
-#   "confirmed_password": "{{password}}",
-#   "first_name": "{{firstName}}",
-#   "last_name": "{{lastName}}",
-#   "email": "{{email}}"
-# }
-
-
-### Log in
-### TODO: move to auth/login
+### Login
 # @name postLogin
 POST {{host}}/auth/
 Content-Type: application/json
@@ -40,33 +27,37 @@ Content-Type: application/json
   "password": "{{password}}"
 }
 
+
 ### Save token
 @token = {{postLogin.response.body.token}}
+### ========================= Authentication =========================
 
-
+### ========================= Account / Profile actions =========================
 ### Log out
-### TODO: move to auth/logout
-GET {{host}}/logout/
+GET {{host}}/auth/logout/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-
 ### Get certain user profile
-GET {{host}}/api/user/tester/
+GET {{host}}/api/tester/
 Content-Type: application/json
-
 
 ### Get current user profile
-GET {{host}}/api/user/{{username}}/
+GET {{host}}/api/{{username}}/
 Content-Type: application/json
 
-### Get current user settings
-GET {{host}}/settings/
+### Get current user account settings
+GET {{host}}/settings/account/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get current user profile settings
+GET {{host}}/settings/profile/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Change password of current user
-PUT {{host}}/change-password/
+PUT {{host}}/settings/change-password/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -78,7 +69,7 @@ Authorization: Bearer {{token}}
 
 
 ### Update user profile
-PUT {{host}}/api/user/{{username}}/
+PUT {{host}}/settings/profile/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -86,3 +77,99 @@ Authorization: Bearer {{token}}
   "is_active": false,
   "profile_picture": "https://api.dicebear.com/7.x/notionists-neutral/svg?seed=ABCDE"
 }
+
+### Follow a user
+GET {{host}}/api/follow/sebastian/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Unfollow a user
+DELETE {{host}}/api/follow/sebastian/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+### ========================= Account / Profile actions =========================
+
+### ========================= Content actions ========================= 
+### Get articles
+GET {{host}}/api/articles/
+Content-Type: application/json
+
+### Get user articles
+GET {{host}}/api/{{username}}/articles/
+Content-Type: application/json
+
+### Create article
+# @name postArticle
+POST {{host}}/api/{{username}}/articles/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "A title",
+    "content": "Some content"
+}
+
+### ID of created article
+@articleId = {{postArticle.response.body.id}}
+@articleUrl = {{postArticle.response.body.url}}
+
+### Retrieve article
+GET {{host}}{{articleUrl}}
+Content-Type: application/json
+
+### Update article
+PUT {{host}}{{articleUrl}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "New title",
+    "content": "New content"
+}
+
+### Delete article
+DELETE {{host}}{{articleUrl}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get threads
+GET {{host}}/api/threads/
+Content-Type: application/json
+
+### Create thread associated with article
+# @name postArticleThread
+POST {{host}}/api/threads/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "article": {{articleId}},
+    "content": "A thread associated with an article"
+}
+
+### Aricle associated Thread ID
+@postArticleThreadId = {{postArticleThread.response.body.id}}
+
+### Create standalone thread
+# @name postStandaloneThread
+POST {{host}}/api/threads/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "content": "A standalone thread"
+}
+
+### Standalone thread ID
+@standaloneThreadId = {{postStandaloneThread.response.body.id}}
+
+### Create subthread
+POST {{host}}/api/threads/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "parent": {{standaloneThreadId}},
+    "content": "A standalone thread"
+}
+### ========================= Content actions ========================= 

@@ -52,6 +52,12 @@ Run migrations:
 docker-compose run backend python manage.py migrate
 ```
 
+## Testing
+### backend
+```sh
+docker exec -it django_server pytest
+```
+
 ## Some notes
 When you encounter an error installing a certain package in the `backend` folder called `mysqlclient==2.1.1`, specifically an error where a package called `wheels` is involved and you're using WSL or Ubuntu, try install these packages first:
 ```sh
