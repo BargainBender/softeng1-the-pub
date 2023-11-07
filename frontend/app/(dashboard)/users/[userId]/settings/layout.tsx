@@ -3,9 +3,10 @@ import Image from "next/image"
 
 import { Separator } from "@/components/ui/separator"
 import { SidebarNav } from "./components/side-nav"
+
 export const metadata: Metadata = {
-  title: "Forms",
-  description: "Advanced form example using react-hook-form and Zod.",
+  title: "The Pub - Account Settings",
+  description: "Manage your User Account",
 }
 
 const userId = 1;
@@ -25,7 +26,7 @@ const sidebarNavItems = [
 //   },
   {
     title: "Notifications",
-    href: "/examples/forms/notifications",
+    href: `/users/${userId}/settings/account`,
   },
 //   {
 //     title: "Display",
