@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { toast } from "@/components/ui/use-toast";
 import { emailRegex } from "@/lib/utils";
 import { strongPasswordRegex } from "@/lib/utils";
 import {
@@ -24,6 +25,7 @@ import {
   numberRegex,
   specialCharacterRegex,
 } from "@/lib/utils";
+
 
 interface UserSignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -99,9 +101,17 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
   };
 
   const submit_user_data = async (userData : UserData) => {
-    const response = await axios.post("http://localhost:8000/api/users/", userData);
-    console.log(response);
-    return response;
+    // const response = await axios.post("http://localhost:8000/api/users/", userData);
+    // console.log(response);
+    // return response;
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(userData, null, 2)}</code>
+        </pre>
+      ),
+    })
   };
 
   const renderStep = () => {
