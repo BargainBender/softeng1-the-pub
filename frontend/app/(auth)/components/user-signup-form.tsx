@@ -100,19 +100,9 @@ export function UserSignUpForm({ className, ...props }: UserSignUpFormProps) {
   };
 
   const submit_user_data = async (userData: UserData) => {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">
-            {JSON.stringify(userData, null, 2)}
-          </code>
-        </pre>
-      ),
-    });
     try {
       const response = await axios.post(
-        "http://localhost:8000/auth/signup",
+        "http://localhost:8000/auth/signup/",
         userData
       );
       console.log(response);

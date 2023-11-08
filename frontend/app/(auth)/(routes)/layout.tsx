@@ -1,3 +1,9 @@
+
+export const metadata = {
+    title: "The Pub - Auth",
+    description: "Authentication Routes for Users"
+}
+
 export default function AuthLayout({
     children
 }: {
