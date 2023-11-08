@@ -22,7 +22,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('auth/', obtain_auth_token, name="login"), # Has POST to this endpoint is login
+    path('auth/login/', obtain_auth_token, name="login"), # Has POST to this endpoint is login
     path('auth/logout/', LogoutAPIView.as_view(), name="logout"),
     path('auth/signup/', UserCreateAPIView.as_view(), name="signup"),
     path('settings/account/', UserAccountSettingsAPIView.as_view(), name="account_settings"),
