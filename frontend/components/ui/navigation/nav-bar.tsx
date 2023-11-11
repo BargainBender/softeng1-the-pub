@@ -68,7 +68,7 @@ export default function NavigationMenuBar() {
 
   return (
     <>
-      <div className="shadow-xl flex justify-between items-center px-6 my-3">
+      <div className="shadow-xl flex justify-between items-center px-6 my-3 sticky top-0">
         <div className="flex space-x-4 my-2">
           <NavigationMenu className="flex space-x-4">
             <NavigationMenuList className="flex flex-row space-x-4">
