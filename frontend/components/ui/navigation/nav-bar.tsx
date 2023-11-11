@@ -62,6 +62,7 @@ import {
 
 import { Button } from "../button";
 import { Avatar, AvatarImage, AvatarFallback } from "../avatar";
+import Image from "next/image";
 
 export default function NavigationMenuBar() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -73,7 +74,12 @@ export default function NavigationMenuBar() {
           <NavigationMenu className="flex space-x-4">
             <NavigationMenuList className="flex flex-row space-x-4">
               <NavigationMenuItem>
-                <Link href={"/"}>The Pub</Link>
+                <Link href={"/"}> <Image
+                src="/assets/Blog-Logo.svg"
+                alt="The Pub Logo"
+                width={60}
+                height={30}
+              /></Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
