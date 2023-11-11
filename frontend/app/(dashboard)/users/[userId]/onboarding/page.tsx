@@ -239,7 +239,24 @@ export default function OnboardingPage() {
           </>
         );
       case 2:
-        return <></>;
+        return (
+          <>
+            <div className="mt-auto flex justify-between items-center w-full px-8 space-x-8">
+              <div className="flex-1 mr-10">
+                <Image
+                  src={"/assets/Blog-Logo.svg"}
+                  width={500}
+                  height={500}
+                  alt="image"
+                  className="mx-auto"
+                />
+              </div>
+              <div className="flex-1 mx-8">
+                <OnBoardingForm />
+              </div>
+            </div>
+          </>
+        );
       default:
         return null;
     }
