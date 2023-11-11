@@ -4,14 +4,6 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { OnBoardingForm } from "./components/onboarding-form";
 
 interface OnboardingPageState {
@@ -241,19 +233,19 @@ export default function OnboardingPage() {
       case 2:
         return (
           <>
-            <div className="mt-auto flex justify-between items-center w-full px-8 space-x-8">
-              <div className="flex-1 mr-10">
-                <Image
-                  src={"/assets/Blog-Logo.svg"}
-                  width={500}
-                  height={500}
-                  alt="image"
-                  className="mx-auto"
-                />
+            <div className="flex flex-col justify-start items-center w-full mt-2">
+              <div className="my-3">
+                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+                  What is/are your interest/s?
+                </h1>
               </div>
-              <div className="flex-1 mx-8">
-                <OnBoardingForm />
+              <div className="my-3">
+                <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold text-muted-foreground tracking-tight first:mt-0">
+                  Choose tags so we can recommend stories or threads for you.
+                </h2>
               </div>
+
+              <div>Search or Command Box</div>
             </div>
           </>
         );
@@ -265,9 +257,7 @@ export default function OnboardingPage() {
   return (
     <>
       <div className="flex flex-col items-center justify-center h-4/5">
-        <div className="flex-1 flex justify-center items-center">
-          {renderSteps()}
-        </div>
+        <div className="flex-1">{renderSteps()}</div>
         <div className="mt-auto">{renderButtons()}</div>
       </div>
     </>
