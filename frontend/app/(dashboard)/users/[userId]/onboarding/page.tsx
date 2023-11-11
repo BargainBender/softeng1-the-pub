@@ -1,11 +1,20 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
 import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { OnBoardingForm } from "./components/onboarding-form";
+
+
 
 interface OnboardingPageState {
   step: number;
@@ -22,36 +31,102 @@ export default function OnboardingPage() {
     }));
   };
 
+  const handlePrevStep = () => {
+    setState((prevState) => ({
+      ...prevState,
+      step: Math.max(prevState.step - 1, 0), // Ensure step is not negative
+    }));
+  };
+
   const renderButtons = () => {
     switch (state.step) {
       case 0:
         return (
           <>
-          {/* Tabs Here */}
-            <Button onClick={handleNextStep} variant={"pub"} className="w-36">Next</Button>
+            <div className="flex flex-row justify-between w-80 mb-5">
+            <Button variant={"pub"} onClick={() => {
+              setState({
+                step: 0,
+              });
+            }}>
+                Button 1
+              </Button>
+              <Button variant={"outline"} onClick={() => {
+                setState({
+                  step: 1,
+                });
+              }}>Button 2</Button>
+              <Button variant={"outline"} onClick={() => {
+                setState({
+                  step: 2,
+                });
+              }}>Button 3</Button>
+            </div>
+            <div className="flex items-center justify-center">
+              <Button onClick={handleNextStep} variant={"pub"} className="w-52">
+                Next
+              </Button>
+            </div>
           </>
         );
       case 1:
         return (
           <>
-          {/* Tabs Here */}
-            <button onClick={handleNextStep}>Next</button>
-            <button onClick={() => console.log("Custom action for step 1")}>
-              Custom Action
-            </button>
+            <div className="flex flex-row justify-between w-80 mb-5">
+            <Button variant={"outline"} onClick={() => {
+              setState({
+                step: 0,
+              });
+            }}>
+                Button 1
+              </Button>
+              <Button variant={"pub"} onClick={() => {
+                setState({
+                  step: 1,
+                });
+              }}>Button 2</Button>
+              <Button variant={"outline"} onClick={() => {
+                setState({
+                  step: 2,
+                });
+              }}>Button 3</Button>
+            </div>
+            <div className="flex items-center justify-between space-x-4">
+              <Button onClick={handlePrevStep} variant={"secondary"} className="flex-shrink-0 w-36">Back</Button>
+              <Button onClick={handleNextStep} variant={"pub"} className="flex-shrink-0 w-36">
+                Next
+              </Button>
+            </div>
           </>
         );
       case 2:
         return (
           <>
-          {/* Tabs Here */}
-            <button onClick={handleNextStep}>Next</button>
-            <button onClick={() => console.log("Custom action for step 2")}>
-              Custom Action
-            </button>
-            <button onClick={() => console.log("Additional action for step 2")}>
-              Additional Action
-            </button>
+            <div className="flex flex-row justify-between w-80 mb-5">
+            <Button variant={"outline"} onClick={() => {
+              setState({
+                step: 0,
+              });
+            }}>
+                Button 1
+              </Button>
+              <Button variant={"outline"} onClick={() => {
+                setState({
+                  step: 1,
+                });
+              }}>Button 2</Button>
+              <Button variant={"pub"} onClick={() => {
+                setState({
+                  step: 2,
+                });
+              }}>Button 3</Button>
+            </div>
+            <div className="flex items-center justify-between space-x-4">
+              <Button onClick={handlePrevStep} variant={"secondary"} className="flex-shrink-0 w-36">Back</Button>
+              <Button onClick={handleNextStep} variant={"pub"} className="flex-shrink-0 w-36">
+                Finish
+              </Button>
+            </div>
           </>
         );
       default:
@@ -59,43 +134,55 @@ export default function OnboardingPage() {
     }
   };
 
-
   const renderSteps = () => {
     switch (state.step) {
-        case 0:
-          return (
-            <>
+      case 0:
+        return (
+          <>
             <div className="flex-1">
-            <Image src={"/assets/thePub.svg"} width={500} height={500} alt="image" className="mx-auto" />
-          </div>
-          <div className="flex-1 flex flex-col items-center justify-center ml-4">
-            <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
-              Welcome to the Pub!
-            </h1>
-            <p className="text-center mt-6 leading-7">
-              We{"'"}re thrilled to have you on board. Your journey begins here,
-              where you can create, share, and discover amazing threads and
-              blogs.
-            </p>
-          </div>
-            </>
-          );
-        case 1:
-          return (
-            <>
-              
-            </>
-          );
-        case 2:
-          return (
-            <>
-             
-            </>
-          );
-        default:
-          return null;
-      }
-  }
+              <Image
+                src={"/assets/Blog-Logo.svg"}
+                width={500}
+                height={500}
+                alt="image"
+                className="mx-auto"
+              />
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center space-x-4">
+              <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
+                Welcome to the Pub!
+              </h1>
+              <p className="text-center mt-6 leading-7">
+                We{"'"}re thrilled to have you on board. Your journey begins
+                here, where you can create, share, and discover amazing threads
+                and blogs.
+              </p>
+            </div>
+          </>
+        );
+      case 1:
+        return <>
+        <div className="flex-1">
+              <Image
+                src={"/assets/Blog-Logo.svg"}
+                width={500}
+                height={500}
+                alt="image"
+                className="mx-auto"
+              />
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center space-x-4">
+            <OnBoardingForm />
+            </div>
+        
+        
+        </>;
+      case 2:
+        return <></>;
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
@@ -103,9 +190,8 @@ export default function OnboardingPage() {
         <div className="flex-1 flex justify-center items-center">
           {renderSteps()}
         </div>
-        {/* Persitent Buttons changes state */}
         <div className="mt-auto">{renderButtons()}</div>
-        </div>
+      </div>
     </>
   );
 }
