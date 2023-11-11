@@ -91,8 +91,6 @@ export default function NavigationMenuBar() {
                 <Bell color="grey" strokeWidth={"2"} />
               </NavigationMenuItem>
               <NavigationMenuItem>
-
-
                 <Dialog>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
