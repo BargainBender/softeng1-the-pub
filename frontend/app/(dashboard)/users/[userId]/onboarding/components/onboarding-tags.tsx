@@ -7,6 +7,8 @@ interface OnboardingTagsProps {
 export function OnboardingTags({ allTags }: OnboardingTagsProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
+  let tagData = []
+
   const handleTagClick = (tag: string) => {
     if (selectedTags.includes(tag)) {
       // Tag is already selected, remove it

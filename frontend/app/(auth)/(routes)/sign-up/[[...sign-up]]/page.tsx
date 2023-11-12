@@ -14,7 +14,7 @@ export default function SignUpPage() {
           <div className="absolute inset-0 flex items-center justify-end p-4 mb-5">
             <div className="flex items-center text-lg font-medium">
               <Image
-                src="/assets/Blog-Logo.svg"
+                src="/assets/logo-tagline-set.svg"
                 alt="The Pub Logo"
                 width={600}
                 height={400}
