@@ -5,11 +5,23 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { OnBoardingForm } from "./components/onboarding-form";
+import { OnboardingTags } from "./components/onboarding-tags";
 
 interface OnboardingPageState {
   step: number;
 }
+
+interface OnboardingPageTags {
+  allTags: string[];
+}
+
 export default function OnboardingPage() {
+  
+  const allTags = [
+    "Software Development", "Health", "Self Improvement", "Life", "Finance"
+  ]
+  
+  
   const [state, setState] = useState<OnboardingPageState>({
     step: 0,
   });
@@ -42,7 +54,8 @@ export default function OnboardingPage() {
                   });
                 }}
               >
- <span className="invisible">Button 1</span>              </Button>
+                <span className="invisible">Button 1</span>{" "}
+              </Button>
               <Button
                 variant={"outline"}
                 onClick={() => {
@@ -51,7 +64,8 @@ export default function OnboardingPage() {
                   });
                 }}
               >
- <span className="invisible">Button 2</span>              </Button>
+                <span className="invisible">Button 2</span>{" "}
+              </Button>
               <Button
                 variant={"outline"}
                 onClick={() => {
@@ -60,7 +74,8 @@ export default function OnboardingPage() {
                   });
                 }}
               >
- <span className="invisible">Button 3</span>              </Button>
+                <span className="invisible">Button 3</span>{" "}
+              </Button>
             </div>
             <div className="flex items-center justify-center">
               <Button onClick={handleNextStep} variant={"pub"} className="w-52">
@@ -81,7 +96,8 @@ export default function OnboardingPage() {
                   });
                 }}
               >
- <span className="invisible">Button 1</span>              </Button>
+                <span className="invisible">Button 1</span>{" "}
+              </Button>
               <Button
                 variant={"pub"}
                 onClick={() => {
@@ -90,7 +106,8 @@ export default function OnboardingPage() {
                   });
                 }}
               >
- <span className="invisible">Button 2</span>              </Button>
+                <span className="invisible">Button 2</span>{" "}
+              </Button>
               <Button
                 variant={"outline"}
                 onClick={() => {
@@ -99,7 +116,8 @@ export default function OnboardingPage() {
                   });
                 }}
               >
- <span className="invisible">Button 3</span>              </Button>
+                <span className="invisible">Button 3</span>{" "}
+              </Button>
             </div>
             <div className="flex items-center justify-between space-x-4">
               <Button
@@ -131,7 +149,8 @@ export default function OnboardingPage() {
                   });
                 }}
               >
- <span className="invisible">Button 1</span>              </Button>
+                <span className="invisible">Button 1</span>{" "}
+              </Button>
               <Button
                 variant={"outline"}
                 onClick={() => {
@@ -140,7 +159,8 @@ export default function OnboardingPage() {
                   });
                 }}
               >
- <span className="invisible">Button 2</span>              </Button>
+                <span className="invisible">Button 2</span>{" "}
+              </Button>
               <Button
                 variant={"pub"}
                 onClick={() => {
@@ -148,7 +168,6 @@ export default function OnboardingPage() {
                     step: 2,
                   });
                 }}
-                
               >
                 <span className="invisible">Button 3</span>
               </Button>
@@ -238,7 +257,7 @@ export default function OnboardingPage() {
                 </h2>
               </div>
 
-              <div>Search or Command Box</div>
+              <div><OnboardingTags allTags={allTags}/></div>
             </div>
           </>
         );
