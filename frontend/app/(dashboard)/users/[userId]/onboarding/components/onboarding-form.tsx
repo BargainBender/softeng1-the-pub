@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,7 +32,11 @@ const bioSchema = z.object({
   bio: z.string().max(160).optional(),
 });
 
-export function OnBoardingForm() {
+interface OnboardingFormProps {
+  onFormChange: (formData: z.infer<typeof bioSchema>) => void; // Callback function
+}
+
+export function OnboardingForm({onFormChange} : OnboardingFormProps) {
   // 1. Define your form.
   const form = useForm<z.infer<typeof bioSchema>>({
     resolver: zodResolver(bioSchema),
@@ -44,6 +50,7 @@ export function OnBoardingForm() {
   function onSubmit(values: z.infer<typeof bioSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+    onFormChange(values);
     toast({
       title: "Success",
       description: (
@@ -54,6 +61,10 @@ export function OnBoardingForm() {
     });
     console.log(values);
   }
+
+  useEffect(() => {
+    onFormChange(form.getValues());
+  }, [form, onFormChange]);
 
   return (
     <Card className=" max-h-[650px] max-w-[650px] my-8">
@@ -91,7 +102,9 @@ export function OnBoardingForm() {
                   </FormLabel>
                   <FormControl>
                     <div className="flex items-center justify-center">
-                    <Button variant={"pub"} className="w-36">Upload</Button>
+                      <Button variant={"pub"} className="w-36">
+                        Upload
+                      </Button>
                     </div>
                   </FormControl>
                 </FormItem>
@@ -117,9 +130,9 @@ export function OnBoardingForm() {
                 </FormItem>
               )}
             />
-            <div className="flex items-center justify-center">
+            {/* <div className="flex items-center justify-center">
             <Button type="submit" variant={"pub"}>Submit</Button>
-            </div>
+            </div> */}
           </form>
         </Form>
       </CardContent>

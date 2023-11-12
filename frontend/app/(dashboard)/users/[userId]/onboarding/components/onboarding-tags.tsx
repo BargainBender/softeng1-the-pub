@@ -1,59 +1,64 @@
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useState, useEffect } from "react";
 
 interface OnboardingTagsProps {
   allTags: string[];
+  onChosenTagsChange: (chosenTags: string[]) => void; // Callback function
 }
 
-export function OnboardingTags({ allTags }: OnboardingTagsProps) {
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-  let tagData = []
+export function OnboardingTags({
+  allTags,
+  onChosenTagsChange,
+}: OnboardingTagsProps) {
+  const [chosenTags, setChosenTags] = useState<string[]>([]);
+  const [unchosenTags, setUnchosenTags] = useState<string[]>(allTags);
 
   const handleTagClick = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      // Tag is already selected, remove it
-      setSelectedTags((prevTags) =>
+    if (chosenTags.includes(tag)) {
+      setChosenTags((prevTags) =>
         prevTags.filter((prevTag) => prevTag !== tag)
       );
+      setUnchosenTags((prevTags) => [...prevTags, tag]);
     } else {
-      // Tag is not selected, add it to the top
-      setSelectedTags((prevTags) => [tag, ...prevTags]);
+      setChosenTags((prevTags) => [...prevTags, tag]);
+      setUnchosenTags((prevTags) =>
+        prevTags.filter((prevTag) => prevTag !== tag)
+      );
     }
   };
 
-  const handleChosenTagClick = (tag: string) => {
-    // Remove the clicked tag from the chosen tags
-    setSelectedTags((prevTags) => prevTags.filter((prevTag) => prevTag !== tag));
-  };
+  // Notify the parent component when chosenTags change
+  useEffect(() => {
+    onChosenTagsChange(chosenTags);
+  }, [chosenTags, onChosenTagsChange]);
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-wrap justify-center space-x-2">
-        {allTags.map((tag) => (
-          <button
-            key={tag}
-            onClick={() => handleTagClick(tag)}
-            className={`bg-gray-300 py-1 px-2 rounded-md ${
-              selectedTags.includes(tag)
-                ? "bg-blue-500 text-white"
-                : "hover:bg-gray-400"
-            }`}
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold mb-2">Chosen Tags:</h2>
-        <div className="flex flex-wrap space-x-2">
-          {selectedTags.map((tag) => (
-            <span
+      <div className="flex justify-center space-x-2">
+        <div className="flex flex-wrap-reverse space-x-2">
+          {chosenTags.map((tag) => (
+            <Button
               key={tag}
-              onClick={() => handleChosenTagClick(tag)}
-              className="bg-blue-500 text-white px-2 py-1 rounded-md cursor-pointer"
+              onClick={() => handleTagClick(tag)}
+              variant={"pub"}
             >
               {tag}
-            </span>
+            </Button>
+          ))}
+        </div>
+      </div>
+      <Separator className="w-max-prose my-4" />
+      <div className="mt-4">
+        <div className="flex flex-wrap space-x-2">
+          {unchosenTags.map((tag) => (
+            <Button
+              key={tag}
+              onClick={() => handleTagClick(tag)}
+              variant={"outline"}
+            >
+              {tag}
+            </Button>
           ))}
         </div>
       </div>
