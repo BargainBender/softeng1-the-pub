@@ -42,8 +42,7 @@ export default function OnboardingPage() {
                   });
                 }}
               >
-                Button 1
-              </Button>
+ <span className="invisible">Button 1</span>              </Button>
               <Button
                 variant={"outline"}
                 onClick={() => {
@@ -52,8 +51,7 @@ export default function OnboardingPage() {
                   });
                 }}
               >
-                Button 2
-              </Button>
+ <span className="invisible">Button 2</span>              </Button>
               <Button
                 variant={"outline"}
                 onClick={() => {
@@ -62,8 +60,7 @@ export default function OnboardingPage() {
                   });
                 }}
               >
-                Button 3
-              </Button>
+ <span className="invisible">Button 3</span>              </Button>
             </div>
             <div className="flex items-center justify-center">
               <Button onClick={handleNextStep} variant={"pub"} className="w-52">
@@ -84,8 +81,7 @@ export default function OnboardingPage() {
                   });
                 }}
               >
-                Button 1
-              </Button>
+ <span className="invisible">Button 1</span>              </Button>
               <Button
                 variant={"pub"}
                 onClick={() => {
@@ -94,8 +90,7 @@ export default function OnboardingPage() {
                   });
                 }}
               >
-                Button 2
-              </Button>
+ <span className="invisible">Button 2</span>              </Button>
               <Button
                 variant={"outline"}
                 onClick={() => {
@@ -104,8 +99,7 @@ export default function OnboardingPage() {
                   });
                 }}
               >
-                Button 3
-              </Button>
+ <span className="invisible">Button 3</span>              </Button>
             </div>
             <div className="flex items-center justify-between space-x-4">
               <Button
@@ -137,8 +131,7 @@ export default function OnboardingPage() {
                   });
                 }}
               >
-                Button 1
-              </Button>
+ <span className="invisible">Button 1</span>              </Button>
               <Button
                 variant={"outline"}
                 onClick={() => {
@@ -147,8 +140,7 @@ export default function OnboardingPage() {
                   });
                 }}
               >
-                Button 2
-              </Button>
+ <span className="invisible">Button 2</span>              </Button>
               <Button
                 variant={"pub"}
                 onClick={() => {
@@ -156,8 +148,9 @@ export default function OnboardingPage() {
                     step: 2,
                   });
                 }}
+                
               >
-                Button 3
+                <span className="invisible">Button 3</span>
               </Button>
             </div>
             <div className="flex items-center justify-between space-x-4">
