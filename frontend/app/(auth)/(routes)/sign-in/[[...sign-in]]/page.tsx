@@ -39,11 +39,11 @@ export default function SignIn() {
       </div>
 
       {/* Card Column */}
-      <div className="py-10  flex-auto">
+      <div className="py-10 flex-auto">
         <div className="container mx-auto flex-col space-y-2 text-center my-28">
-          <Card>
+          <Card className="w-96">
             <CardHeader>
-              <CardTitle className="mt-6">Welcome Back!</CardTitle>
+              <CardTitle className="mt-6 font-bold">Welcome Back!</CardTitle>
             </CardHeader>
             <CardContent>
               <UserSignInForm />

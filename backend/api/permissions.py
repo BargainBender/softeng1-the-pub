@@ -1,5 +1,15 @@
 from rest_framework import permissions
 
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        # Allow GET, HEAD, and OPTIONS requests for everyone.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Allow POST requests if the user is the owner of the specified username.
+        username = view.kwargs.get('username')
+        return request.user.username == username
+
 class IsStaffEditorPermission(permissions.DjangoModelPermissions):
   
   perms_map = {

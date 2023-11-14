@@ -16,14 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from core.views import LogoutAPIView, UserSettingsRetrieveAPIView, ChangeUserPasswordAPIView
+from core.views import LogoutAPIView, UserAccountSettingsAPIView, ChangeUserPasswordAPIView, UserCreateAPIView, UserProfileSettingsAPIView
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('auth/', obtain_auth_token),
-    path('logout/', LogoutAPIView.as_view()),
-    path('settings/', UserSettingsRetrieveAPIView.as_view()),
-    path('change-password/', ChangeUserPasswordAPIView.as_view()),
+    path('auth/login/', obtain_auth_token, name="login"), # Has POST to this endpoint is login
+    path('auth/logout/', LogoutAPIView.as_view(), name="logout"),
+    path('auth/signup/', UserCreateAPIView.as_view(), name="signup"),
+    path('settings/account/', UserAccountSettingsAPIView.as_view(), name="account_settings"),
+    path('settings/profile/', UserProfileSettingsAPIView.as_view(), name="profile_settings"),
+    path('settings/change-password/', ChangeUserPasswordAPIView.as_view(), name="change_password"),
 ]
