@@ -28,6 +28,18 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 
 const profileFormSchema = z.object({
+  name: z
+  .string()
+  .min(2, {
+    message: "Name must be at least 2 characters.",
+  })
+  .max(30, {
+    message: "Name must not be longer than 30 characters.",
+  }),
+  pronouns: z.string().optional(),
+  location: z.string().min(1, {
+    message: "Location must be chosen"
+  }),
   username: z
     .string()
     .min(2, {
@@ -44,7 +56,15 @@ const profileFormSchema = z.object({
       })
     )
     .optional(),
+  doj: z.date({
+    required_error: "Date joined must be reflected"
+  }).optional(),
 })
+
+// List of countries
+const countries = [
+  {}
+]
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
@@ -85,10 +105,10 @@ export function ProfileForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="username"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input placeholder="shadcn" {...field} />
               </FormControl>
@@ -116,6 +136,23 @@ export function ProfileForm() {
               <FormDescription>
                 You can <span>@mention</span> other users and organizations to
                 link to them.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+         <FormField
+          control={form.control}
+          name="pronouns"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is your public display name. It can be your real name or a
+                pseudonym. You can only change this once every 30 days.
               </FormDescription>
               <FormMessage />
             </FormItem>
