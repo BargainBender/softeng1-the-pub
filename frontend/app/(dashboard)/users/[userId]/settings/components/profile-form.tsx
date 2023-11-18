@@ -30,14 +30,7 @@ import {
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
@@ -92,7 +85,6 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 const defaultValues: Partial<ProfileFormValues> = {
   bio: "I own a computer.",
   urls: [
-    { value: "https://shadcn.com" },
     { value: "http://twitter.com/shadcn" },
   ],
   region: "NA",
@@ -137,7 +129,7 @@ export function ProfileForm() {
               </FormControl>
               <FormDescription>
                 This is your public display name. It can be your real name or a
-                pseudonym. You can only change this once every 30 days.
+                pseudonym.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -170,7 +162,7 @@ export function ProfileForm() {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Pronouns</FormLabel>
-              <Input placeholder="They/Them" {...field} />{" "}
+              <Input placeholder="They/Them" {...field} />
               <FormDescription>
                 This will be your pronouns for the site.
               </FormDescription>
