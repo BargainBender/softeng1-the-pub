@@ -4,8 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import { ChevronsUpDown, Check, CalendarIcon } from "lucide-react";
-import { format } from "date-fns"
-
+import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -39,7 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 
@@ -54,6 +53,12 @@ const profileFormSchema = z.object({
     }),
   bio: z.string().max(160).min(4),
   pronouns: z.string().optional(),
+  region: z.string({
+    required_error: "Region must be chosen",
+  }),
+  dob: z.date({
+    required_error: "A date of birth is required.",
+  }),
   urls: z
     .array(
       z.object({
@@ -61,17 +66,6 @@ const profileFormSchema = z.object({
       })
     )
     .optional(),
-  dob: z.date({
-    required_error: "A date of birth is required.",
-  }),
-  doj: z
-    .date({
-      required_error: "Date joined must be reflected",
-    })
-    .optional(),
-  region: z.string({
-    required_error: "Region must be chosen",
-  }),
 });
 
 // List of regions
@@ -102,7 +96,8 @@ const defaultValues: Partial<ProfileFormValues> = {
     { value: "http://twitter.com/shadcn" },
   ],
   region: "NA",
-  pronouns: "others",
+  pronouns: "They/Them",
+  dob: new Date("2023-01-23"),
 };
 
 export function ProfileForm() {
@@ -175,26 +170,7 @@ export function ProfileForm() {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Pronouns</FormLabel>
-              <Select>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a pronoun" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {pronouns.map((pronouns) => (
-                      <SelectItem
-                        value={pronouns.name}
-                        key={pronouns.code}
-                        onSelect={() => {
-                          form.setValue("pronouns", pronouns.code);
-                        }}
-                      >
-                        {pronouns.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <Input placeholder="They/Them" {...field} />{" "}
               <FormDescription>
                 This will be your pronouns for the site.
               </FormDescription>
@@ -202,68 +178,68 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
-          <FormField
-            control={form.control}
-            name="region"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Region</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "w-[200px] justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value
-                          ? regions.find(
-                              (regions) => regions.code === field.value
-                            )?.name
-                          : "Select region"}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[200px] p-0">
-                    <Command>
-                      <CommandInput placeholder="Search language..." />
-                      <CommandEmpty>No language found.</CommandEmpty>
-                      <CommandGroup>
-                        {regions.map((regions) => (
-                          <CommandItem
-                            value={regions.name}
-                            key={regions.code}
-                            onSelect={() => {
-                              form.setValue("region", regions.code);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                regions.code === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {regions.name}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormDescription>
-                  This is the region that will be shown in the profile.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
+        <FormField
+          control={form.control}
+          name="region"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Region</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-[200px] justify-between",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value
+                        ? regions.find(
+                            (regions) => regions.code === field.value
+                          )?.name
+                        : "Select region"}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search language..." />
+                    <CommandEmpty>No language found.</CommandEmpty>
+                    <CommandGroup>
+                      {regions.map((regions) => (
+                        <CommandItem
+                          value={regions.name}
+                          key={regions.code}
+                          onSelect={() => {
+                            form.setValue("region", regions.code);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              regions.code === field.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {regions.name}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <FormDescription>
+                This is the region that will be shown in the profile.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
           control={form.control}
           name="dob"
           render={({ field }) => (
@@ -342,6 +318,9 @@ export function ProfileForm() {
             Add URL
           </Button>
         </div>
+        <p className="text-sm text-muted-foreground">
+          Date joined: {"Date joined here"}.
+        </p>{" "}
         <Button type="submit">Update profile</Button>
       </form>
     </Form>
