@@ -3,6 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
+import { ChevronsUpDown, Check, CalendarIcon } from "lucide-react";
+import { format } from "date-fns"
+
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -33,13 +36,10 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import { ChevronsUpDown, Check } from "lucide-react";
-
+import { Calendar } from "@/components/ui/calendar"
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 
@@ -202,13 +202,12 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
-        <div>
           <FormField
             control={form.control}
             name="region"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Country</FormLabel>
+                <FormLabel>Region</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -264,6 +263,54 @@ export function ProfileForm() {
               </FormItem>
             )}
           />
+          <FormField
+          control={form.control}
+          name="dob"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Date of birth</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    captionLayout="dropdown-buttons"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    fromYear={1960}
+                    toYear={2030}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormDescription>
+                Your date of birth is used to calculate your age.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div>
           {fields.map((field, index) => (
             <FormField
               control={form.control}
