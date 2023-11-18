@@ -176,12 +176,49 @@ export function AccountForm() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <div className="space-y-1">
-                    <Label htmlFor="current">Current password</Label>
-                    <Input id="current" type="password" />
+                    <FormField
+                      control={form.control}
+                      name="passwordForm.currentPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Current password</FormLabel>
+                          <Input type="password" {...field} />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="new">New password</Label>
-                    <Input id="new" type="password" />
+                    <FormField
+                      control={form.control}
+                      name="passwordForm.newPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>New password</FormLabel>
+                          <Input type="password" {...field} />
+                          <FormDescription>
+                            Password must have at least one lowercase letter,
+                            one uppercase letter, one number, one special
+                            character, and be at least 8 characters long.{" "}
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <FormField
+                      control={form.control}
+                      name="passwordForm.confirm"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm new password</FormLabel>
+                          <Input type="password" {...field} />
+                          <FormDescription></FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -191,61 +228,6 @@ export function AccountForm() {
             </TabsContent>
           </Tabs>
         </div>
-        <Dialog>
-          <DialogTrigger className="w-[650px] bg-pub rounded">
-            Edit Profile
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Are you sure absolutely sure?</DialogTitle>
-              <DialogDescription>
-                Make changes to your profile here. Click save when {"you're"}{" "}
-                done.
-              </DialogDescription>
-            </DialogHeader>
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="raymondpostrero" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    This is your username. It can be your real name or a
-                    pseudonym. This will be username for all The Pub
-                    interactions
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    This is the name that will be displayed on your profile and
-                    in emails.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
-              <DialogClose>
-                <Button>Confirm</Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
         <div>
           <h3 className="mb-4 text-lg font-medium">Privacy</h3>
           <div className="space-y-4">
@@ -271,34 +253,7 @@ export function AccountForm() {
             />
           </div>
         </div>
-        <FormField
-          control={form.control}
-          name="passwordForm.newPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>New password</FormLabel>
-              <Input type="password" {...field} />
-              <FormDescription>
-                Password must have at least one lowercase letter, one uppercase
-                letter, one number, one special character, and be at least 8
-                characters long.{" "}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="passwordForm.confirm"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm new password</FormLabel>
-              <Input type="password" {...field} />
-              <FormDescription></FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <Button type="submit">Update account</Button>
       </form>
     </Form>
