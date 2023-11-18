@@ -42,15 +42,21 @@ const accountFormSchema = z.object({
     .max(30, {
       message: "Name must not be longer than 30 characters.",
     }),
-  passwordForm: z.object({
-    password: z.string().refine((value) => strongPasswordRegex.test(value), {
-      message:
-        "Password must have at least one lowercase letter, one uppercase letter, one number, one special character, and be at least 8 characters long.",
-    }),
-    confirm: z.string(),
-  }).refine((data) => data.password === data.confirm, {
-    message: "Passwords don't match"
-  }),
+  passwordForm: z
+    .object({
+      currentPassword: z.string(),
+      newPassword: z
+        .string()
+        .refine((value) => strongPasswordRegex.test(value), {
+          message:
+            "Password must have at least one lowercase letter, one uppercase letter, one number, one special character, and be at least 8 characters long.",
+        }),
+      confirm: z.string(),
+    })
+    .refine((data) => data.newPassword === data.confirm, {
+      message: "Passwords don't match",
+    })
+    .optional(),
   private: z
     .boolean({
       required_error: "Decide whether the profile is public or not",
@@ -64,7 +70,7 @@ type AccountFormValues = z.infer<typeof accountFormSchema>;
 const defaultValues: Partial<AccountFormValues> = {
   username: "raymond_postrero",
   email: "raymondpostrero@tip.edu.ph",
-  passwordForm: {password: "hello", confirm: "hello"},
+  passwordForm: { currentPassword: " ", newPassword: "", confirm: "" },
   private: false,
 };
 
@@ -131,9 +137,7 @@ export function AccountForm() {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Private
-                    </FormLabel>
+                    <FormLabel className="text-base">Private</FormLabel>
                     <FormDescription>
                       Do not show personal details in The Pub.
                     </FormDescription>
@@ -151,9 +155,9 @@ export function AccountForm() {
         </div>
         <FormField
           control={form.control}
-          name="passwordForm.password"
+          name="passwordForm.newPassword"
           render={({ field }) => (
-            <FormItem >
+            <FormItem>
               <FormLabel>Pronouns</FormLabel>
               <Input type="password" {...field} />
               <FormDescription>
@@ -167,17 +171,15 @@ export function AccountForm() {
           control={form.control}
           name="passwordForm.confirm"
           render={({ field }) => (
-            <FormItem >
+            <FormItem>
               <FormLabel>Pronouns</FormLabel>
               <Input type="password" {...field} />
-              <FormDescription> 
-              </FormDescription>
+              <FormDescription></FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-       
-           
+
         <Button type="submit">Update account</Button>
       </form>
     </Form>
