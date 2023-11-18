@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useFieldArray, useForm } from "react-hook-form"
-import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
+import * as z from "zod";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,48 +14,46 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { ChevronsUpDown, Check } from "lucide-react";
 
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/components/ui/use-toast"
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
 
 const profileFormSchema = z.object({
   name: z
-  .string()
-  .min(2, {
-    message: "Name must be at least 2 characters.",
-  })
-  .max(30, {
-    message: "Name must not be longer than 30 characters.",
-  }),
-  pronouns: z.string().optional(),
-  location: z.string().min(1, {
-    message: "Location must be chosen"
-  }),
-  username: z
     .string()
     .min(2, {
-      message: "Username must be at least 2 characters.",
+      message: "Name must be at least 2 characters.",
     })
     .max(30, {
-      message: "Username must not be longer than 30 characters.",
+      message: "Name must not be longer than 30 characters.",
     }),
   bio: z.string().max(160).min(4),
+  pronouns: z.string().optional(),
   urls: z
     .array(
       z.object({
@@ -63,24 +61,38 @@ const profileFormSchema = z.object({
       })
     )
     .optional(),
-  doj: z.date({
-    required_error: "Date joined must be reflected"
-  }).optional(),
-  region: z.string().optional(),
-})
+  dob: z.date({
+    required_error: "A date of birth is required.",
+  }),
+  doj: z
+    .date({
+      required_error: "Date joined must be reflected",
+    })
+    .optional(),
+  region: z.string({
+    required_error: "Region must be chosen",
+  }),
+});
 
 // List of regions
 const regions = [
-  { name: 'North America', code: 'NA' },
-  { name: 'Europe', code: 'EU' },
-  { name: 'Asia', code: 'AS' },
-  { name: 'South America', code: 'SA' },
-  { name: 'Africa', code: 'AF' },
-  { name: 'Oceania', code: 'OC' },
-  { name: 'Antarctica', code: 'AN' }
+  { name: "North America", code: "NA" },
+  { name: "Europe", code: "EU" },
+  { name: "Asia", code: "AS" },
+  { name: "South America", code: "SA" },
+  { name: "Africa", code: "AF" },
+  { name: "Oceania", code: "OC" },
+  { name: "Antarctica", code: "AN" },
 ];
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>
+const pronouns = [
+  { name: "He/Him", code: "male" },
+  { name: "She/Her", code: "female" },
+  { name: "They/Them", code: "LGBTQ" },
+  { name: "Others", code: "others" },
+];
+
+type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 // This can come from your database or API.
 const defaultValues: Partial<ProfileFormValues> = {
@@ -89,19 +101,21 @@ const defaultValues: Partial<ProfileFormValues> = {
     { value: "https://shadcn.com" },
     { value: "http://twitter.com/shadcn" },
   ],
-}
+  region: "NA",
+  pronouns: "others",
+};
 
 export function ProfileForm() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
     mode: "onChange",
-  })
+  });
 
   const { fields, append } = useFieldArray({
     name: "urls",
     control: form.control,
-  })
+  });
 
   function onSubmit(data: ProfileFormValues) {
     toast({
@@ -111,7 +125,7 @@ export function ProfileForm() {
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
   }
 
   return (
@@ -155,85 +169,101 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
-         <FormField
+        <FormField
           control={form.control}
           name="pronouns"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col">
               <FormLabel>Pronouns</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
+              <Select>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a pronoun" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {pronouns.map((pronouns) => (
+                      <SelectItem
+                        value={pronouns.name}
+                        key={pronouns.code}
+                        onSelect={() => {
+                          form.setValue("pronouns", pronouns.code);
+                        }}
+                      >
+                        {pronouns.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
               <FormDescription>
-                This is your public display name. It can be your real name or a
-                pseudonym. You can only change this once every 30 days.
+                This will be your pronouns for the site.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <div>
-        <FormField
-          control={form.control}
-          name="region"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Country</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-[200px] justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? regions.find(
-                            (regions) => regions.code === field.value
-                          )?.name
-                        : "Select region"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Command>
-                    <CommandInput placeholder="Search language..." />
-                    <CommandEmpty>No language found.</CommandEmpty>
-                    <CommandGroup>
-                      {regions.map((regions) => (
-                        <CommandItem
-                          value={regions.name}
-                          key={regions.code}
-                          onSelect={() => {
-                            form.setValue("region", regions.code)
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              regions.code === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {regions.name}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormDescription>
-                This is the language that will be used in the dashboard.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="region"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Country</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-[200px] justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value
+                          ? regions.find(
+                              (regions) => regions.code === field.value
+                            )?.name
+                          : "Select region"}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput placeholder="Search language..." />
+                      <CommandEmpty>No language found.</CommandEmpty>
+                      <CommandGroup>
+                        {regions.map((regions) => (
+                          <CommandItem
+                            value={regions.name}
+                            key={regions.code}
+                            onSelect={() => {
+                              form.setValue("region", regions.code);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                regions.code === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            {regions.name}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>
+                  This is the region that will be shown in the profile.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           {fields.map((field, index) => (
             <FormField
               control={form.control}
@@ -268,5 +298,5 @@ export function ProfileForm() {
         <Button type="submit">Update profile</Button>
       </form>
     </Form>
-  )
+  );
 }
