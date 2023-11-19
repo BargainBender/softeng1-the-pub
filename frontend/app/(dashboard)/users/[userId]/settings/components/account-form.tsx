@@ -219,7 +219,6 @@ export function AccountForm() {
                 <CardFooter>
                   <Button
                     onClick={() => {
-
                       // Async function that updates User's password.
                       // Check first if there are problems with the validation
                       router.push("/");
@@ -257,8 +256,21 @@ export function AccountForm() {
             />
           </div>
         </div>
-        <Button type="submit">Update account</Button>
+        <Button type="submit" variant={"pub"}>Update account</Button>
       </form>
+      <div>
+          <h3 className="mb-4 text-lg font-medium">Deactivate/Delete Account</h3>
+          <div className="flex flex-row justify-start space-x-4">
+            <div>
+            <Button variant={"destructive"}>Deactivate account</Button>
+            </div>
+                <div><Button variant={"destructive"}>Delete account</Button></div>
+          </div>
+        </div>
+      
     </Form>
-  );
+    
+    
+  
+    );
 }
