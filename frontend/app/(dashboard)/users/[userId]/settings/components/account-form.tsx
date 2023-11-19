@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
@@ -14,20 +15,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
+
 import {
   Form,
   FormControl,
@@ -42,8 +34,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
 
 const strongPasswordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()-+])(?=.{8,})$/;
-
+/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()-+])/
 const accountFormSchema = z.object({
   username: z
     .string()
@@ -56,21 +47,23 @@ const accountFormSchema = z.object({
   email: z
     .string()
     .min(2, {
-      message: "Name must be at least 2 characters.",
+      message: "Email must be at least 2 characters.",
     })
     .max(30, {
       message: "Name must not be longer than 30 characters.",
+    }).email({
+      message: "Invalid email format '@example.com'"
     }),
   passwordForm: z
     .object({
-      currentPassword: z.string(),
+      currentPassword: z.string().optional(),
       newPassword: z
-        .string()
+        .string().min(8)
         .refine((value) => strongPasswordRegex.test(value), {
           message:
             "Password must have at least one lowercase letter, one uppercase letter, one number, one special character, and be at least 8 characters long.",
-        }),
-      confirm: z.string(),
+        }).optional(),
+      confirm: z.string().optional(),
     })
     .refine((data) => data.newPassword === data.confirm, {
       message: "Passwords don't match",
@@ -89,17 +82,20 @@ type AccountFormValues = z.infer<typeof accountFormSchema>;
 const defaultValues: Partial<AccountFormValues> = {
   username: "raymond_postrero",
   email: "raymondpostrero@tip.edu.ph",
-  passwordForm: { currentPassword: " ", newPassword: "", confirm: "" },
   private: false,
 };
 
 export function AccountForm() {
+  const router = useRouter()
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     defaultValues,
   });
 
+  
+
   function onSubmit(data: AccountFormValues) {
+    console.log(data);
     toast({
       title: "You submitted the following values:",
       description: (
@@ -124,7 +120,7 @@ export function AccountForm() {
                 <CardHeader>
                   <CardTitle>Account</CardTitle>
                   <CardDescription>
-                    Make changes to your account here. Click save when you{"'"}
+                    Make changes to your account here. Click save/update account when you{"'"}
                     re done.
                   </CardDescription>
                 </CardHeader>
@@ -161,8 +157,7 @@ export function AccountForm() {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button>Save changes</Button>
-                </CardFooter>
+                <p className="text-sm text-muted-foreground">The username and email will be saved upon clicking {"Update account"}.</p>                </CardFooter>
               </Card>
             </TabsContent>
             <TabsContent value="password">
@@ -222,7 +217,16 @@ export function AccountForm() {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button>Save password</Button>
+                  <Button
+                    onClick={() => {
+
+                      // Async function that updates User's password.
+                      // Check first if there are problems with the validation
+                      router.push("/");
+                    }}
+                  >
+                    Save password
+                  </Button>
                 </CardFooter>
               </Card>
             </TabsContent>
@@ -253,7 +257,6 @@ export function AccountForm() {
             />
           </div>
         </div>
-
         <Button type="submit">Update account</Button>
       </form>
     </Form>
