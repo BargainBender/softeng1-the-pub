@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { LogOut, Settings, User, Bell, Heart, Bookmark } from "lucide-react";
+import { LogOut, Settings, User, Bell, Heart, Bookmark, CheckCircle } from "lucide-react";
 
 import {
   NavigationMenu,
@@ -99,11 +99,12 @@ export default function NavigationMenuBar() {
   function onSubmit(data: ThreadFormValues) {
     console.log(data);
     toast({
-      title: "You submitted the following values:",
+      title: "Your thread has been posted successfully!",
       description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
+        <div className="flex items-center space-x-2">
+<CheckCircle className="mx-2"/> Your post was sent!
+        </div>
+        
       ),
     });
   }
@@ -194,10 +195,10 @@ Cancel                                        </Button>
                                           </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                          <AlertDialogCancel>
+                                          <AlertDialogCancel className="hover:bg-red-500 hover:text-white">
                                             No
                                           </AlertDialogCancel>
-                                          <AlertDialogAction onClick={() => {
+                                          <AlertDialogAction className="bg-pub-darker hover:bg-green-500 hover:text-white" onClick={() => {
                                             location.reload()
                                           }}>
                                             Yes
@@ -205,11 +206,8 @@ Cancel                                        </Button>
                                         </AlertDialogFooter>
                                       </AlertDialogContent>
                                     </AlertDialog>
-                                    {/* <AlertDialogCancel className="hover:bg-red-500 hover:text-white">
-                                      Cancel
-                                    </AlertDialogCancel> */}
-                                    <AlertDialogAction asChild>
-                                      <Button type="submit" variant={"pub"}>Submit</Button>
+                                    <AlertDialogAction asChild className="bg-pub hover:bg-green-500">
+                                      <Button variant="pub" type="submit" disabled={!form.getValues('thread')}>Submit</Button>
                                     </AlertDialogAction>
                                   </AlertDialogFooter>
                                 </form>
