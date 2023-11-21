@@ -3,14 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-import {
-  LogOut,
-  Settings,
-  User,
-  Bell,
-  Heart,
-  Bookmark,
-} from "lucide-react";
+import { LogOut, Settings, User, Bell, Heart, Bookmark } from "lucide-react";
 
 import {
   NavigationMenu,
@@ -51,6 +44,17 @@ import {
 
 import { Button } from "../button";
 import { Avatar, AvatarImage, AvatarFallback } from "../avatar";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "@/components/ui/alert-dialog";
 
 const userId = 1;
 
@@ -75,33 +79,65 @@ export default function NavigationMenuBar() {
               {isLoggedIn && (
                 <NavigationMenuItem>
                   <Dialog>
-
-                  
-                  <DialogTrigger className="text-pub-darker">Write</DialogTrigger>
-                  <DialogContent className="sm:max-w-[350px] sm:max-h-[450px]">
+                    <DialogTrigger className="text-pub-darker">
+                      Write
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[350px] sm:max-h-[450px]">
                       <DialogHeader>
-                      <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-Share your insights!    </h4>
+                        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                          Share your insights!{" "}
+                        </h4>
                       </DialogHeader>
                       <DialogDescription>
                         Choose between writing an Article or posting a Thread.
                       </DialogDescription>
                       <div className="flex flex-row items-center justify-center space-x-5">
                         <div className="space-x-2">
-                          <Link href={`/users/${userId}/create`}><Button>Article</Button></Link>
+                          <Link href={`/users/${userId}/create`}>
+                            <Button variant={"pub"}>Article</Button>
+                          </Link>
                         </div>
                         <div className="space-x-2">
-                          <Button>Thread</Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger>
+                              <Button variant={"pub"}>Thread</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="sm:max-w-[550px] sm:max-h-[450px]">
+                              <AlertDialogTitle>
+                                Share a Thread!
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This is a standalone thread that will allow you
+                                to share your thoughts!
+                              </AlertDialogDescription>
+
+
+                              
+
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="hover:bg-red-500 hover:text-white">Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => {
+                                    // Async function that creates a Thread.
+                                    location.reload();
+                                  }}
+                                className="hover:bg-pub hover:text-white">
+                                  Submit
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </div>
-
-                  </DialogContent>
+                    </DialogContent>
                   </Dialog>
                 </NavigationMenuItem>
               )}
               {!isLoggedIn && (
                 <NavigationMenuItem>
-                  <Link href={"/sign-in"}><Button variant={"default"}>Sign In</Button></Link>
+                  <Link href={"/sign-in"}>
+                    <Button variant={"default"}>Sign In</Button>
+                  </Link>
                 </NavigationMenuItem>
               )}
               {isLoggedIn && (
