@@ -4,20 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 import {
-  Cloud,
-  CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
   LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
   Settings,
   User,
-  UserPlus,
-  Users,
   Bell,
   Heart,
   Bookmark,
@@ -63,6 +52,8 @@ import {
 import { Button } from "../button";
 import { Avatar, AvatarImage, AvatarFallback } from "../avatar";
 
+const userId = 1;
+
 export default function NavigationMenuBar() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
 
@@ -83,7 +74,29 @@ export default function NavigationMenuBar() {
             <NavigationMenuList className="flex flex-row space-x-4">
               {isLoggedIn && (
                 <NavigationMenuItem>
-                  <Button variant={"pub"}>Write</Button>
+                  <Dialog>
+
+                  
+                  <DialogTrigger className="text-pub-darker">Write</DialogTrigger>
+                  <DialogContent className="sm:max-w-[350px] sm:max-h-[450px]">
+                      <DialogHeader>
+                      <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+Share your insights!    </h4>
+                      </DialogHeader>
+                      <DialogDescription>
+                        Choose between writing an Article or posting a Thread.
+                      </DialogDescription>
+                      <div className="flex flex-row items-center justify-center space-x-5">
+                        <div className="space-x-2">
+                          <Link href={`/users/${userId}/create`}><Button>Article</Button></Link>
+                        </div>
+                        <div className="space-x-2">
+                          <Button>Thread</Button>
+                        </div>
+                      </div>
+
+                  </DialogContent>
+                  </Dialog>
                 </NavigationMenuItem>
               )}
               {!isLoggedIn && (
