@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 import { LogOut, Settings, User, Bell, Heart, Bookmark } from "lucide-react";
 
@@ -55,11 +58,38 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 const userId = 1;
 
+const threadFormSchema = z.object({
+  thread: z.string().min(2, {message: "Minimum thread is a character"}).max(280, {
+    message: "Maximum number of characters reached",
+  })
+});
+
+type ThreadFormValues = z.infer<typeof threadFormSchema>;
+
+const defaultValues: Partial<ThreadFormValues> = {
+    thread: ""
+};
+
 export default function NavigationMenuBar() {
+
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const form = useForm<ThreadFormValues>({
+    resolver: zodResolver(threadFormSchema),
+    defaultValues,
+  });
 
   return (
     <>
@@ -112,7 +142,7 @@ export default function NavigationMenuBar() {
                               </AlertDialogDescription>
 
 
-                              
+
 
                               <AlertDialogFooter>
                                 <AlertDialogCancel className="hover:bg-red-500 hover:text-white">Cancel</AlertDialogCancel>
