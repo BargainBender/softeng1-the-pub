@@ -28,6 +28,8 @@ export default async function UserArticlePage({ params }: { params: {userId: str
         category={data.article.category}
         description={data.article.description}
         />
+
+        
         </>
     )
 
