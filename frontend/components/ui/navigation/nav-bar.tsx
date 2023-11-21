@@ -45,6 +45,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+import { toast } from "../use-toast";
+import { Textarea } from "../textarea";
+
 import { Button } from "../button";
 import { Avatar, AvatarImage, AvatarFallback } from "../avatar";
 import {
@@ -72,24 +75,38 @@ import { Input } from "@/components/ui/input";
 const userId = 1;
 
 const threadFormSchema = z.object({
-  thread: z.string().min(2, {message: "Minimum thread is a character"}).max(280, {
-    message: "Maximum number of characters reached",
-  })
+  thread: z
+    .string()
+    .min(2, { message: "Minimum thread is a character" })
+    .max(280, {
+      message: "Maximum number of characters reached",
+    }),
 });
 
 type ThreadFormValues = z.infer<typeof threadFormSchema>;
 
 const defaultValues: Partial<ThreadFormValues> = {
-    thread: ""
+  thread: "",
 };
 
 export default function NavigationMenuBar() {
-
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const form = useForm<ThreadFormValues>({
     resolver: zodResolver(threadFormSchema),
     defaultValues,
   });
+
+  function onSubmit(data: ThreadFormValues) {
+    console.log(data);
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
+  }
 
   return (
     <>
@@ -140,21 +157,63 @@ export default function NavigationMenuBar() {
                                 This is a standalone thread that will allow you
                                 to share your thoughts!
                               </AlertDialogDescription>
-
-
-
-
-                              <AlertDialogFooter>
-                                <AlertDialogCancel className="hover:bg-red-500 hover:text-white">Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => {
-                                    // Async function that creates a Thread.
-                                    location.reload();
-                                  }}
-                                className="hover:bg-pub hover:text-white">
-                                  Submit
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
+                              <Form {...form}>
+                                <form
+                                  onSubmit={form.handleSubmit(onSubmit)}
+                                  className="space-y-8"
+                                >
+                                  <FormField
+                                    control={form.control}
+                                    name="thread"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Textarea
+                                            placeholder="Share your thoughs here."
+                                            className="resize"
+                                            {...field}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <AlertDialogFooter>
+                                    <AlertDialog>
+                                      <AlertDialogTrigger asChild>
+                                        <Button variant="destructive">
+Cancel                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle>
+                                            Discard Thread?
+                                          </AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                            This action cannot be undone. Data in your thread will be lost.
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel>
+                                            No
+                                          </AlertDialogCancel>
+                                          <AlertDialogAction onClick={() => {
+                                            location.reload()
+                                          }}>
+                                            Yes
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
+                                    {/* <AlertDialogCancel className="hover:bg-red-500 hover:text-white">
+                                      Cancel
+                                    </AlertDialogCancel> */}
+                                    <AlertDialogAction asChild>
+                                      <Button type="submit" variant={"pub"}>Submit</Button>
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </form>
+                              </Form>
                             </AlertDialogContent>
                           </AlertDialog>
                         </div>
