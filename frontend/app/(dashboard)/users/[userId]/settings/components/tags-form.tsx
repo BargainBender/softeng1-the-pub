@@ -111,10 +111,10 @@ export function TagsForm() {
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">
-                      Communication notification
+                      Academic suggestion
                     </FormLabel>
                     <FormDescription>
-                      Receive notifications about your account activity.
+                      Suggest {`"`} Academic {`"`}  articles and threads.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -133,10 +133,10 @@ export function TagsForm() {
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">
-                      Communication notification
+                      Travel suggestion
                     </FormLabel>
                     <FormDescription>
-                      Receive notifications about your account activity.
+                    Suggest {`"`} Travel {`"`}  articles and threads.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -155,10 +155,10 @@ export function TagsForm() {
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">
-                      Article notification
+                      Entertainment suggestion
                     </FormLabel>
                     <FormDescription>
-                      Receive notifications about new articles, threads, and more.
+                    Suggest {`"`} Entertainment {`"`}  articles and threads.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -176,9 +176,9 @@ export function TagsForm() {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Social notifications</FormLabel>
+                    <FormLabel className="text-base">Technology suggestion</FormLabel>
                     <FormDescription>
-                      Receive notifications for friend requests, follows, and more.
+                    Suggest {`"`} Technology {`"`}  articles and threads.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -196,17 +196,15 @@ export function TagsForm() {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Security notifications</FormLabel>
+                    <FormLabel className="text-base">Sports suggestion</FormLabel>
                     <FormDescription>
-                      Receive notifications about your account activity and security.
+                    Suggest {`"`} Sports {`"`}  articles and threads.
                     </FormDescription>
                   </div>
                   <FormControl>
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      disabled
-                      aria-readonly
                     />
                   </FormControl>
                 </FormItem>
@@ -214,7 +212,7 @@ export function TagsForm() {
             />
           </div>
         </div>
-        <Button type="submit" variant={"pub"}>Update notifications</Button>
+        <Button type="submit" variant={"pub"}>Update suggestions</Button>
       </form>
     </Form>
   )

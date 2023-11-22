@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator"
-import { TagsForm } from "../components/notifications-form"  
+import { TagsForm } from "../components/tags-form"  
 
 export default function SettingsTagsPage() {
   return (

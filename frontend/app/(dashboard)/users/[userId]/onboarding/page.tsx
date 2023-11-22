@@ -37,7 +37,6 @@ export default function OnboardingPage() {
     setChosenTags(chosenTags);
   };
 
-  
   const handleNextStep = () => {
     setState((prevState) => ({
       ...prevState,
@@ -59,11 +58,13 @@ export default function OnboardingPage() {
   const handleFormChange = (data: z.infer<typeof bioSchema>) => {
     setFormData(data);
   };
+
   const submitValues = () => {
-    const onBoardingData = [
-      formData,
-      {chosenTags}
-    ]
+    const chosenTagsObject = chosenTags.reduce((acc, tag) => {
+      acc[tag.toLowerCase()] = true;
+      return acc;
+    }, {} as { [key: string]: boolean });
+    const onBoardingData = [formData, chosenTagsObject];
     toast({
       title: "Success",
       description: (
@@ -72,10 +73,10 @@ export default function OnboardingPage() {
         </pre>
       ),
     });
-    console.log(chosenTags);
-  };
 
-  
+    // send data to the API//write async
+
+  };
 
   const renderButtons = () => {
     switch (state.step) {
@@ -274,7 +275,7 @@ export default function OnboardingPage() {
                 />
               </div>
               <div className="flex-1 mx-8">
-                <OnboardingForm onFormChange={handleFormChange}/>
+                <OnboardingForm onFormChange={handleFormChange} />
               </div>
             </div>
           </>
