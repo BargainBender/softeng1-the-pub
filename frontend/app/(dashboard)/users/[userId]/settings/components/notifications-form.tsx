@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   Form,
   FormControl,
@@ -20,33 +19,35 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/use-toast"
 
-const notificationsFormSchema = z.object({
+const tagsFormSchema = z.object({
   type: z.enum(["all", "mentions", "none"], {
     required_error: "You need to select a notification type.",
   }),
-  communication_notifications: z.boolean().default(false).optional(),
-  social_notifications: z.boolean().default(false).optional(),
-  article_notifications: z.boolean().default(false).optional(),
-  security_notifications: z.boolean(),
+  academics: z.boolean().default(false).optional(),
+  travel: z.boolean().default(false).optional(),
+  entertainment: z.boolean().default(false).optional(),
+  technology: z.boolean().default(false).optional(),
+  sports: z.boolean().default(false).optional(),
 })
 
-type NotificationsFormValues = z.infer<typeof notificationsFormSchema>
+type TagsFormValues = z.infer<typeof tagsFormSchema>
 
 // This can come from your database or API.
-const defaultValues: Partial<NotificationsFormValues> = {
-  communication_notifications: false,
-  article_notifications: false,
-  social_notifications: true,
-  security_notifications: true,
+const defaultValues: Partial<TagsFormValues> = {
+  academics: false,
+  travel: false,
+  entertainment: true,
+  technology: true,
+  sports: true,
 }
 
-export function NotificationsForm() {
-  const form = useForm<NotificationsFormValues>({
-    resolver: zodResolver(notificationsFormSchema),
+export function TagsForm() {
+  const form = useForm<TagsFormValues>({
+    resolver: zodResolver(tagsFormSchema),
     defaultValues,
   })
 
-  function onSubmit(data: NotificationsFormValues) {
+  function onSubmit(data: TagsFormValues) {
     toast({
       title: "You submitted the following values:",
       description: (
@@ -101,11 +102,33 @@ export function NotificationsForm() {
           )}
         />
         <div>
-          <h3 className="mb-4 text-lg font-medium">Pub Notifications</h3>
+          <h3 className="mb-4 text-lg font-medium">Tags Suggestions</h3>
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="communication_notifications"
+              name="academics"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                      Communication notification
+                    </FormLabel>
+                    <FormDescription>
+                      Receive notifications about your account activity.
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="travel"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
@@ -127,7 +150,7 @@ export function NotificationsForm() {
             />
             <FormField
               control={form.control}
-              name="article_notifications"
+              name="entertainment"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
@@ -149,7 +172,7 @@ export function NotificationsForm() {
             />
             <FormField
               control={form.control}
-              name="social_notifications"
+              name="technology"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
@@ -169,7 +192,7 @@ export function NotificationsForm() {
             />
             <FormField
               control={form.control}
-              name="security_notifications"
+              name="sports"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
