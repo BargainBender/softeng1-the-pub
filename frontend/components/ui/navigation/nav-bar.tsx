@@ -6,7 +6,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { LogOut, Settings, User, Bell, Heart, Bookmark, CheckCircle } from "lucide-react";
+import {
+  LogOut,
+  Settings,
+  User,
+  Bell,
+  Heart,
+  Bookmark,
+  CheckCircle,
+} from "lucide-react";
 
 import {
   NavigationMenu,
@@ -102,9 +110,8 @@ export default function NavigationMenuBar() {
       title: "Your thread has been posted successfully!",
       description: (
         <div className="flex items-center space-x-2">
-<CheckCircle className="mx-2"/> Your post was sent!
+          <CheckCircle className="mx-2" /> Your post was sent!
         </div>
-        
       ),
     });
   }
@@ -183,7 +190,8 @@ export default function NavigationMenuBar() {
                                     <AlertDialog>
                                       <AlertDialogTrigger asChild>
                                         <Button variant="destructive">
-Cancel                                        </Button>
+                                          Cancel{" "}
+                                        </Button>
                                       </AlertDialogTrigger>
                                       <AlertDialogContent>
                                         <AlertDialogHeader>
@@ -191,23 +199,36 @@ Cancel                                        </Button>
                                             Discard Thread?
                                           </AlertDialogTitle>
                                           <AlertDialogDescription>
-                                            This action cannot be undone. Data in your thread will be lost.
+                                            This action cannot be undone. Data
+                                            in your thread will be lost.
                                           </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                           <AlertDialogCancel className="hover:bg-red-500 hover:text-white">
                                             No
                                           </AlertDialogCancel>
-                                          <AlertDialogAction className="bg-pub-darker hover:bg-green-500 hover:text-white" onClick={() => {
-                                            location.reload()
-                                          }}>
+                                          <AlertDialogAction
+                                            className="bg-pub-darker hover:bg-green-500 hover:text-white"
+                                            onClick={() => {
+                                              location.reload();
+                                            }}
+                                          >
                                             Yes
                                           </AlertDialogAction>
                                         </AlertDialogFooter>
                                       </AlertDialogContent>
                                     </AlertDialog>
-                                    <AlertDialogAction asChild className="bg-pub hover:bg-green-500">
-                                      <Button variant="pub" type="submit" disabled={!form.getValues('thread')}>Submit</Button>
+                                    <AlertDialogAction
+                                      asChild
+                                      className="bg-pub hover:bg-green-500"
+                                    >
+                                      <Button
+                                        variant="pub"
+                                        type="submit"
+                                        disabled={!form.getValues("thread")}
+                                      >
+                                        Submit
+                                      </Button>
                                     </AlertDialogAction>
                                   </AlertDialogFooter>
                                 </form>
