@@ -43,6 +43,7 @@ export function OnboardingForm({onFormChange} : OnboardingFormProps) {
     defaultValues: {
       profile: "",
       bio: "",
+
     },
   });
 
@@ -130,9 +131,6 @@ export function OnboardingForm({onFormChange} : OnboardingFormProps) {
                 </FormItem>
               )}
             />
-            {/* <div className="flex items-center justify-center">
-            <Button type="submit" variant={"pub"}>Submit</Button>
-            </div> */}
           </form>
         </Form>
       </CardContent>

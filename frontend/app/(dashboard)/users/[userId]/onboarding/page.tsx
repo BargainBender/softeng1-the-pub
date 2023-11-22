@@ -60,11 +60,15 @@ export default function OnboardingPage() {
     setFormData(data);
   };
   const submitValues = () => {
+    const onBoardingData = [
+      formData,
+      {chosenTags}
+    ]
     toast({
       title: "Success",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(chosenTags)}</code>
+          <code className="text-white">{JSON.stringify(onBoardingData)}</code>
         </pre>
       ),
     });
