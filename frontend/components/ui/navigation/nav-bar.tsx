@@ -58,6 +58,7 @@ import { Textarea } from "../textarea";
 
 import { Button } from "../button";
 import { Avatar, AvatarImage, AvatarFallback } from "../avatar";
+import Image from "next/image";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -118,12 +119,17 @@ export default function NavigationMenuBar() {
 
   return (
     <>
-      <div className="shadow-xl flex justify-between items-center px-6 my-3">
+      <div className="shadow-xl flex justify-between items-center px-6 my-3 sticky top-0">
         <div className="flex space-x-4 my-2">
           <NavigationMenu className="flex space-x-4">
             <NavigationMenuList className="flex flex-row space-x-4">
               <NavigationMenuItem>
-                <Link href={"/"}>The Pub</Link>
+                <Link href={"/"}> <Image
+                src="/assets/Blog-Logo.svg"
+                alt="The Pub Logo"
+                width={60}
+                height={30}
+              /></Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
