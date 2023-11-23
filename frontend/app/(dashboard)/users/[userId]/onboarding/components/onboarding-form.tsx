@@ -26,6 +26,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const bioSchema = z.object({
   profile: z.string().optional(),
@@ -102,10 +104,9 @@ export function OnboardingForm({onFormChange} : OnboardingFormProps) {
                     </div>
                   </FormLabel>
                   <FormControl>
-                    <div className="flex items-center justify-center">
-                      <Button variant={"pub"} className="w-36">
-                        Upload
-                      </Button>
+                    <div className="gap-1.5 items-start justify-start">
+                      <Label htmlFor="url">Image Url</Label>
+                     <Input {...field}/>
                     </div>
                   </FormControl>
                 </FormItem>
