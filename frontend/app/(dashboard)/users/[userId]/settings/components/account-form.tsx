@@ -50,7 +50,7 @@ const accountFormSchema = z.object({
       message: "Email must be at least 2 characters.",
     })
     .max(30, {
-      message: "Name must not be longer than 30 characters.",
+      message: "Email must not be longer than 30 characters.",
     }).email({
       message: "Invalid email format '@example.com'"
     }),

@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import ArticleHeading from '../components/article-heading';
 
+// TODO: Status if not draft, show publicly and show UserData
+
 export default async function UserArticlePage({ params }: { params: {userId: string, articleId: string}}) {
     // Get the userID and artlcleID from the URL
     // const { userID, articleID } = useRouter().query; 

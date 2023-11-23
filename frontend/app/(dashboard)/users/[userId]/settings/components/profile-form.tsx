@@ -44,7 +44,7 @@ const profileFormSchema = z.object({
     .max(30, {
       message: "Name must not be longer than 30 characters.",
     }),
-  bio: z.string().max(160).min(4),
+  bio: z.string().max(160).optional(),
   pronouns: z.string().optional(),
   region: z.string({
     required_error: "Region must be chosen",
