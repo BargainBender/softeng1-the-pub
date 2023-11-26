@@ -54,6 +54,7 @@ export default function OnboardingPage() {
   const [formData, setFormData] = useState<z.infer<typeof bioSchema> | null>(
     null
   );
+  let bioLength = formData?.bio?.length || 0;
 
   const handleFormChange = (data: z.infer<typeof bioSchema>) => {
     setFormData(data);
@@ -148,6 +149,7 @@ export default function OnboardingPage() {
               </Button>
               <Button
                 variant={"outline"}
+               disabled={bioLength > 160 ? true : false}
                 onClick={() => {
                   setState({
                     step: 2,
@@ -167,6 +169,7 @@ export default function OnboardingPage() {
               </Button>
               <Button
                 onClick={handleNextStep}
+                disabled={bioLength > 160 ? true : false}
                 variant={"pub"}
                 className="flex-shrink-0 w-36"
               >

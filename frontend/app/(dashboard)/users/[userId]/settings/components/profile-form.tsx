@@ -5,8 +5,12 @@ import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import { ChevronsUpDown, Check, CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
+
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -36,6 +40,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 
 const profileFormSchema = z.object({
+  profile: z.string().optional(),
   name: z
     .string()
     .min(2, {
@@ -83,10 +88,9 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 // This can come from your database or API.
 const defaultValues: Partial<ProfileFormValues> = {
+  profile: "https://github.com/shadcn.png",
   bio: "I own a computer.",
-  urls: [
-    { value: "http://twitter.com/shadcn" },
-  ],
+  urls: [{ value: "http://twitter.com/shadcn" }],
   region: "NA",
   pronouns: "They/Them",
   dob: new Date("2023-01-23"),
@@ -115,9 +119,41 @@ export function ProfileForm() {
     });
   }
 
+  const [imageUrl, setImageUrl] = useState(defaultValues.profile);
+  
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="profile"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <div className="flex flex-col items-center">
+                  <div className="my-3">
+                    <Avatar className="h-36 w-36">
+                      <AvatarImage src={imageUrl} alt="@shadcn" />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  </div>
+
+                  <div className="w-full">
+                    <Label htmlFor="url">Image Url</Label>
+                    <Input
+                      {...field}
+                      value={imageUrl} // Set the value of the input to imageUrl
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setImageUrl(e.target.value); // Update imageUrl on input change
+                      }}
+                    />
+                  </div>
+                </div>
+              </FormControl>
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="name"

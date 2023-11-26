@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -38,14 +37,13 @@ interface OnboardingFormProps {
   onFormChange: (formData: z.infer<typeof bioSchema>) => void; // Callback function
 }
 
-export function OnboardingForm({onFormChange} : OnboardingFormProps) {
+export function OnboardingForm({ onFormChange }: OnboardingFormProps) {
   // 1. Define your form.
   const form = useForm<z.infer<typeof bioSchema>>({
     resolver: zodResolver(bioSchema),
     defaultValues: {
       profile: "",
       bio: "",
-
     },
   });
 
@@ -64,6 +62,13 @@ export function OnboardingForm({onFormChange} : OnboardingFormProps) {
     });
     console.log(values);
   }
+  const [imageUrl, setImageUrl] = useState("https://github.com/shadcn.png"); // Default image URL
+
+  // useEffect to update the Avatar when imageUrl changes
+  useEffect(() => {
+    // Handle any logic you need here
+    // For simplicity, just update the Avatar when the imageUrl changes
+  }, [imageUrl]);
 
   useEffect(() => {
     onFormChange(form.getValues());
@@ -85,6 +90,12 @@ export function OnboardingForm({onFormChange} : OnboardingFormProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="flex flex-col items-center justify-center">
+          <Avatar className=" h-36 w-36">
+            <AvatarImage src={imageUrl} alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -92,21 +103,16 @@ export function OnboardingForm({onFormChange} : OnboardingFormProps) {
               name="profile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    <div className="flex flex-col items-center justify-center">
-                      <Avatar className=" h-36 w-36">
-                        <AvatarImage
-                          src="https://github.com/shadcn.png"
-                          alt="@shadcn"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    </div>
-                  </FormLabel>
                   <FormControl>
                     <div className="gap-1.5 items-start justify-start">
                       <Label htmlFor="url">Image Url</Label>
-                     <Input {...field}/>
+                      <Input
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setImageUrl(e.target.value);
+                        }}
+                      />
                     </div>
                   </FormControl>
                 </FormItem>
@@ -126,7 +132,7 @@ export function OnboardingForm({onFormChange} : OnboardingFormProps) {
                     />
                   </FormControl>
                   <FormDescription>
-                    This will show in your profile.
+                    This will show in your profile. Maximum of 160 characters.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
