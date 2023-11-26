@@ -81,6 +81,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+// fetch userdata
 const userId = 1;
 
 const threadFormSchema = z.object({
@@ -99,6 +100,7 @@ const defaultValues: Partial<ThreadFormValues> = {
 };
 
 export default function NavigationMenuBar() {
+  // Use next-auth
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const form = useForm<ThreadFormValues>({
     resolver: zodResolver(threadFormSchema),
@@ -154,7 +156,7 @@ export default function NavigationMenuBar() {
                       </DialogDescription>
                       <div className="flex flex-row items-center justify-center space-x-5">
                         <div className="space-x-2">
-                          <Link href={`/users/${userId}/create`}>
+                          <Link href={`/articles/create`}>
                             <Button variant={"pub"}>Article</Button>
                           </Link>
                         </div>
@@ -267,6 +269,7 @@ export default function NavigationMenuBar() {
                       <DropdownMenuTrigger asChild>
                         <Avatar>
                           <AvatarImage
+                          // Change to Dynamic Image
                             src="https://github.com/shadcn.png"
                             alt="@shadcn"
                             className="rounded-full"
@@ -279,6 +282,7 @@ export default function NavigationMenuBar() {
                           <div className="flex items-center flex-col justify-center">
                             <Avatar>
                               <AvatarImage
+                              // Change this to dynamic image
                                 src="https://github.com/shadcn.png"
                                 alt="@shadcn"
                                 className="rounded-full"
@@ -286,18 +290,22 @@ export default function NavigationMenuBar() {
                               <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                             <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                              {/* Name */}
                               Jace L. Gonzales
                             </h4>
                             <p className="text-sm font-normal leading-none">
+                              {/* Username */}
                               @heyitsjace
                             </p>
                           </div>
                           <div className="flex flex-row items-center justify-center mx-auto">
                             <div className="ml-6">
+                              {/* Follwers count */}
                               <small>281 followers</small>
                             </div>
                             <div className="flex-grow"></div>
                             <div>
+                              {/* Following count */}
                               <small className="mr-6">0 following</small>
                             </div>
                           </div>
