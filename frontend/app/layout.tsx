@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import NavigationMenuBar from '@/components/ui/navigation/nav-bar'
 import { Toaster } from "@/components/ui/toaster"
 
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}><NavigationMenuBar />{children}
+      <body className={inter.className}><NavigationMenuBar/>{children}
       <Toaster /></body>
     </html>
   )
