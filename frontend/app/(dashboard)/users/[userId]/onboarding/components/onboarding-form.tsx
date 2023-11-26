@@ -13,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -38,14 +37,13 @@ interface OnboardingFormProps {
   onFormChange: (formData: z.infer<typeof bioSchema>) => void; // Callback function
 }
 
-export function OnboardingForm({onFormChange} : OnboardingFormProps) {
+export function OnboardingForm({ onFormChange }: OnboardingFormProps) {
   // 1. Define your form.
   const form = useForm<z.infer<typeof bioSchema>>({
     resolver: zodResolver(bioSchema),
     defaultValues: {
       profile: "",
       bio: "",
-
     },
   });
 
@@ -64,7 +62,7 @@ export function OnboardingForm({onFormChange} : OnboardingFormProps) {
     });
     console.log(values);
   }
-  const [imageUrl, setImageUrl] = useState('https://github.com/shadcn.png'); // Default image URL
+  const [imageUrl, setImageUrl] = useState("https://github.com/shadcn.png"); // Default image URL
 
   // useEffect to update the Avatar when imageUrl changes
   useEffect(() => {
@@ -92,16 +90,12 @@ export function OnboardingForm({onFormChange} : OnboardingFormProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-      <div className="flex flex-col items-center justify-center">
-                      {/* TODO: Add onchange to have a real-time image showcase */}
-                      <Avatar className=" h-36 w-36">
-                        <AvatarImage
-                          src={imageUrl}
-                          alt="@shadcn"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    </div>
+        <div className="flex flex-col items-center justify-center">
+          <Avatar className=" h-36 w-36">
+            <AvatarImage src={imageUrl} alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -112,11 +106,13 @@ export function OnboardingForm({onFormChange} : OnboardingFormProps) {
                   <FormControl>
                     <div className="gap-1.5 items-start justify-start">
                       <Label htmlFor="url">Image Url</Label>
-                     <Input {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setImageUrl(e.target.value);
-                      }}/>
+                      <Input
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setImageUrl(e.target.value);
+                        }}
+                      />
                     </div>
                   </FormControl>
                 </FormItem>
