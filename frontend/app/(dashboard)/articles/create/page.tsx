@@ -18,7 +18,6 @@ import * as z from "zod";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Editor } from "../components/blocknote-editor";
 
 
 // Form for the Title, subtitle, tags
@@ -42,7 +41,10 @@ const createArticleSchema = z.object({
 
 type CreateArticleValues = z.infer<typeof createArticleSchema>;
 
+
 export default function CreateArticlePage() {
+
+  const Editor = dynamic(() => import("../components/blocknote-editor"), { ssr: false });
   const allTags = [
     "Academics",
     "Travel",
@@ -50,6 +52,8 @@ export default function CreateArticlePage() {
     "Sports",
     "Technology",
   ];
+
+
 
   const [chosenTags, setChosenTags] = useState<string[]>([]);
   const [unchosenTags, setUnchosenTags] = useState<string[]>(allTags);
@@ -103,7 +107,7 @@ export default function CreateArticlePage() {
                       <Input
                         placeholder="Article Title"
                         {...field}
-                        className="scroll-m-20 text-4xl font-semibold tracking-tight h-30"
+                        className="scroll-m-20 text-4xl font-semibold tracking-tight em"
                       />
                     </FormControl>
                     <FormMessage />
@@ -145,6 +149,7 @@ export default function CreateArticlePage() {
         <div className="max-w-prose mt-3 gap-6">
           <Editor 
           onChange={() => {
+
          
           }}
           initialContent={""}
