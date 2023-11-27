@@ -3,7 +3,13 @@
 
 import dynamic from "next/dynamic";
 
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,8 +26,15 @@ const Editor = dynamic(() => import("../components/blocknote-editor"), {
 
 // Form for the Title, subtitle, tags
 const createArticleSchema = z.object({
-  title: z.string().min(3).max(100),
-  subtitle: z.string().min(3).max(100),
+  title: z
+    .string()
+    .min(1, {
+      message: "Minimum of a character",
+    })
+    .max(100, {
+      message: "Maximum of 100 characters",
+    }),
+  subtitle: z.string().min(3).max(100).optional(),
 });
 
 type CreateArticleValues = z.infer<typeof createArticleSchema>;
@@ -55,19 +68,20 @@ export default function CreateArticlePage() {
         unchosenTags.filter((unchosenTag) => unchosenTag !== tag)
       );
     }
-    console.log(chosenTags)
+    console.log(chosenTags);
   };
-
-  
 
   const form = useForm<CreateArticleValues>({
     resolver: zodResolver(createArticleSchema),
     defaultValues,
   });
 
-
-
   function onSubmit(data: CreateArticleValues) {
+    const chosenTagsObject = chosenTags.reduce((acc, tag) => {
+      acc[tag.toLowerCase()] = true;
+      return acc;
+    }, {} as { [key: string]: boolean });
+
     toast({
       title: "You submitted the following values:",
       description: (
@@ -80,10 +94,10 @@ export default function CreateArticlePage() {
 
   return (
     <>
-      <div className="prose mx-auto max-w-2xl mt-16">
-        <div className="max-w-prose">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="prose mx-auto max-w-2xl mt-16">
+            <div className="max-w-prose space-y-8">
               <FormField
                 control={form.control}
                 name="title"
@@ -96,6 +110,7 @@ export default function CreateArticlePage() {
                         className="scroll-m-20 text-4xl font-semibold tracking-tight h-30"
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -114,29 +129,35 @@ export default function CreateArticlePage() {
                   </FormItem>
                 )}
               />
-            </form>
-          </Form>
-          <div className="space-y-6 space-x-5">
-            {allTags.map((tag) => (
-              <Button
-                key={tag}
-                onClick={() => handleChosenTagsChange(tag)}
-                variant={chosenTags.includes(tag) ? "pub" : "outline"}
-                className="flex-1"
-              >
-                {tag}
-              </Button>
-            ))}
-          </div>
-          <Button onClick={() => {
-console.log(form.getValues())  }}>Submit</Button>
 
-        </div>
-        <Separator className="max-w-prose my-6" />
-        <div className="max-w-prose mt-3 gap-6">
-          <Editor />
-        </div>
-      </div>
+              <div className="space-y-2 space-x-5">
+                {allTags.map((tag) => (
+                  <Button
+                    key={tag}
+                    onClick={() => handleChosenTagsChange(tag)}
+                    variant={chosenTags.includes(tag) ? "pub" : "outline"}
+                    className="flex-1"
+                  >
+                    {tag}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <Button
+              onClick={() => {
+                onSubmit;
+              }}
+            >
+              Submit
+            </Button>
+
+            <Separator className="max-w-prose my-6" />
+            <div className="max-w-prose mt-3 gap-6">
+              <Editor />
+            </div>
+          </div>
+        </form>
+      </Form>
     </>
   );
 }
