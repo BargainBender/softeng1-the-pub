@@ -18,11 +18,8 @@ import * as z from "zod";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Editor } from "../components/blocknote-editor";
 
-// Dynamic import of the editor
-const Editor = dynamic(() => import("../components/blocknote-editor"), {
-  ssr: false,
-});
 
 // Form for the Title, subtitle, tags
 const createArticleSchema = z.object({
@@ -34,15 +31,16 @@ const createArticleSchema = z.object({
     .max(100, {
       message: "Maximum of 100 characters",
     }),
-  subtitle: z.string().min(3).max(100).optional(),
+  subtitle: z
+    .string()
+    .min(1, {
+      message: "Minimum of a character",
+    })
+    .max(100, { message: "Maximum of 100 characters" })
+    .optional(),
 });
 
 type CreateArticleValues = z.infer<typeof createArticleSchema>;
-
-const defaultValues: Partial<CreateArticleValues> = {
-  title: "",
-  subtitle: "",
-};
 
 export default function CreateArticlePage() {
   const allTags = [
@@ -68,12 +66,10 @@ export default function CreateArticlePage() {
         unchosenTags.filter((unchosenTag) => unchosenTag !== tag)
       );
     }
-    console.log(chosenTags);
   };
 
   const form = useForm<CreateArticleValues>({
     resolver: zodResolver(createArticleSchema),
-    defaultValues,
   });
 
   function onSubmit(data: CreateArticleValues) {
@@ -94,10 +90,10 @@ export default function CreateArticlePage() {
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="prose mx-auto max-w-2xl mt-16">
-            <div className="max-w-prose space-y-8">
+      <div className="prose mx-auto max-w-2xl mt-16">
+        <div className="max-w-prose">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
                 name="title"
@@ -129,35 +125,40 @@ export default function CreateArticlePage() {
                   </FormItem>
                 )}
               />
+            </form>
+          </Form>
 
-              <div className="space-y-2 space-x-5">
-                {allTags.map((tag) => (
-                  <Button
-                    key={tag}
-                    onClick={() => handleChosenTagsChange(tag)}
-                    variant={chosenTags.includes(tag) ? "pub" : "outline"}
-                    className="flex-1"
-                  >
-                    {tag}
-                  </Button>
-                ))}
-              </div>
-            </div>
-            <Button
-              onClick={() => {
-                onSubmit;
-              }}
-            >
-              Submit
-            </Button>
-
-            <Separator className="max-w-prose my-6" />
-            <div className="max-w-prose mt-3 gap-6">
-              <Editor />
-            </div>
+          <div className="space-y-6 space-x-5">
+            {allTags.map((tag) => (
+              <Button
+                key={tag}
+                onClick={() => handleChosenTagsChange(tag)}
+                variant={chosenTags.includes(tag) ? "pub" : "outline"}
+                className="flex-1"
+              >
+                {tag}
+              </Button>
+            ))}
           </div>
-        </form>
-      </Form>
+        </div>
+        <Separator className="max-w-prose my-6" />
+        <div className="max-w-prose mt-3 gap-6">
+          <Editor 
+          onChange={() => {
+         
+          }}
+          initialContent={""}
+          />
+        </div>
+
+        <Button
+          onClick={() => {
+            onSubmit;
+          }}
+        >
+          Submit
+        </Button>
+      </div>
     </>
   );
 }
