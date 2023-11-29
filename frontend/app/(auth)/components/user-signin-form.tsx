@@ -128,7 +128,7 @@ export function UserSignInForm({ className }: { className: string }): JSX.Elemen
 
             <div className="flex flex-col items-center">
                 <p className="mt-6 text-sm text-gray-500">
-                    Don't have an account?
+                    Don{"'"}t have an account?
                     <Link href="/sign-up" className="font-semibold leading-6 text-pub hover:text-pub/80"> Sign Up</Link>
                 </p>
                 <Link href="/forgot-password" className="mt-2 text-sm text-gray-500 font-semibold leading-6 text-pub hover:text-pub/80">Forgot your password?</Link>
