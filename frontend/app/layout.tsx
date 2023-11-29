@@ -1,11 +1,9 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import NavigationMenuBar from '@/components/ui/navigation/nav-bar'
 import { Toaster } from "@/components/ui/toaster"
 
-
-const inter = Inter({ subsets: ['latin'] })
+import merriWeather from './fonts/merriweather'
 
 export const metadata: Metadata = {
   title: 'The Pub',
@@ -19,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}><NavigationMenuBar/>{children}
+      <body className={merriWeather.className}><NavigationMenuBar/>{children}
       <Toaster /></body>
     </html>
   )
