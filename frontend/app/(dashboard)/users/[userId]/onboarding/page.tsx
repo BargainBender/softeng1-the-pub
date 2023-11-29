@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import * as z from "zod";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { OnboardingForm } from "./components/onboarding-form";
@@ -76,7 +77,6 @@ export default function OnboardingPage() {
     });
 
     // send data to the API//write async
-
   };
 
   const renderButtons = () => {
@@ -149,7 +149,7 @@ export default function OnboardingPage() {
               </Button>
               <Button
                 variant={"outline"}
-               disabled={bioLength > 160 ? true : false}
+                disabled={bioLength > 160 ? true : false}
                 onClick={() => {
                   setState({
                     step: 2,
@@ -221,13 +221,15 @@ export default function OnboardingPage() {
               >
                 Back
               </Button>
-              <Button
-                onClick={submitValues}
-                variant={"pub"}
-                className="flex-shrink-0 w-36"
-              >
-                Finish
-              </Button>
+              <Link href="/articles">
+                <Button
+                  onClick={submitValues}
+                  variant={"pub"}
+                  className="flex-shrink-0 w-36"
+                >
+                  Finish
+                </Button>
+              </Link>
             </div>
           </>
         );
