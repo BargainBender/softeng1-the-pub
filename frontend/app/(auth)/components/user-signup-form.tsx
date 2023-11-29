@@ -18,12 +18,12 @@ import {
 } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { emailRegex } from "@/lib/utils";
-import { strongPasswordRegex } from "@/lib/utils";
 import {
   lowerCaseRegex,
   upperCaseRegex,
   numberRegex,
   specialCharacterRegex,
+  strongPasswordRegex,
 } from "@/lib/utils";
 
 interface UserSignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}

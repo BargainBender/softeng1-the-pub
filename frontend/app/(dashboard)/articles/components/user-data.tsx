@@ -1,0 +1,1 @@
+// Shows the user data like who wrote the article

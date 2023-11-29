@@ -110,7 +110,7 @@ export default function UserArticlePage() {
      
 
       {/* Display Article Content */}
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
+      <p className="leading-7 [&:not(:first-child)]:mt-6 max-w-prose">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut modi error
         voluptas perspiciatis? Dolore tempora doloribus, iure sequi ipsam, ipsa
         ipsum amet ab optio exercitationem distinctio consectetur. Quod, culpa
