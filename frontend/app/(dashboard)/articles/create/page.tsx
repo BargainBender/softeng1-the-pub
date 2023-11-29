@@ -90,17 +90,28 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
     defaultValues,
   });
 
-  function onSubmit(data: CreateFormValues) {
-    const createFormData = [data, blocks];
+  function onSubmit() {
+    const data = form.getValues();
+    const createFormData = {
+      ...data,
+      blocks,
+    };
     toast({
       title: "You submitted the following values:",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          <code className="text-white">
+            {JSON.stringify(createFormData, null, 2)}
+          </code>
         </pre>
       ),
     });
   }
+
+  const clearForm = () => {
+    form.reset(); // Reset form values
+    setBlocks([]); // Clear editor content
+  };
 
   return (
     <>
@@ -248,15 +259,6 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
                   </PopoverContent>
                 </Popover>
               </div>
-              {/* Bugfix */}
-              {/* <Button
-          onClick={() => {
-            console.log(form.getValues())
-            form.handleSubmit(onSubmit)
-          }}
-        >
-          Submit
-        </Button> */}
             </form>
           </Form>
         </div>
@@ -264,15 +266,21 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
         <div className="max-w-prose mt-3 gap-6">
           <BlockNoteView editor={editor} theme={lightDefaultTheme} />
         </div>
+        <Separator className="max-w-prose my-6" />
 
+<div className="flex items-end justify-end space-x-2">
+  <Button variant={"destructive"} onClick={() => {
+clearForm();
+  }}>Clear</Button>
         <Button
           onClick={() => {
-            console.log(form.getValues())
-            form.handleSubmit(onSubmit)
+            onSubmit();
           }}
+          variant={"pub"}
         >
           Submit
         </Button>
+        </div>
       </div>
     </>
   );
