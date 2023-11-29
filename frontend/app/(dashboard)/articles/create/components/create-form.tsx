@@ -12,14 +12,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
   FormDescription,
@@ -56,9 +48,6 @@ const createFormSchema = z.object({
 });
 
 type CreateFormValues = z.infer<typeof createFormSchema>;
-type CreateFormProps = {
-    onSubmitForm: (data: CreateFormValues) => void;
-  };
   
 
 // This can come from your database or API.
@@ -87,8 +76,6 @@ export function CreateForm() {
         </pre>
       ),
     });
-
-
   }
   return (
     <Form {...form}>

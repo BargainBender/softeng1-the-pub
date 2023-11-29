@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'Come for the Stories, Stay for the Community!',
 }
 
+// Check if Logged In or not
+
 export default function RootLayout({
   children,
 }: {

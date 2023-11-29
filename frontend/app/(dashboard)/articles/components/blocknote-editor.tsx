@@ -14,6 +14,11 @@ export default function Editor() {
       // Converts the editor's contents to an array of Block objects.
       setBlocks(editor.topLevelBlocks)
   });
+
+  editor.onEditorContentChange(() => {
+    setBlocks(editor.topLevelBlocks)
+    console.log("Content was changed:", blocks);
+  });
   
 
   // Renders the editor instance using a React component.
