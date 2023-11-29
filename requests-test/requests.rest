@@ -75,7 +75,8 @@ Authorization: Bearer {{token}}
 
 {
   "is_active": false,
-  "profile_picture": "https://api.dicebear.com/7.x/notionists-neutral/svg?seed=ABCDE"
+  "profile_picture": "https://api.dicebear.com/7.x/notionists-neutral/svg?seed=ABCDE",
+  "bio": "I am raymond!"
 }
 
 ### Follow a user
