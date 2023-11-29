@@ -60,7 +60,10 @@ const ArticleView = ({ article }: Props) => {
                     width={700}
                     height={700}
                 />
-                <p className="text-gray-700 mt-7 text-justify">{article.content}</p>
+                <p
+                className="text-gray-700 mt-7 text-justify"
+                dangerouslySetInnerHTML={{ __html: article.content }}
+                ></p>
             </div>
         </div>
     )
