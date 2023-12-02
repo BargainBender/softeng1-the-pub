@@ -35,3 +35,22 @@ class Thread(models.Model):
 class ArticleThread(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="threads")
     thread = models.OneToOneField(Thread, on_delete=models.CASCADE, related_name="+")
+
+
+class ArticleVote(models.Model):
+    voter = models.ForeignKey(UserProfile, null=False, related_name="article_votes", on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, null=False, related_name="votes", on_delete=models.CASCADE)
+    is_upvote = models.BooleanField(default=True)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["voter", "article"], name="unique_article_voter")
+        ]
+        
+class ThreadVote(models.Model):
+    voter = models.ForeignKey(UserProfile, null=False, related_name="thread_votes", on_delete=models.CASCADE)
+    thread = models.ForeignKey(Thread, null=False, related_name="votes", on_delete=models.CASCADE)
+    is_upvote = models.BooleanField(default=True)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["voter", "thread"], name="unique_thread_voter")
+        ]
