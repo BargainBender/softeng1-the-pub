@@ -58,9 +58,6 @@ const allTags = [
 interface CreateArticlePageProps {}
 
 const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
-  // Stores the editor's contents as an array of Block objects.
-  const [blocks, setBlocks] = useState<Block[] | null>(null);
-
   const [chosenTags, setChosenTags] = useState<string[]>([]);
   const toggleTag = (tag: string) => {
     setChosenTags((prevTags) =>
@@ -75,7 +72,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
     // Listens for when the editor's contents change.
     onEditorContentChange: (editor) =>
       // Converts the editor's contents to an array of Block objects.
-      JSON.stringify(editor.topLevelBlocks, null, 2),
+      console.log(JSON.stringify(editor.topLevelBlocks, null, 2)),  
   });
 
   const form = useForm<CreateFormValues>({
@@ -176,6 +173,9 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
               onSubmit();
             }}
             variant={"pub"}
+            disabled={!form.getValues().title 
+            
+            }
           >
             Submit
           </Button>
