@@ -44,18 +44,7 @@ const createFormSchema = z.object({
     .max(100, {
       message: "Maximum of 100 characters",
     }),
-  subtitle: z
-    .string()
-    .min(1, {
-      message: "Minimum of a character",
-    })
-    .max(100, { message: "Maximum of 100 characters" })
-    .optional(),
-  academics: z.boolean().default(false).optional(),
-  travel: z.boolean().default(false).optional(),
-  entertainment: z.boolean().default(false).optional(),
-  technology: z.boolean().default(false).optional(),
-  sports: z.boolean().default(false).optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 type CreateFormValues = z.infer<typeof createFormSchema>;
@@ -63,12 +52,7 @@ type CreateFormValues = z.infer<typeof createFormSchema>;
 // This can come from your database or API.
 const defaultValues: Partial<CreateFormValues> = {
   title: "",
-  subtitle: "",
-  academics: false,
-  travel: false,
-  entertainment: false,
-  technology: false,
-  sports: false,
+  tags: [""],
 };
 
 interface CreateArticlePageProps {}
@@ -135,21 +119,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="subtitle"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormControl>
-                      <Input
-                        placeholder="Article subtitle"
-                        {...field}
-                        className="scroll-m-20 text-2xl font-medium tracking-tight text-muted-foreground"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+
               <div className="flex items-center justify-center">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -268,18 +238,23 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
         </div>
         <Separator className="max-w-prose my-6" />
 
-<div className="flex items-end justify-end space-x-2">
-  <Button variant={"destructive"} onClick={() => {
-clearForm();
-  }}>Clear</Button>
-        <Button
-          onClick={() => {
-            onSubmit();
-          }}
-          variant={"pub"}
-        >
-          Submit
-        </Button>
+        <div className="flex items-end justify-end space-x-2">
+          <Button
+            variant={"destructive"}
+            onClick={() => {
+              clearForm();
+            }}
+          >
+            Clear
+          </Button>
+          <Button
+            onClick={() => {
+              onSubmit();
+            }}
+            variant={"pub"}
+          >
+            Submit
+          </Button>
         </div>
       </div>
     </>

@@ -23,22 +23,18 @@ const tagsFormSchema = z.object({
   type: z.enum(["all", "mentions", "none"], {
     required_error: "You need to select a notification type.",
   }),
-  academics: z.boolean().default(false).optional(),
-  travel: z.boolean().default(false).optional(),
-  entertainment: z.boolean().default(false).optional(),
-  technology: z.boolean().default(false).optional(),
-  sports: z.boolean().default(false).optional(),
+  tags: z.array(z.string()),
 })
 
 type TagsFormValues = z.infer<typeof tagsFormSchema>
 
 // This can come from your database or API.
 const defaultValues: Partial<TagsFormValues> = {
-  academics: false,
-  travel: false,
-  entertainment: true,
-  technology: true,
-  sports: true,
+  // academics: false,
+  // travel: false,
+  // entertainment: true,
+  // technology: true,
+  // sports: true,
 }
 
 export function TagsForm() {
@@ -104,112 +100,7 @@ export function TagsForm() {
         <div>
           <h3 className="mb-4 text-lg font-medium">Tags Suggestions</h3>
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="academics"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Academic suggestion
-                    </FormLabel>
-                    <FormDescription>
-                      Suggest {`"`} Academic {`"`}  articles and threads.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-             <FormField
-              control={form.control}
-              name="travel"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Travel suggestion
-                    </FormLabel>
-                    <FormDescription>
-                    Suggest {`"`} Travel {`"`}  articles and threads.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="entertainment"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Entertainment suggestion
-                    </FormLabel>
-                    <FormDescription>
-                    Suggest {`"`} Entertainment {`"`}  articles and threads.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="technology"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Technology suggestion</FormLabel>
-                    <FormDescription>
-                    Suggest {`"`} Technology {`"`}  articles and threads.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="sports"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Sports suggestion</FormLabel>
-                    <FormDescription>
-                    Suggest {`"`} Sports {`"`}  articles and threads.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+        
           </div>
         </div>
         <Button type="submit" variant={"pub"}>Update suggestions</Button>

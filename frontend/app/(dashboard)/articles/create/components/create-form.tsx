@@ -33,13 +33,7 @@ const createFormSchema = z.object({
     .max(100, {
       message: "Maximum of 100 characters",
     }),
-  subtitle: z
-    .string()
-    .min(1, {
-      message: "Minimum of a character",
-    })
-    .max(100, { message: "Maximum of 100 characters" })
-    .optional(),
+    tags: z.array(z.string()).optional(),
   academics: z.boolean().default(false).optional(),
   travel: z.boolean().default(false).optional(),
   entertainment: z.boolean().default(false).optional(),
@@ -52,11 +46,8 @@ type CreateFormValues = z.infer<typeof createFormSchema>;
 
 // This can come from your database or API.
 const defaultValues: Partial<CreateFormValues> = {
-  academics: false,
-  travel: false,
-  entertainment: false,
-  technology: false,
-  sports: false,
+
+
 };
 
 export function CreateForm() {
@@ -96,21 +87,7 @@ export function CreateForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="subtitle"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormControl>
-                <Input
-                  placeholder="Article subtitle"
-                  {...field}
-                  className="scroll-m-20 text-2xl font-medium tracking-tight text-muted-foreground"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+      
         <div className="flex items-center justify-center">
           <Popover>
             <PopoverTrigger asChild>
