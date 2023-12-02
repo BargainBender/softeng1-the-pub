@@ -33,10 +33,7 @@ interface TagsFormProps {
   onChosenTagsChange: (chosenTags: string[]) => void; // Callback function
 }
 
-export function TagsForm({
-  allTags,
-  onChosenTagsChange,
-}: TagsFormProps) {
+export function TagsForm({ allTags, onChosenTagsChange }: TagsFormProps) {
   const [chosenTags, setChosenTags] = useState<string[]>([]);
   const [unchosenTags, setUnchosenTags] = useState<string[]>(allTags);
 
@@ -89,14 +86,12 @@ export function TagsForm({
         </div>
       </div>
       <div>
-          <h3 className="mb-4 text-lg font-medium">Tags Suggestions</h3>
-          <div className="space-y-4"></div>
-        </div>
-        <Button type="submit" variant={"pub"}>
-          Update suggestions
-        </Button>
+        <h3 className="mb-4 text-lg font-medium">Tags Suggestions</h3>
+        <div className="space-y-4"></div>
+      </div>
+      <Button type="submit" variant={"pub"}>
+        Update suggestions
+      </Button>
     </div>
-
-    
   );
 }

@@ -10,13 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { CreateForm } from "./components/create-form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+
 import {
   Form,
   FormControl,
@@ -55,18 +49,35 @@ const defaultValues: Partial<CreateFormValues> = {
   tags: [""],
 };
 
+const allTags = [
+  "Academics",
+  "Travel",
+  "Entertainment",
+  "Sports",
+  "Technology",
+];
+
 interface CreateArticlePageProps {}
 
 const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
   // Stores the editor's contents as an array of Block objects.
   const [blocks, setBlocks] = useState<Block[] | null>(null);
 
+  const [chosenTags, setChosenTags] = useState<string[]>([]);
+  const toggleTag = (tag: string) => {
+    setChosenTags((prevTags) =>
+      prevTags.includes(tag)
+        ? prevTags.filter((t) => t !== tag)
+        : [...prevTags, tag]
+    );
+  };
+
   // Creates a new editor instance.
   const editor: BlockNoteEditor = useBlockNote({
     // Listens for when the editor's contents change.
     onEditorContentChange: (editor) =>
       // Converts the editor's contents to an array of Block objects.
-      setBlocks(editor.topLevelBlocks),
+      JSON.stringify(editor.topLevelBlocks, null, 2),
   });
 
   const form = useForm<CreateFormValues>({
@@ -94,7 +105,8 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
 
   const clearForm = () => {
     form.reset(); // Reset form values
-    setBlocks([]); // Clear editor content
+    editor.removeBlocks(editor.topLevelBlocks); // Clear editor content
+    setChosenTags([]);
   };
 
   return (
@@ -119,12 +131,30 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
                   </FormItem>
                 )}
               />
-
-              <div className="flex items-center justify-center">
-            
-              </div>
             </form>
           </Form>
+
+          <div className="flex items-center flex-col justify-center space-y-2 my-2">
+            <div className="flex-1">
+              <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                Choose Tags
+              </h3>
+            </div>
+            <div className="flex-1 space-x-2">
+              {allTags.map((tag) => (
+                <Button
+                  key={tag}
+                  variant={
+                    chosenTags.includes(tag.toLowerCase()) ? "pub" : "outline"
+                  }
+                  className="text-sm"
+                  onClick={() => toggleTag(tag.toLowerCase())}
+                >
+                  {tag}
+                </Button>
+              ))}
+            </div>
+          </div>
         </div>
         <Separator className="max-w-prose my-6" />
         <div className="max-w-prose mt-3 gap-6">
