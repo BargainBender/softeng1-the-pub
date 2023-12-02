@@ -318,10 +318,6 @@ export default function NavigationMenuBar() {
                             <span>Profile</span>
                           </DropdownMenuItem>
                           <DropdownMenuItem>
-                            <Heart className="mr-2 h-4 w-4" />
-                            <span>Favorites</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
                             <Bookmark className="mr-2 h-4 w-4" />
                             <span>Bookmarks</span>
                           </DropdownMenuItem>
