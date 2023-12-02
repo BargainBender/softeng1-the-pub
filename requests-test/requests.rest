@@ -173,4 +173,30 @@ Authorization: Bearer {{token}}
     "parent": {{standaloneThreadId}},
     "content": "A standalone thread"
 }
+
+# Some bug happening when using variables here
+# Just replace "raymond3/19-A%20title" with
+# appropriate article url
+### Upvote article
+PUT {{host}}/api/raymond3/19-A%20title/vote/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "is_upvote": true
+}
+
+### Downvote article
+PUT {{host}}/api/raymond3/19-A%20title/vote/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "is_upvote": false
+}
+
+### Delete vote
+DELETE {{host}}/api/raymond3/19-A%20title/vote/
+Content-Type: application/json
+Authorization: Bearer {{token}}
 ### ========================= Content actions ========================= 
