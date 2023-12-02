@@ -38,7 +38,6 @@ const createFormSchema = z.object({
     .max(100, {
       message: "Maximum of 100 characters",
     }),
-  tags: z.array(z.string()).optional(),
 });
 
 type CreateFormValues = z.infer<typeof createFormSchema>;
@@ -46,7 +45,6 @@ type CreateFormValues = z.infer<typeof createFormSchema>;
 // This can come from your database or API.
 const defaultValues: Partial<CreateFormValues> = {
   title: "",
-  tags: [""],
 };
 
 const allTags = [
@@ -87,9 +85,11 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
 
   function onSubmit() {
     const data = form.getValues();
+    const content = JSON.stringify(editor.topLevelBlocks, null, 2);
     const createFormData = {
       ...data,
-      blocks,
+      chosenTags,
+      content: JSON.parse(content),
     };
     toast({
       title: "You submitted the following values:",
@@ -124,7 +124,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
                       <Input
                         placeholder="Article Title"
                         {...field}
-                        className="scroll-m-20 text-4xl font-semibold tracking-tight em"
+                        className="scroll-m-20 text-4xl font-semibold tracking-tight h-30"
                       />
                     </FormControl>
                     <FormMessage />
