@@ -1,8 +1,8 @@
-@username = raymond3
-@password = ray123abc
-@firstName = Raymond
-@lastName = Postrero
-@email = raymond3@example.com
+@username = jacegonzales25
+@password = JaceGonzales25!
+@firstName = Jace
+@lastName = Gonzales
+@email = jacegonzales25@gmail.com
 @host = http://localhost:8000
 
 ### ========================= Authentication =========================

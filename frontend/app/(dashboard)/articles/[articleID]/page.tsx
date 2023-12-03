@@ -11,76 +11,37 @@ const Editor = dynamic(() => import("../components/editor-view"), {
 });
 // TODO: Status if not draft, show publicly and show UserData
 const content = [
-  {
-    id: "16344aa2-7ac1-40a2-b759-a64e67a2de88",
-    type: "paragraph",
-    props: {
-      textColor: "default",
-      backgroundColor: "default",
-      textAlignment: "left",
-    },
-    content: [
-      {
-        type: "text",
-        text: "Ako si Raymond Lorem",
-        styles: {},
-      },
-    ],
-    children: [],
-  },
-  {
-    id: "442c28a6-5ee7-4ca1-9357-c93d02df64f7",
-    type: "paragraph",
-    props: {
-      textColor: "default",
-      backgroundColor: "default",
-      textAlignment: "left",
-    },
-    content: [
-      {
-        type: "text",
-        text: "A precision and recall score of 1 is generally considered excellent. In binary classification, a perfect precision of 1 indicates that every instance predicted as positive is indeed positive, with no false positives. Similarly, a recall of 1 suggests that every actual positive instance is correctly identified, and there are no false negatives.",
-        styles: {},
-      },
-    ],
-    children: [],
-  },
-  {
-    id: "a73c08e4-2a57-43ce-8b1a-2ac38d8b53e1",
-    type: "paragraph",
-    props: {
-      textColor: "default",
-      backgroundColor: "default",
-      textAlignment: "left",
-    },
-    content: [
-      {
-        type: "text",
-        text: "Perfect precision and recall are rare in practical scenarios and often come with trade-offs. Achieving both scores of 1 could imply an ideal scenario where the model makes no errors in either predicting positive instances or capturing all actual positives. However, it's crucial to assess these scores in the context of the specific problem domain and the potential trade-offs between precision and recall. In some cases, maximizing one metric may result in a decrease in the other, so the choice depends on the specific goals and requirements of the application.",
-        styles: {},
-      },
-    ],
-    children: [],
-  },
-  {
-    id: "8ee28a55-b75d-4a57-b49f-1b3fcd257a1b",
-    type: "paragraph",
-    props: {
-      textColor: "default",
-      backgroundColor: "default",
-      textAlignment: "left",
-    },
-    content: [],
-    children: [],
-  },
+  "Hello",
 ];
 
 export default function ArticlePage() {
+
+  const [articleData, setArticleData] = useState<any>(null);
   const [upvotes, setUpvotes] = useState(12);
   const [downvotes, setDownvotes] = useState(12);
   const [bookmarked, setBookmarked] = useState(true);
   const [hasUpvoted, setHasUpvoted] = useState(false);
   const [hasDownvoted, setHasDownvoted] = useState(false);
+
+
+  useEffect(() => {
+    // Fetch article data from the API
+    const fetchArticleData = async () => {
+      try {
+        const response = await fetch(''); // Replace with your API endpoint
+        if (response.ok) {
+          const data = await response.json();
+          setArticleData(data[0]); // Assuming the response is an array and you want the first item
+        } else {
+          console.error('Error fetching article data:', response.status);
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching article data:', error);
+      }
+    };
+
+    fetchArticleData();
+  }, []); // The empty dependency array ensures that this effect runs only once on mount
 
   const handleUpvote = () => {
     if (!hasUpvoted && !hasDownvoted) {

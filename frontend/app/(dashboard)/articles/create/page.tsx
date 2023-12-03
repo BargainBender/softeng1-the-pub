@@ -1,13 +1,11 @@
 // Create Form for Article
 "use client";
 
-import dynamic from "next/dynamic";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import roboto from "@/app/fonts/roboto";
@@ -15,13 +13,10 @@ import roboto from "@/app/fonts/roboto";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "@/components/ui/use-toast";
 import { Block, BlockNoteEditor } from "@blocknote/core";
 import {
   BlockNoteView,
