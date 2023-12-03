@@ -24,7 +24,7 @@ import {
   useBlockNote,
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 const createFormSchema = z.object({
   title: z
     .string()
@@ -63,7 +63,6 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
   //   );
   // };
 
-
   const router = useRouter();
 
   // Creates a new editor instance.
@@ -83,7 +82,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
     try {
       const token = localStorage.getItem("authToken");
       if (!token) {
-        router.push("/sign-in")
+        router.push("/sign-in");
         return;
       }
 
@@ -159,7 +158,10 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
                       <Input
                         placeholder="Article Title"
                         {...field}
-                        className={"scroll-m-20 text-4xl font-semibold tracking-tight h-30 " + roboto.className}
+                        className={
+                          "scroll-m-20 text-4xl font-semibold tracking-tight h-30 " +
+                          roboto.className
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -169,8 +171,8 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
             </form>
           </Form>
 
-          <div className="flex items-center flex-col justify-center space-y-2 my-2">
-            {/* <div className="flex-1">
+          {/* <div className="flex items-center flex-col justify-center space-y-2 my-2">
+            <div className="flex-1">
               <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                 Choose Tags
               </h3>
@@ -188,8 +190,8 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
                   {tag}
                 </Button>
               ))}
-            </div> */}
-          </div>
+            </div>
+          </div> */}
         </div>
         <Separator className="max-w-prose my-6" />
         <div className="max-w-prose mt-3 gap-6">

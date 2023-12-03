@@ -6,16 +6,39 @@ import ArticleHeading from "../components/article-heading";
 import ArticleCreator from "../components/article-creator";
 import { Separator } from "@/components/ui/separator";
 import ArticleMetadata from "../components/article-metadata";
+
+
 const Editor = dynamic(() => import("../components/editor-view"), {
   ssr: false,
 });
 // TODO: Status if not draft, show publicly and show UserData
-const content = [
-  "Hello",
-];
+const content = ["Hello"];
 
-export default function ArticlePage() {
+interface Author {
+  id: number;
+  username: string;
+  name: string;
+  profile_picture: string;
+  is_active: boolean;
+}
 
+interface Article {
+  id: number;
+  title: string;
+  content_preview: string;
+  date_created: string;
+  last_edited: string;
+  author: Author;
+  url: string;
+}
+
+export default function ArticlePage({
+  searchParams,
+}: {
+  searchParams: {
+    viewurl: string;
+  };
+}) {
   const [articleData, setArticleData] = useState<any>(null);
   const [upvotes, setUpvotes] = useState(12);
   const [downvotes, setDownvotes] = useState(12);
@@ -23,26 +46,16 @@ export default function ArticlePage() {
   const [hasUpvoted, setHasUpvoted] = useState(false);
   const [hasDownvoted, setHasDownvoted] = useState(false);
 
-
   useEffect(() => {
-    // Fetch article data from the API
-    const fetchArticleData = async () => {
-      try {
-        const response = await fetch(''); // Replace with your API endpoint
-        if (response.ok) {
-          const data = await response.json();
-          setArticleData(data[0]); // Assuming the response is an array and you want the first item
-        } else {
-          console.error('Error fetching article data:', response.status);
-        }
-      } catch (error) {
-        console.error('An error occurred while fetching article data:', error);
-      }
-    };
+    fetch('http://localhost:8000' + searchParams.viewurl)
+      .then((response) => response.json())
+      .then((data: Article[]) => {
+        setArticleData(data);
+      })
+      .catch((error) => console.error('Error fetching articles:', error));
+  }, []);
 
-    fetchArticleData();
-  }, []); // The empty dependency array ensures that this effect runs only once on mount
-
+ 
   const handleUpvote = () => {
     if (!hasUpvoted && !hasDownvoted) {
       // Update the upvote logic, e.g., increment the upvote count
@@ -76,32 +89,35 @@ export default function ArticlePage() {
 
   return (
     <>
-      <div className="prose mx-auto max-w-2xl mt-16">
+        <div className="prose mx-auto max-w-2xl mt-16">
         <div className="max-w-prose">
-          <ArticleHeading
-            title={"data.article.title"}
-            tags={["Programming", "Sports"]}
-          />
-
-          <ArticleCreator
-            username="Jace Gonzlaes"
-            date="2021-05-22T00:00:00.000Z"
-            avatar="hit"
-          />
-        </div>
-
-        <Separator className="my-3" />
-        <ArticleMetadata
-          upvotes={upvotes}
-          downvotes={downvotes}
-          bookmarked={bookmarked}
-          onUpvote={handleUpvote}
-          onDownvote={handleDownvote}
-          onToggleBookmark={handleToggleBookmark}
-        />
-        <Separator className="my-3" />
-        <div className="max-w-prose">
-          <Editor initialContent={JSON.stringify(content)} editable={false} />
+          {articleData && articleData.map((article: Article) => (
+            <div key={article.id}>
+              <ArticleHeading
+                title={article.title}
+                // tags={["Programming", "Sports"]} // You can replace this with the actual tags if available
+              />
+              <ArticleCreator
+                username={article.author.username}
+                date={article.date_created}
+                avatar={article.author.profile_picture}
+              />
+              <Separator className="my-3" />
+              <ArticleMetadata
+                upvotes={upvotes} // You may want to replace these with actual values from the article
+                downvotes={downvotes}
+                bookmarked={bookmarked}
+                onUpvote={handleUpvote}
+                onDownvote={handleDownvote}
+                onToggleBookmark={handleToggleBookmark}
+              />
+              <Separator className="my-3" />
+              <div className="max-w-prose">
+                {/* Use actual content data from the article */}
+                <Editor initialContent={article.content_preview} editable={false} />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </>

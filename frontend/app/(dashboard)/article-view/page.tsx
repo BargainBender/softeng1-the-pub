@@ -1,66 +1,161 @@
 "use client";
-import Image from "next/image";
-import { FiBookmark } from 'react-icons/fi';
-import ArticleView from '@/app/(dashboard)/articles/components/user-articleview-form';
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
+
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import ArticleHeading from "./components/article-heading";
+import ArticleCreator from "./components/article-creator";
+import { Separator } from "@/components/ui/separator";
+import ArticleMetadata from "./components/article-metadata";
+
+const Editor = dynamic(() => import("./components/editor-view"), {
+  ssr: false,
+});
+// TODO: Status if not draft, show publicly and show UserData
+const content = ["Hello"];
 
 interface Author {
-    id: number;
-    username: string;
-    name: string;
-    profile_picture: string;
-    is_active: boolean;
+  id: number;
+  username: string;
+  name: string;
+  profile_picture: string;
+  is_active: boolean;
 }
 
 interface Article {
-    id: number;
-    title: string;
-    author: Author;
-    content: string;
-    date_created: string;
-    last_edited:string;
-    url: string;
+  id: number;
+  title: string;
+  content: string;
+  date_created: string;
+  last_edited: string;
+  author: Author;
+  url: string;
 }
 
-interface Props {
-    article: Article;
-}
+export default function ArticlePage({
+  searchParams,
+}: {
+  searchParams: {
+    viewurl: string;
+  };
+}) {
+  const [articleData, setArticleData] = useState<Article[] | Article | null>(null);  const [upvotes, setUpvotes] = useState(12);
+  const [downvotes, setDownvotes] = useState(12);
+  const [bookmarked, setBookmarked] = useState(true);
+  const [hasUpvoted, setHasUpvoted] = useState(false);
+  const [hasDownvoted, setHasDownvoted] = useState(false);
 
+  useEffect(() => {
+    fetch("http://localhost:8000" + searchParams.viewurl)
+      .then((response) => response.json())
+      .then((data: Article[] | Article) => {
+        if (Array.isArray(data)) {
+          setArticleData(data);
+        } else {
+          setArticleData([data]);
+        }
+      })
+      .catch((error) => console.error("Error fetching articles:", error));
+  }, [searchParams.viewurl]);
 
-export default function ArticlesView({
-    searchParams,}:{
-        searchParams:{
-            viewurl: string;
-        };
+  const handleUpvote = () => {
+    if (!hasUpvoted && !hasDownvoted) {
+      // Update the upvote logic, e.g., increment the upvote count
+      setUpvotes((prevUpvotes) => prevUpvotes + 1);
+      setHasUpvoted(true);
+    } else if (hasUpvoted) {
+      // Remove the upvote logic, e.g., decrement the upvote count
+      setUpvotes((prevUpvotes) => prevUpvotes - 1);
+      setHasUpvoted(false);
     }
-) {
-    const [articles, setArticles] = useState<Article[]>([]);
+    // No action if the user has already downvoted
+  };
 
-    useEffect(() => {
-        fetch('http://localhost:8000' + searchParams.viewurl)
-            .then((response) => response.json())
-            .then((data: Article | Article[]) => {
-                if (Array.isArray(data)) {
-                    setArticles(data);
-                } else {
-                    setArticles([data]);
-                }
-            })
-            .catch((error) => console.error('Error fetching articles:', error));
-    }, []);
+  const handleDownvote = () => {
+    if (!hasUpvoted && !hasDownvoted) {
+      // Update the downvote logic, e.g., increment the downvote count
+      setDownvotes((prevDownvotes) => prevDownvotes + 1);
+      setHasDownvoted(true);
+    } else if (hasDownvoted) {
+      // Remove the downvote logic, e.g., decrement the downvote count
+      setDownvotes((prevDownvotes) => prevDownvotes - 1);
+      setHasDownvoted(false);
+    }
+    // No action if the user has already upvoted
+  };
 
-    return (
-        <div className="container m-auto pb-48">
-            
-            <div className="">
-                <div className="flex flex-col gap-3 p-2 sm:grid-cols-2 md:gap-6 md:p-6 lg:grid-cols">
-                    {articles.map((article: Article) => (
-                        <ArticleView key={article.id} article={article} />
-                    ))}
-            </div>
+  const handleToggleBookmark = () => {
+    // Update the bookmark logic, e.g., toggle the bookmarked state
+    setBookmarked((prevBookmarked) => !prevBookmarked);
+  };
 
-            </div>
+  return (
+    <>
+      <div className="prose mx-auto max-w-2xl mt-16">
+        <div className="max-w-prose">
+          {articleData &&
+            (Array.isArray(articleData) ? (
+              articleData.map((article: Article) => (
+                <div key={article.id}>
+                  <ArticleHeading
+                    title={article.title}
+                    tags={["Programming", "Sports"]} // You can replace this with the actual tags if available
+                  />
+                  <ArticleCreator
+                    username={article.author.username}
+                    date={article.date_created}
+                    avatar={article.author.profile_picture}
+                  />
+                  <Separator className="my-3" />
+                  <ArticleMetadata
+                    upvotes={upvotes} // You may want to replace these with actual values from the article
+                    downvotes={downvotes}
+                    bookmarked={bookmarked}
+                    onUpvote={handleUpvote}
+                    onDownvote={handleDownvote}
+                    onToggleBookmark={handleToggleBookmark}
+                  />
+                  <Separator className="my-3" />
+                  <div className="max-w-prose">
+                    {/* Use actual content data from the article */}
+                    <Editor
+                      initialContent={article.content}
+                      editable={false}
+                    />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div key={articleData.id}>
+                <ArticleHeading
+                  title={articleData.title}
+                  tags={["Programming", "Sports"]} // You can replace this with the actual tags if available
+                />
+                <ArticleCreator
+                  username={articleData.author.username}
+                  date={articleData.date_created}
+                  avatar={articleData.author.profile_picture}
+                />
+                <Separator className="my-3" />
+                <ArticleMetadata
+                  upvotes={upvotes} // You may want to replace these with actual values from the article
+                  downvotes={downvotes}
+                  bookmarked={bookmarked}
+                  onUpvote={handleUpvote}
+                  onDownvote={handleDownvote}
+                  onToggleBookmark={handleToggleBookmark}
+                />
+                <Separator className="my-3" />
+                <div className="max-w-prose">
+                  {/* Use actual content data from the article */}
+                  <Editor
+                    initialContent={articleData.content}
+                    editable={false}
+                  />
+                </div>
+              </div>
+            ))}
         </div>
-    );
+      </div>
+    </>
+  );
 }
