@@ -1,11 +1,11 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import ArticleHeading from "../components/article-heading";
 import ArticleCreator from "../components/article-creator";
 import { Separator } from "@/components/ui/separator";
 import ArticleMetadata from "../components/article-metadata";
-import { Editor } from "../components/editor-view";
-
+const Editor = dynamic(() => import("../components/editor-view"), { ssr: false });
 // TODO: Status if not draft, show publicly and show UserData
 const content = 
   [
@@ -81,7 +81,7 @@ export default function ArticlePage() {
     <>
       <div className="prose mx-auto max-w-2xl mt-16">
         <div className="max-w-prose">
-          <ArticleHeading title={"data.article.title"} tags={[]} />
+          <ArticleHeading title={"data.article.title"} tags={["Programming", "Sports"]} />
 
           <ArticleCreator
             username="Jace Gonzlaes"

@@ -31,7 +31,9 @@ const ArticleCreator: React.FC<ArticleCreatorProps> = ({
             ·
           </small>
           <small className="text-sm font-medium leading none text-pub hover:text-pub-darker">
-            <button>Follow</button>
+            <button onClick={() => {
+              console.log("Clicked Follow")
+            }}>Follow</button>
           </small>
         </div>
         <div className="col-auto">

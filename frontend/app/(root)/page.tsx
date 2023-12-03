@@ -121,7 +121,7 @@ export default function UserArticlePage() {
       <Separator className="max-w-prose mt-3" />
 
       {/* Display Article Content */}
-      <p className="leading-7 [&:not(:first-child)]:mt-6 max-w-prose">
+      <p className="leading-7 [&:not(:first-child)]:mt-6 max-w-4/5">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut modi error
         voluptas perspiciatis? Dolore tempora doloribus, iure sequi ipsam, ipsa
         ipsum amet ab optio exercitationem distinctio consectetur. Quod, culpa
