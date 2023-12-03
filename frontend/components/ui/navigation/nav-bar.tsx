@@ -96,20 +96,21 @@ interface NavigationMenuBarProps {
   userData: UserData | null;
 }
 
-const threadFormSchema = z.object({
-  thread: z
-    .string()
-    .min(2, { message: "Minimum thread is a character" })
-    .max(280, {
-      message: "Maximum number of characters reached",
-    }),
-});
+// Writing Threads
+// const threadFormSchema = z.object({
+//   thread: z
+//     .string()
+//     .min(2, { message: "Minimum thread is a character" })
+//     .max(280, {
+//       message: "Maximum number of characters reached",
+//     }),
+// });
 
-type ThreadFormValues = z.infer<typeof threadFormSchema>;
+// type ThreadFormValues = z.infer<typeof threadFormSchema>;
 
-const defaultValues: Partial<ThreadFormValues> = {
-  thread: "",
-};
+// const defaultValues: Partial<ThreadFormValues> = {
+//   thread: "",
+// };
 
 export default function NavigationMenuBar({ userData }: NavigationMenuBarProps) {
   const followersCount = userData && Array.isArray(userData.followers) ? userData.followers.length : 0;
@@ -121,22 +122,22 @@ export default function NavigationMenuBar({ userData }: NavigationMenuBarProps) 
     setIsLoggedIn(!!userData);
   }, [userData]);
 
-  const form = useForm<ThreadFormValues>({
-    resolver: zodResolver(threadFormSchema),
-    defaultValues,
-  });
+  // const form = useForm<ThreadFormValues>({
+  //   resolver: zodResolver(threadFormSchema),
+  //   defaultValues,
+  // });
 
-  function onSubmit(data: ThreadFormValues) {
-    console.log(data);
-    toast({
-      title: "Your thread has been posted successfully!",
-      description: (
-        <div className="flex items-center space-x-2">
-          <CheckCircle className="mx-2" /> Your post was sent!
-        </div>
-      ),
-    });
-  }
+  // function onSubmit(data: ThreadFormValues) {
+  //   console.log(data);
+  //   toast({
+  //     title: "Your thread has been posted successfully!",
+  //     description: (
+  //       <div className="flex items-center space-x-2">
+  //         <CheckCircle className="mx-2" /> Your post was sent!
+  //       </div>
+  //     ),
+  //   });
+  // }
 
   const handleLogout = async () => {
     try {
@@ -184,21 +185,21 @@ export default function NavigationMenuBar({ userData }: NavigationMenuBarProps) 
                       Write
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[350px] sm:max-h-[450px]">
-                      <DialogHeader>
+                      <DialogHeader className="flex items-center justify-center">
                         <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-                          Share your insights!{" "}
+                          Share your insights!
                         </h4>
                       </DialogHeader>
-                      <DialogDescription>
+                      {/* <DialogDescription>
                         Choose between writing an Article or posting a Thread.
-                      </DialogDescription>
+                      </DialogDescription> */}
                       <div className="flex flex-row items-center justify-center space-x-5">
                         <div className="space-x-2">
                           <Link href={`/articles/create`}>
-                            <Button variant={"pub"}>Article</Button>
+                            <DialogClose><Button variant={"pub"}>Article</Button></DialogClose>
                           </Link>
                         </div>
-                        <div className="space-x-2">
+                        {/* <div className="space-x-2">
                           <AlertDialog>
                             <AlertDialogTrigger>
                               <Button variant={"pub"}>Thread</Button>
@@ -281,7 +282,7 @@ export default function NavigationMenuBar({ userData }: NavigationMenuBarProps) 
                               </Form>
                             </AlertDialogContent>
                           </AlertDialog>
-                        </div>
+                        </div> */}
                       </div>
                     </DialogContent>
                   </Dialog>
@@ -306,7 +307,7 @@ export default function NavigationMenuBar({ userData }: NavigationMenuBarProps) 
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Avatar>
-                          <img
+                          <AvatarImage
                             src={userData?.profile_picture}
                             className="rounded-full"
                             width={40}
@@ -319,7 +320,7 @@ export default function NavigationMenuBar({ userData }: NavigationMenuBarProps) 
                         <DropdownMenuLabel>
                           <div className="flex items-center flex-col justify-center">
                             <Avatar>
-                              <img
+                              <AvatarImage
                                 src={userData?.profile_picture}
                                 className="rounded-full"
                                 width={40}
