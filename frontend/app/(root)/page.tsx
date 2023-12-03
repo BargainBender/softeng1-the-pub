@@ -3,7 +3,16 @@
 import { useRouter } from "next/navigation";
 import React, { use } from "react";
 import Link from "next/link";
-import { Bookmark, Dot, Ear, ExternalLink, Heart, Lasso, ArrowBigDown, ArrowBigUp } from "lucide-react";
+import {
+  Bookmark,
+  Dot,
+  Ear,
+  ExternalLink,
+  Heart,
+  Lasso,
+  ArrowBigDown,
+  ArrowBigUp,
+} from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -81,22 +90,26 @@ export default function UserArticlePage() {
       <Separator className="max-w-prose mt-6" />
       <div className="flex items-start max-w-prose mt-3 gap-6">
         <div className="flex items-center gap-3">
-          <div className="flex items-center"><ArrowBigUp className="w-6 h-6 text-pub" />
-          <small className="text-sm font-light leading-none text-muted-foreground">
-            127 {
-              // Article Upvotes
-            }
-          </small></div>
           <div className="flex items-center">
-          <ArrowBigDown className="w-6 h-6 text-pub" />
-          <small className="text-sm font-light leading-none text-muted-foreground">15</small>
+            <ArrowBigUp className="w-6 h-6 text-pub" />
+            <small className="text-sm font-light leading-none text-muted-foreground">
+              127{" "}
+              {
+                // Article Upvotes
+              }
+            </small>
+          </div>
+          <div className="flex items-center">
+            <ArrowBigDown className="w-6 h-6 text-pub" />
+            <small className="text-sm font-light leading-none text-muted-foreground">
+              15
+            </small>
           </div>
           <div className="flex items-center gap-2">
-
-          <Lasso className="w-6 h-6 text-pub" />
-      <small className="text-sm font-light leading-none text-muted-foreground">
-        127
-      </small>
+            <Lasso className="w-6 h-6 text-pub" />
+            <small className="text-sm font-light leading-none text-muted-foreground">
+              127
+            </small>
           </div>
         </div>
         <div className="flex items-center ml-auto gap-3">
@@ -107,10 +120,8 @@ export default function UserArticlePage() {
       </div>
       <Separator className="max-w-prose mt-3" />
 
-     
-
       {/* Display Article Content */}
-      <p className="leading-7 [&:not(:first-child)]:mt-6 max-w-prose">
+      <p className="leading-7 [&:not(:first-child)]:mt-6 max-w-4/5">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut modi error
         voluptas perspiciatis? Dolore tempora doloribus, iure sequi ipsam, ipsa
         ipsum amet ab optio exercitationem distinctio consectetur. Quod, culpa

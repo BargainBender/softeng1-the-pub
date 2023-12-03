@@ -1,16 +1,39 @@
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+"use client";
+
 import { useState, useEffect } from "react";
 
-interface OnboardingTagsProps {
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { toast } from "@/components/ui/use-toast";
+
+const tagsFormSchema = z.object({
+  tags: z.array(z.string()),
+});
+
+type TagsFormValues = z.infer<typeof tagsFormSchema>;
+
+// This can come from your database or API.
+const defaultValues: Partial<TagsFormValues> = {};
+
+interface TagsFormProps {
   allTags: string[];
   onChosenTagsChange: (chosenTags: string[]) => void; // Callback function
 }
 
-export function OnboardingTags({
-  allTags,
-  onChosenTagsChange,
-}: OnboardingTagsProps) {
+export function TagsForm({ allTags, onChosenTagsChange }: TagsFormProps) {
   const [chosenTags, setChosenTags] = useState<string[]>([]);
   const [unchosenTags, setUnchosenTags] = useState<string[]>(allTags);
 
@@ -62,6 +85,13 @@ export function OnboardingTags({
           ))}
         </div>
       </div>
+      <div>
+        <h3 className="mb-4 text-lg font-medium">Tags Suggestions</h3>
+        <div className="space-y-4"></div>
+      </div>
+      <Button type="submit" variant={"pub"}>
+        Update suggestions
+      </Button>
     </div>
   );
 }

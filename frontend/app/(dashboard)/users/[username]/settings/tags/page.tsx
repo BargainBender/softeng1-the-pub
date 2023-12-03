@@ -1,7 +1,24 @@
+"use client";
 import { Separator } from "@/components/ui/separator"
 import { TagsForm } from "../components/tags-form"  
+import { useState } from "react";
 
 export default function SettingsTagsPage() {
+
+  const allTags = [
+    "Academics",
+    "Travel",
+    "Entertainment",
+    "Sports",
+    "Technology",
+  ];
+
+  const [chosenTags, setChosenTags] = useState<string[]>([]);
+
+  const handleChosenTagsChange = (chosenTags: string[]) => {
+    setChosenTags(chosenTags);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -11,7 +28,8 @@ export default function SettingsTagsPage() {
         </p>
       </div>
       <Separator />
-      <TagsForm />
+      <TagsForm  allTags={allTags}
+                  onChosenTagsChange={handleChosenTagsChange}/>
     </div>
   )
 }

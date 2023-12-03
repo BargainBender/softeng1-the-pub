@@ -56,7 +56,7 @@ const accountFormSchema = z.object({
     }),
   passwordForm: z
     .object({
-      currentPassword: z.string().optional(),
+      currentPassword: z.string(),
       newPassword: z
         .string().min(8)
         .refine((value) => strongPasswordRegex.test(value), {

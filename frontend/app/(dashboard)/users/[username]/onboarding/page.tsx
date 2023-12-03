@@ -62,10 +62,8 @@ export default function OnboardingPage() {
   };
 
   const submitValues = () => {
-    const chosenTagsObject = chosenTags.reduce((acc, tag) => {
-      acc[tag.toLowerCase()] = true;
-      return acc;
-    }, {} as { [key: string]: boolean });
+    const tagsArray = chosenTags.map((tag) => tag.toLowerCase());
+    const chosenTagsObject = { tags: tagsArray };
     const onBoardingData = [formData, chosenTagsObject];
     toast({
       title: "Success",
@@ -221,7 +219,7 @@ export default function OnboardingPage() {
               >
                 Back
               </Button>
-              <Link href="/articles">
+              {/* <Link href="/articles"> */}
                 <Button
                   onClick={submitValues}
                   variant={"pub"}
@@ -229,7 +227,7 @@ export default function OnboardingPage() {
                 >
                   Finish
                 </Button>
-              </Link>
+              {/* </Link> */}
             </div>
           </>
         );

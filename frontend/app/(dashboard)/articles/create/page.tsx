@@ -1,32 +1,22 @@
 // Create Form for Article
 "use client";
 
-import dynamic from "next/dynamic";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { CreateForm } from "./components/create-form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import roboto from "@/app/fonts/roboto";
+
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "@/components/ui/use-toast";
 import { Block, BlockNoteEditor } from "@blocknote/core";
 import {
   BlockNoteView,
@@ -34,7 +24,7 @@ import {
   useBlockNote,
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
-
+import { useRouter } from 'next/navigation'
 const createFormSchema = z.object({
   title: z
     .string()
@@ -44,18 +34,6 @@ const createFormSchema = z.object({
     .max(100, {
       message: "Maximum of 100 characters",
     }),
-  subtitle: z
-    .string()
-    .min(1, {
-      message: "Minimum of a character",
-    })
-    .max(100, { message: "Maximum of 100 characters" })
-    .optional(),
-  academics: z.boolean().default(false).optional(),
-  travel: z.boolean().default(false).optional(),
-  entertainment: z.boolean().default(false).optional(),
-  technology: z.boolean().default(false).optional(),
-  sports: z.boolean().default(false).optional(),
 });
 
 type CreateFormValues = z.infer<typeof createFormSchema>;
@@ -63,26 +41,37 @@ type CreateFormValues = z.infer<typeof createFormSchema>;
 // This can come from your database or API.
 const defaultValues: Partial<CreateFormValues> = {
   title: "",
-  subtitle: "",
-  academics: false,
-  travel: false,
-  entertainment: false,
-  technology: false,
-  sports: false,
 };
+
+// const allTags = [
+//   "Academics",
+//   "Travel",
+//   "Entertainment",
+//   "Sports",
+//   "Technology",
+// ];
 
 interface CreateArticlePageProps {}
 
 const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
-  // Stores the editor's contents as an array of Block objects.
-  const [blocks, setBlocks] = useState<Block[] | null>(null);
+  // const [chosenTags, setChosenTags] = useState<string[]>([]);
+  // const toggleTag = (tag: string) => {
+  //   setChosenTags((prevTags) =>
+  //     prevTags.includes(tag)
+  //       ? prevTags.filter((t) => t !== tag)
+  //       : [...prevTags, tag]
+  //   );
+  // };
+
+
+  const router = useRouter();
 
   // Creates a new editor instance.
   const editor: BlockNoteEditor = useBlockNote({
     // Listens for when the editor's contents change.
     onEditorContentChange: (editor) =>
       // Converts the editor's contents to an array of Block objects.
-      setBlocks(editor.topLevelBlocks),
+      console.log(JSON.stringify(editor.topLevelBlocks, null, 2)),
   });
 
   const form = useForm<CreateFormValues>({
@@ -90,17 +79,70 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
     defaultValues,
   });
 
-  function onSubmit(data: CreateFormValues) {
-    const createFormData = [data, blocks];
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  async function onSubmit() {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        router.push("/sign-in")
+        return;
+      }
+
+      // Fetch the current user's username
+      const response = await fetch("http://localhost:8000/settings/account/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        // Handle the case where fetching the username fails
+        return;
+      }
+
+      const userData = await response.json();
+      const username = userData.username;
+
+      const data = form.getValues();
+      const content = JSON.stringify(editor.topLevelBlocks, null, 2);
+      const createFormData = {
+        ...data,
+        content,
+      };
+      console.log(createFormData);
+
+      // Replace the {{username}} in the URL with the current user's username
+      const apiUrl = `http://localhost:8000/api/${username}/articles/`;
+
+      // Make the POST request with the updated URL and authentication token
+      const articleResponse = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(createFormData),
+      });
+
+      if (articleResponse.ok) {
+        console.log("Article created successfully");
+        // Handle success, e.g., redirect or update UI
+      } else {
+        console.error("Error creating article:", articleResponse.status);
+        // Handle the case where creating the article fails
+      }
+    } catch (error) {
+      console.error("An error occurred while creating the article:", error);
+      // Handle the general error case
+    }
   }
+
+  const clearForm = () => {
+    form.reset(); // Reset form values
+    editor.removeBlocks(editor.topLevelBlocks); // Clear editor content
+    // setChosenTags([]);
+  };
 
   return (
     <>
@@ -117,162 +159,63 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
                       <Input
                         placeholder="Article Title"
                         {...field}
-                        className="scroll-m-20 text-4xl font-semibold tracking-tight em"
+                        className={"scroll-m-20 text-4xl font-semibold tracking-tight h-30 " + roboto.className}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="subtitle"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormControl>
-                      <Input
-                        placeholder="Article subtitle"
-                        {...field}
-                        className="scroll-m-20 text-2xl font-medium tracking-tight text-muted-foreground"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <div className="flex items-center justify-center">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant={"pub"}>Choose Tags</Button>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <h3 className="mb-4 text-lg font-medium">
-                      Tags Suggestions
-                    </h3>
-                    <div className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="academics"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-base">
-                                Academic
-                              </FormLabel>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="travel"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-base">
-                                Travel
-                              </FormLabel>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="entertainment"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-base">
-                                Entertainment
-                              </FormLabel>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="technology"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-base">
-                                Technology
-                              </FormLabel>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="sports"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-base">
-                                Sports
-                              </FormLabel>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
-              {/* Bugfix */}
-              {/* <Button
-          onClick={() => {
-            console.log(form.getValues())
-            form.handleSubmit(onSubmit)
-          }}
-        >
-          Submit
-        </Button> */}
             </form>
           </Form>
+
+          <div className="flex items-center flex-col justify-center space-y-2 my-2">
+            {/* <div className="flex-1">
+              <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                Choose Tags
+              </h3>
+            </div>
+            <div className="flex-1 space-x-2">
+              {allTags.map((tag) => (
+                <Button
+                  key={tag}
+                  variant={
+                    chosenTags.includes(tag.toLowerCase()) ? "pub" : "outline"
+                  }
+                  className="text-sm"
+                  onClick={() => toggleTag(tag.toLowerCase())}
+                >
+                  {tag}
+                </Button>
+              ))}
+            </div> */}
+          </div>
         </div>
         <Separator className="max-w-prose my-6" />
         <div className="max-w-prose mt-3 gap-6">
           <BlockNoteView editor={editor} theme={lightDefaultTheme} />
         </div>
+        <Separator className="max-w-prose my-6" />
 
-        <Button
-          onClick={() => {
-            console.log(form.getValues())
-            form.handleSubmit(onSubmit)
-          }}
-        >
-          Submit
-        </Button>
+        <div className="flex items-end justify-end space-x-2">
+          <Button
+            variant={"destructive"}
+            onClick={() => {
+              clearForm();
+            }}
+          >
+            Clear
+          </Button>
+          <Button
+            onClick={() => {
+              onSubmit();
+            }}
+            variant={"pub"}
+            disabled={!form.getValues().title}
+          >
+            Submit
+          </Button>
+        </div>
       </div>
     </>
   );
