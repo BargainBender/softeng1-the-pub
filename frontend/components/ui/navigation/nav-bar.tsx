@@ -165,7 +165,7 @@ export default function NavigationMenuBar({ userData }: NavigationMenuBarProps) 
           <NavigationMenu className="flex space-x-4">
             <NavigationMenuList className="flex flex-row space-x-4">
               <NavigationMenuItem>
-                <Link href={"/"}> <Image
+                <Link href={"/article-list"}><Image
                 src="/assets/Blog-Logo.svg"
                 alt="The Pub Logo"
                 width={60}

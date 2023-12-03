@@ -17,7 +17,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { BlockNoteEditor } from "@blocknote/core";
+import { Block, BlockNoteEditor } from "@blocknote/core";
 import {
   BlockNoteView,
   lightDefaultTheme,
@@ -199,7 +199,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
         </div>
         <Separator className="max-w-prose my-6" />
 
-        <div className="flex items-end justify-end space-x-2 my-2">
+        <div className="flex items-end justify-end space-x-2">
           <Button
             variant={"destructive"}
             onClick={() => {
