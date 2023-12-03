@@ -12,61 +12,58 @@ const Editor = dynamic(() => import("../components/editor-view"), {
 // TODO: Status if not draft, show publicly and show UserData
 const content = [
   {
-    id: "0970b996-0d96-48b5-bd8b-bc1ef4ce0702",
-    type: "heading",
+    id: "16344aa2-7ac1-40a2-b759-a64e67a2de88",
+    type: "paragraph",
     props: {
       textColor: "default",
       backgroundColor: "default",
       textAlignment: "left",
-      level: 1,
     },
     content: [
       {
         type: "text",
-        text: "Raymond Postrero",
+        text: "Ako si Raymond Lorem",
         styles: {},
       },
     ],
     children: [],
   },
   {
-    id: "e0fc5862-b17c-42d0-b47a-26a392d70eda",
-    type: "heading",
+    id: "442c28a6-5ee7-4ca1-9357-c93d02df64f7",
+    type: "paragraph",
     props: {
       textColor: "default",
       backgroundColor: "default",
       textAlignment: "left",
-      level: 2,
     },
     content: [
       {
         type: "text",
-        text: "Daddielux grind",
+        text: "A precision and recall score of 1 is generally considered excellent. In binary classification, a perfect precision of 1 indicates that every instance predicted as positive is indeed positive, with no false positives. Similarly, a recall of 1 suggests that every actual positive instance is correctly identified, and there are no false negatives.",
         styles: {},
       },
     ],
     children: [],
   },
   {
-    id: "95f864ab-f865-462c-8508-a8eae99de6f2",
-    type: "heading",
+    id: "a73c08e4-2a57-43ce-8b1a-2ac38d8b53e1",
+    type: "paragraph",
     props: {
       textColor: "default",
       backgroundColor: "default",
       textAlignment: "left",
-      level: 3,
     },
     content: [
       {
         type: "text",
-        text: "Yoyoyoyoyoyoyo",
+        text: "Perfect precision and recall are rare in practical scenarios and often come with trade-offs. Achieving both scores of 1 could imply an ideal scenario where the model makes no errors in either predicting positive instances or capturing all actual positives. However, it's crucial to assess these scores in the context of the specific problem domain and the potential trade-offs between precision and recall. In some cases, maximizing one metric may result in a decrease in the other, so the choice depends on the specific goals and requirements of the application.",
         styles: {},
       },
     ],
     children: [],
   },
   {
-    id: "3250c8c6-3cf0-4302-a912-8a5dda8c6359",
+    id: "8ee28a55-b75d-4a57-b49f-1b3fcd257a1b",
     type: "paragraph",
     props: {
       textColor: "default",
@@ -85,8 +82,6 @@ export default function ArticlePage() {
   const [hasUpvoted, setHasUpvoted] = useState(false);
   const [hasDownvoted, setHasDownvoted] = useState(false);
 
-
-  
   const handleUpvote = () => {
     if (!hasUpvoted && !hasDownvoted) {
       // Update the upvote logic, e.g., increment the upvote count
@@ -118,7 +113,6 @@ export default function ArticlePage() {
     setBookmarked((prevBookmarked) => !prevBookmarked);
   };
 
-
   return (
     <>
       <div className="prose mx-auto max-w-2xl mt-16">
@@ -136,12 +130,14 @@ export default function ArticlePage() {
         </div>
 
         <Separator className="my-3" />
-        <ArticleMetadata  upvotes={upvotes}
-        downvotes={downvotes}
-        bookmarked={bookmarked}
-        onUpvote={handleUpvote}
-        onDownvote={handleDownvote}
-        onToggleBookmark={handleToggleBookmark}/>
+        <ArticleMetadata
+          upvotes={upvotes}
+          downvotes={downvotes}
+          bookmarked={bookmarked}
+          onUpvote={handleUpvote}
+          onDownvote={handleDownvote}
+          onToggleBookmark={handleToggleBookmark}
+        />
         <Separator className="my-3" />
         <div className="max-w-prose">
           <Editor initialContent={JSON.stringify(content)} editable={false} />

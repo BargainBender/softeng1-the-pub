@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import roboto from "@/app/fonts/roboto";
 
 import {
   Form,
@@ -28,7 +29,7 @@ import {
   useBlockNote,
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
-
+import { useRouter } from 'next/navigation'
 const createFormSchema = z.object({
   title: z
     .string()
@@ -47,32 +48,35 @@ const defaultValues: Partial<CreateFormValues> = {
   title: "",
 };
 
-const allTags = [
-  "Academics",
-  "Travel",
-  "Entertainment",
-  "Sports",
-  "Technology",
-];
+// const allTags = [
+//   "Academics",
+//   "Travel",
+//   "Entertainment",
+//   "Sports",
+//   "Technology",
+// ];
 
 interface CreateArticlePageProps {}
 
 const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
-  const [chosenTags, setChosenTags] = useState<string[]>([]);
-  const toggleTag = (tag: string) => {
-    setChosenTags((prevTags) =>
-      prevTags.includes(tag)
-        ? prevTags.filter((t) => t !== tag)
-        : [...prevTags, tag]
-    );
-  };
+  // const [chosenTags, setChosenTags] = useState<string[]>([]);
+  // const toggleTag = (tag: string) => {
+  //   setChosenTags((prevTags) =>
+  //     prevTags.includes(tag)
+  //       ? prevTags.filter((t) => t !== tag)
+  //       : [...prevTags, tag]
+  //   );
+  // };
+
+
+  const router = useRouter();
 
   // Creates a new editor instance.
   const editor: BlockNoteEditor = useBlockNote({
     // Listens for when the editor's contents change.
     onEditorContentChange: (editor) =>
       // Converts the editor's contents to an array of Block objects.
-      console.log(JSON.stringify(editor.topLevelBlocks, null, 2)),  
+      console.log(JSON.stringify(editor.topLevelBlocks, null, 2)),
   });
 
   const form = useForm<CreateFormValues>({
@@ -80,30 +84,69 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
     defaultValues,
   });
 
-  function onSubmit() {
-    const data = form.getValues();
-    const content = JSON.stringify(editor.topLevelBlocks, null, 2);
-    const createFormData = {
-      ...data,
-      chosenTags,
-      content: JSON.parse(content),
-    };
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">
-            {JSON.stringify(createFormData, null, 2)}
-          </code>
-        </pre>
-      ),
-    });
+  async function onSubmit() {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        router.push("/sign-in")
+        return;
+      }
+
+      // Fetch the current user's username
+      const response = await fetch("http://localhost:8000/settings/account/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        // Handle the case where fetching the username fails
+        return;
+      }
+
+      const userData = await response.json();
+      const username = userData.username;
+
+      const data = form.getValues();
+      const content = JSON.stringify(editor.topLevelBlocks, null, 2);
+      const createFormData = {
+        ...data,
+        content,
+      };
+      console.log(createFormData);
+
+      // Replace the {{username}} in the URL with the current user's username
+      const apiUrl = `http://localhost:8000/api/${username}/articles/`;
+
+      // Make the POST request with the updated URL and authentication token
+      const articleResponse = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(createFormData),
+      });
+
+      if (articleResponse.ok) {
+        console.log("Article created successfully");
+        // Handle success, e.g., redirect or update UI
+      } else {
+        console.error("Error creating article:", articleResponse.status);
+        // Handle the case where creating the article fails
+      }
+    } catch (error) {
+      console.error("An error occurred while creating the article:", error);
+      // Handle the general error case
+    }
   }
 
   const clearForm = () => {
     form.reset(); // Reset form values
     editor.removeBlocks(editor.topLevelBlocks); // Clear editor content
-    setChosenTags([]);
+    // setChosenTags([]);
   };
 
   return (
@@ -121,7 +164,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
                       <Input
                         placeholder="Article Title"
                         {...field}
-                        className="scroll-m-20 text-4xl font-semibold tracking-tight h-30"
+                        className={"scroll-m-20 text-4xl font-semibold tracking-tight h-30 " + roboto.className}
                       />
                     </FormControl>
                     <FormMessage />
@@ -132,7 +175,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
           </Form>
 
           <div className="flex items-center flex-col justify-center space-y-2 my-2">
-            <div className="flex-1">
+            {/* <div className="flex-1">
               <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                 Choose Tags
               </h3>
@@ -150,7 +193,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
                   {tag}
                 </Button>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
         <Separator className="max-w-prose my-6" />
@@ -173,9 +216,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
               onSubmit();
             }}
             variant={"pub"}
-            disabled={!form.getValues().title 
-            
-            }
+            disabled={!form.getValues().title}
           >
             Submit
           </Button>
