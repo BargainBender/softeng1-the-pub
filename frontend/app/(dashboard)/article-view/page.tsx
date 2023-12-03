@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { FiBookmark } from 'react-icons/fi';
-import ArticleView from '@/app/(dashboard)/users/[userId]/articles/components/user-articleview-form';
+import ArticleView from '@/app/(dashboard)/articles/components/user-articleview-form';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
