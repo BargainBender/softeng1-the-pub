@@ -5,6 +5,7 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useRouter } from 'next/navigation';
 
 import {
   LogOut,
@@ -81,8 +82,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-// fetch userdata
-const userId = 1;
+interface UserData {
+  name: string;
+  username: string;
+  profile_picture: string;
+  is_active: boolean;
+  followers: number;
+  following: number;
+  bio: string;
+}
+
+interface NavigationMenuBarProps {
+  userData: UserData | null;
+}
 
 const threadFormSchema = z.object({
   thread: z
@@ -99,9 +111,16 @@ const defaultValues: Partial<ThreadFormValues> = {
   thread: "",
 };
 
-export default function NavigationMenuBar() {
-  // Use next-auth
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+export default function NavigationMenuBar({ userData }: NavigationMenuBarProps) {
+  const followersCount = userData && Array.isArray(userData.followers) ? userData.followers.length : 0;
+  const followingCount = userData && Array.isArray(userData.following) ? userData.following.length : 0;
+  const router = useRouter();
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  useEffect(() => {
+    setIsLoggedIn(!!userData);
+  }, [userData]);
+
   const form = useForm<ThreadFormValues>({
     resolver: zodResolver(threadFormSchema),
     defaultValues,
@@ -118,6 +137,25 @@ export default function NavigationMenuBar() {
       ),
     });
   }
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/auth/logout/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }); 
+      
+      localStorage.removeItem('authToken');
+      setIsLoggedIn(false);
+      router.push('/sign-in');
+      console.log('Logout successful');
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <>
@@ -268,11 +306,11 @@ export default function NavigationMenuBar() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Avatar>
-                          <AvatarImage
-                          // Change to Dynamic Image
-                            src="https://github.com/shadcn.png"
-                            alt="@shadcn"
+                          <img
+                            src={userData?.profile_picture}
                             className="rounded-full"
+                            width={40}
+                            height={40}
                           />
                           <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
@@ -281,32 +319,30 @@ export default function NavigationMenuBar() {
                         <DropdownMenuLabel>
                           <div className="flex items-center flex-col justify-center">
                             <Avatar>
-                              <AvatarImage
-                              // Change this to dynamic image
-                                src="https://github.com/shadcn.png"
-                                alt="@shadcn"
+                              <img
+                                src={userData?.profile_picture}
                                 className="rounded-full"
+                                width={40}
+                                height={40}
                               />
                               <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                             <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
                               {/* Name */}
-                              Jace L. Gonzales
+                              {userData?.name}
                             </h4>
                             <p className="text-sm font-normal leading-none">
                               {/* Username */}
-                              @heyitsjace
+                              @{userData?.username}
                             </p>
                           </div>
                           <div className="flex flex-row items-center justify-center mx-auto">
                             <div className="ml-6">
-                              {/* Follwers count */}
-                              <small>281 followers</small>
+                              <small>{followersCount} followers</small>
                             </div>
                             <div className="flex-grow"></div>
                             <div>
-                              {/* Following count */}
-                              <small className="mr-6">0 following</small>
+                              <small className="mr-6">{followingCount} following</small>
                             </div>
                           </div>
                         </DropdownMenuLabel>
@@ -352,8 +388,7 @@ export default function NavigationMenuBar() {
                           <Button
                             variant="destructive"
                             onClick={() => {
-                              // Async function that logouts User.
-                              location.reload();
+                              handleLogout();
                             }}
                           >
                             Confirm

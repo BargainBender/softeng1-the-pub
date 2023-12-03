@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,7 @@ export interface UserData {
 }
 
 export function UserSignInForm({ className }: { className: string }): JSX.Element {
+    const router = useRouter(); 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
     const [userData, setUserData] = useState<{ username: string; password: string }>({
@@ -60,14 +62,21 @@ export function UserSignInForm({ className }: { className: string }): JSX.Elemen
         })
         .then((response) => {
             if (response.status === 200) {
-            // Sign-in was successful, you can redirect or perform other actions here.
-            console.log('Sign-in successful');
-            console.log(response.status);
+                console.log('Sign-in successful');
+                router.push('/article-list'); 
+                console.log(response.status);
+                return response.json();
             } else {
-            // Handle sign-in error
-            setError('Invalid credentials');
-            console.log(response.status);
+                // Handle sign-in error
+                setError('Invalid credentials');
+                console.log(response.status);
             }
+        })
+        .then((data) => {
+            const token = data.token;
+            localStorage.setItem('authToken', token); 
+            console.log('Sign-in successful');
+            router.push('/article-list');
         })
         .catch((error) => {
             console.error('An error occurred while signing in:', error);

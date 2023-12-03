@@ -36,7 +36,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ["username", "name", "profile_picture", "is_active", "followers", "following"]
+        fields = ["username", "name", "profile_picture", "is_active", "followers", "following", "bio"]
 
     def get_followers(self, obj):
         followers = obj.followers.filter(following=obj)

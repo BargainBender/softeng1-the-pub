@@ -21,6 +21,7 @@ class UserProfile(models.Model):
     profile_picture = models.URLField(
         default=generate_random_default_profile_picture, null=False, max_length=200
     )
+    bio = models.CharField(max_length=160, default="")
     is_active = models.BooleanField(default=True, null=False)
 
     @property
