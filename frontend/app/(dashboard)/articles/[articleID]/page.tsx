@@ -11,74 +11,12 @@ const Editor = dynamic(() => import("../components/editor-view"), {
 });
 // TODO: Status if not draft, show publicly and show UserData
 const content = [
-  {
-    id: "0970b996-0d96-48b5-bd8b-bc1ef4ce0702",
-    type: "heading",
-    props: {
-      textColor: "default",
-      backgroundColor: "default",
-      textAlignment: "left",
-      level: 1,
-    },
-    content: [
-      {
-        type: "text",
-        text: "Raymond Postrero",
-        styles: {},
-      },
-    ],
-    children: [],
-  },
-  {
-    id: "e0fc5862-b17c-42d0-b47a-26a392d70eda",
-    type: "heading",
-    props: {
-      textColor: "default",
-      backgroundColor: "default",
-      textAlignment: "left",
-      level: 2,
-    },
-    content: [
-      {
-        type: "text",
-        text: "Daddielux grind",
-        styles: {},
-      },
-    ],
-    children: [],
-  },
-  {
-    id: "95f864ab-f865-462c-8508-a8eae99de6f2",
-    type: "heading",
-    props: {
-      textColor: "default",
-      backgroundColor: "default",
-      textAlignment: "left",
-      level: 3,
-    },
-    content: [
-      {
-        type: "text",
-        text: "Yoyoyoyoyoyoyo",
-        styles: {},
-      },
-    ],
-    children: [],
-  },
-  {
-    id: "3250c8c6-3cf0-4302-a912-8a5dda8c6359",
-    type: "paragraph",
-    props: {
-      textColor: "default",
-      backgroundColor: "default",
-      textAlignment: "left",
-    },
-    content: [],
-    children: [],
-  },
+  "Hello",
 ];
 
 export default function ArticlePage() {
+
+  const [articleData, setArticleData] = useState<any>(null);
   const [upvotes, setUpvotes] = useState(12);
   const [downvotes, setDownvotes] = useState(12);
   const [bookmarked, setBookmarked] = useState(true);
@@ -86,7 +24,25 @@ export default function ArticlePage() {
   const [hasDownvoted, setHasDownvoted] = useState(false);
 
 
-  
+  useEffect(() => {
+    // Fetch article data from the API
+    const fetchArticleData = async () => {
+      try {
+        const response = await fetch(''); // Replace with your API endpoint
+        if (response.ok) {
+          const data = await response.json();
+          setArticleData(data[0]); // Assuming the response is an array and you want the first item
+        } else {
+          console.error('Error fetching article data:', response.status);
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching article data:', error);
+      }
+    };
+
+    fetchArticleData();
+  }, []); // The empty dependency array ensures that this effect runs only once on mount
+
   const handleUpvote = () => {
     if (!hasUpvoted && !hasDownvoted) {
       // Update the upvote logic, e.g., increment the upvote count
@@ -118,7 +74,6 @@ export default function ArticlePage() {
     setBookmarked((prevBookmarked) => !prevBookmarked);
   };
 
-
   return (
     <>
       <div className="prose mx-auto max-w-2xl mt-16">
@@ -136,12 +91,14 @@ export default function ArticlePage() {
         </div>
 
         <Separator className="my-3" />
-        <ArticleMetadata  upvotes={upvotes}
-        downvotes={downvotes}
-        bookmarked={bookmarked}
-        onUpvote={handleUpvote}
-        onDownvote={handleDownvote}
-        onToggleBookmark={handleToggleBookmark}/>
+        <ArticleMetadata
+          upvotes={upvotes}
+          downvotes={downvotes}
+          bookmarked={bookmarked}
+          onUpvote={handleUpvote}
+          onDownvote={handleDownvote}
+          onToggleBookmark={handleToggleBookmark}
+        />
         <Separator className="my-3" />
         <div className="max-w-prose">
           <Editor initialContent={JSON.stringify(content)} editable={false} />

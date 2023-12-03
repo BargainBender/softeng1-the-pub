@@ -11,14 +11,15 @@ const Profile: React.FC = () => {
   // Might be using axios to get userData
   useEffect(() => {
     const getUserData = async () => {
+      const authToken = localStorage.getItem('authToken');
       try {
         const response = await fetch(
-          "https://api.instagram.com/oauth/authorize",
+          "https://localhost:8000/settings/profile",
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: "Bearer ACCESS_TOKEN",
+              Authorization: `Bearer ${authToken}`,
             },
           }
         );
@@ -41,29 +42,25 @@ const Profile: React.FC = () => {
           <Avatar className="w-4/12 h-full">
             <AvatarImage
               // Change this to dynamic image
-              src="https://github.com/shadcn.png"
+              src={"user.profile"}
               alt="@shadcn"
               className="rounded-full "
             />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight mt-3">
-            {/* Name */}
-            Jace L. Gonzales
+            {"user.name"}
           </h2>
           <h3 className="scroll-m-20 text-2xl font-normal tracking-tight">
-            {/* Username */}
-            @heyitsjace
+            {"user.username"}
           </h3>
         </div>
         <div className="flex flex-row items-center justify-center mx-auto space-x-4">
           <div className="flex-1">
-            {/* Follwers count */}
-            <small>281 followers</small>
+            <small>{"user.followers"}</small>
           </div>
           <div>
-            {/* Following count */}
-            <small className="flex-1">0 following</small>
+            <small className="flex-1">{"user.following"}</small>
           </div>
         </div>
       </div>
@@ -71,16 +68,16 @@ const Profile: React.FC = () => {
       <Separator className="w-max-prose mt-6" />
 
       <div className="max-w-2xl items-center space-x-2 justify-center space-y-2">
-        <Tabs defaultValue="account" className="">
-          <TabsList>
-            <TabsTrigger value="account">Article</TabsTrigger>
-            <TabsTrigger value="password">Threads</TabsTrigger>
-          </TabsList>
-          <TabsContent value="account">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="password">Change your password here.</TabsContent>
-        </Tabs>
+      <div className="flex items-center justify-center space-y-2 my-2">
+      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          Written Articles
+        </h3>
+        </div>
+        <div className="flex flex-row items-center justify-center mx-auto space-x-4">
+         
+            {"user.articles.map()"}
+         
+        </div>
       </div>
     </div>
   );

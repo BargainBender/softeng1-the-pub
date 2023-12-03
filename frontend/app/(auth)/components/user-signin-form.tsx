@@ -35,56 +35,46 @@ export function UserSignInForm({ className }: { className: string }): JSX.Elemen
         setUserData({ ...userData, [name]: value });
     };
 
-    const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+    const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
-        //const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (userData.username.trim() === '' || userData.password.trim() === '') {
             setError('Please enter both username and password');
             return;
         }
 
-        // Email validation logic
-        // else if (!emailRegex.test(userData.email)) {
-        //     setError('Please enter a valid email address');
-        //     return;
-        // }
-
         setIsLoading(true);
 
         // Send a POST request to the Django API for sign-in
-        fetch('http://localhost:8000/auth/login/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        })
-        .then((response) => {
-            if (response.status === 200) {
+        try {
+            const response = await fetch('http://localhost:8000/auth/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const token = data.token;
+
+                // Store the token in localStorage
+                localStorage.setItem('authToken', token);
+
+                // Redirect or perform other actions as needed
                 console.log('Sign-in successful');
-                router.push('/article-list'); 
-                console.log(response.status);
-                return response.json();
+                console.log('Token:', token);
             } else {
-                // Handle sign-in error
                 setError('Invalid credentials');
                 console.log(response.status);
             }
-        })
-        .then((data) => {
-            const token = data.token;
-            localStorage.setItem('authToken', token); 
-            console.log('Sign-in successful');
-            router.push('/article-list');
-        })
-        .catch((error) => {
+        } catch (error) {
             console.error('An error occurred while signing in:', error);
             setError('An error occurred while signing in');
-        })
-        .finally(() => {
+        } finally {
             setIsLoading(false);
-        });
+        }
     };
 
     return (
