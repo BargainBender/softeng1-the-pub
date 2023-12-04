@@ -4,14 +4,21 @@ from rest_framework.decorators import api_view, renderer_classes, permission_cla
 from rest_framework.renderers import StaticHTMLRenderer
 
 from django.shortcuts import render, get_object_or_404
+from django.db import IntegrityError
+from django.http import Http404
 
-from .models import Article, Thread
+from .models import Article, Thread, ArticleVote
 from .serializers import ListArticleSerializer, CreateArticleSerializer, ListThreadSerializer, CreateThreadSerializer, ArticleSerializer
+from . import serializers
 from .permissions import IsOwnerOrReadOnly
 from .authentication import TokenAuthentication
 
 from core.models import UserProfile
 from core.serializers import ArticleUserProfileSerializer
+
+import json
+import logging
+logger = logging.getLogger(__name__)
 # Create your views here.
 
 class ArticleListView(generics.ListAPIView):
@@ -93,3 +100,56 @@ class ThreadListCreateAPIView(generics.ListCreateAPIView):
         # Get UserProfile from User
         user_profile = self.request.user.profile
         serializer.save(author=user_profile)
+        
+
+class ArticleVoteListAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+    queryset = ArticleVote.objects.all()
+    serializer_class = serializers.ArticleListVoteSerializer
+    
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return serializers.ArticleListVoteSerializer
+        elif self.request.method == "POST":
+            return serializers.ArticleVoteSerializer
+
+class ArticleVoteView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+    serializer_class = serializers.ArticleVoteSerializer
+
+    def get_object(self, voter, article):
+        try:
+            vote = ArticleVote.objects.get(voter=voter, article=article)
+            return vote
+        except ArticleVote.DoesNotExist:
+            return None
+
+    def put(self, request, *args, **kwargs):
+        # Handle both creation and update for voting
+        voter = request.user.profile
+        article = get_object_or_404(Article, pk=kwargs.get('pk'), title=kwargs.get('title'))
+        article_vote = self.get_object(voter=voter, article=article)
+        
+        is_upvote = True if request.data.get("is_upvote") is None else request.data.get("is_upvote")
+        if article_vote is None:
+            logger.info("create vote")
+            ArticleVote.objects.create(voter=voter, article=article, is_upvote=is_upvote)
+        else:
+            logger.info("update vote")
+            article_vote.is_upvote = is_upvote
+            article_vote.save()
+        return Response({"message": "Upvoted" if is_upvote else "Downvoted"}, status=status.HTTP_201_CREATED if article_vote is None else status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        # Delete the vote for the specified article
+        voter = request.user.profile
+        article = get_object_or_404(Article, pk=kwargs.get('pk'), title=kwargs.get('title'))
+        article_vote = self.get_object(voter=voter, article=article)
+
+        if article_vote is not None:
+            article_vote.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response({'detail': 'Vote not found.'}, status=status.HTTP_404_NOT_FOUND)

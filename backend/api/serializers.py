@@ -2,18 +2,21 @@ from rest_framework import serializers
 
 from django.urls import reverse
 
-from .models import Article, Thread, ArticleThread
+from .models import Article, Thread, ArticleThread, ArticleVote, ThreadVote
 from core.serializers import ArticleUserProfileSerializer
+from django.contrib.auth.models import User
 # import logging
 # logger = logging.getLogger(__name__)
 class ListArticleSerializer(serializers.ModelSerializer):
     author = ArticleUserProfileSerializer(read_only=True, many=False)
     content_preview = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
+    upvotes = serializers.SerializerMethodField()
+    downvotes = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
-        fields = ["id", "title", "content_preview", "date_created", "last_edited", "author", "url"]
+        fields = ["id", "title", "content_preview", "date_created", "last_edited", "author", "url", "upvotes", "downvotes"]
         
     def get_content_preview(self, obj):
         # Limit the content to a certain number of characters for the preview
@@ -25,11 +28,25 @@ class ListArticleSerializer(serializers.ModelSerializer):
     def get_url(self, obj):
         return reverse('article', kwargs={'username': obj.author.user.username, 'pk': obj.id, 'title': obj.title})
     
+    def get_upvotes(self, obj):
+        return obj.votes.filter(is_upvote=True).count()
+
+    def get_downvotes(self, obj):
+        return obj.votes.filter(is_upvote=False).count()
+    
 class ArticleSerializer(serializers.ModelSerializer):
     author = ArticleUserProfileSerializer(read_only=True, many=False)
+    upvotes = serializers.SerializerMethodField()
+    downvotes = serializers.SerializerMethodField()
     class Meta:
         model = Article
-        fields = ["id", "title", "content", "date_created", "last_edited", "author"]
+        fields = ["id", "title", "content", "date_created", "last_edited", "author", "upvotes", "downvotes"]
+    
+    def get_upvotes(self, obj):
+        return obj.votes.filter(is_upvote=True).count()
+
+    def get_downvotes(self, obj):
+        return obj.votes.filter(is_upvote=False).count()
 
 class CreateArticleSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
@@ -45,15 +62,23 @@ class ListThreadSerializer(serializers.ModelSerializer):
     # author = ArticleUserProfileSerializer(read_only=True, many=False)
     author = serializers.PrimaryKeyRelatedField(read_only=True)
     children = serializers.SerializerMethodField()
+    upvotes = serializers.SerializerMethodField()
+    downvotes = serializers.SerializerMethodField()
 
     class Meta:
         model = Thread
-        fields = ['id', 'content', 'date_created', 'last_edited', 'author', 'parent', 'children']
+        fields = ['id', 'content', 'date_created', 'last_edited', 'author', 'parent', 'children', "upvotes", "downvotes"]
 
     def get_children(self, obj):
         if obj.children.all().exists():
           return ListThreadSerializer(obj.children.all(), many=True, context=self.context).data
         return []
+    
+    def get_upvotes(self, obj):
+        return obj.votes.filter(is_upvote=True).count()
+
+    def get_downvotes(self, obj):
+        return obj.votes.filter(is_upvote=False).count()
     
 class CreateThreadSerializer(serializers.ModelSerializer):
     article = serializers.PrimaryKeyRelatedField(required=False, allow_null=True, queryset=Article.objects.all())
@@ -103,3 +128,19 @@ class CreateThreadSerializer(serializers.ModelSerializer):
         
         thread.save()
         return thread
+    
+# For testing purposes
+# TODO: Remove in the future
+class ArticleListVoteSerializer(serializers.ModelSerializer):
+    voter = serializers.SerializerMethodField()
+    class Meta:
+        model = ArticleVote
+        fields = ["voter", "article", "is_upvote"]
+    
+    def get_voter(self, obj):
+        return User.objects.get(id=obj.voter.id).username
+
+class ArticleVoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArticleVote
+        fields = ["is_upvote"]
