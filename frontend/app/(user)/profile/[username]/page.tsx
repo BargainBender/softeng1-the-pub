@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import axios from "axios";
 
 interface User {
   username: string;
@@ -41,34 +42,30 @@ const Profile: React.FC = () => {
       const authToken = localStorage.getItem("authToken");
       try {
         // Fetch user data
-        const response = await fetch(
-          "https://localhost:8000/settings/profile", // Replace with your actual API server URL
+        const response = await axios.get<User>(
+          "https://localhost:8000/settings/profile",
           {
-            method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${authToken}`,
             },
           }
         );
-        const data = await response.json();
-        console.log(data);
-        setUser(data);
+
+        setUser(response.data);
 
         // Fetch user's articles
-        const articlesResponse = await fetch(
-          `https://localhost:8000/api/${data.username}/articles/`, // Replace with your actual API server URL
+        const articlesResponse = await axios.get<Article[]>(
+          `https://localhost:8000/api/${response.data.username}/articles/`,
           {
-            method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${authToken}`,
             },
           }
         );
-        const articlesData = await articlesResponse.json();
-        console.log(articlesData);
-        setArticles(articlesData);
+
+        setArticles(articlesResponse.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

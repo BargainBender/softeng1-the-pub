@@ -1,14 +1,17 @@
 // Create Form for Article
 "use client";
 
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { CheckCircle } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+
 import roboto from "@/app/fonts/roboto";
 
 import {
@@ -55,6 +58,7 @@ const defaultValues: Partial<CreateFormValues> = {
 interface CreateArticlePageProps {}
 
 const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
+  const [isSubmitting, setSubmitting] = useState(false);
   // const [chosenTags, setChosenTags] = useState<string[]>([]);
   // const toggleTag = (tag: string) => {
   //   setChosenTags((prevTags) =>
@@ -81,6 +85,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
 
   async function onSubmit() {
     try {
+      setSubmitting(true);
       const token = localStorage.getItem("authToken");
       if (!token) {
         router.push("/sign-in");
@@ -99,14 +104,15 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
       if (!response.ok) {
         // Handle the case where fetching the username fails
         toast({
-        title: "Error",
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{"Invalid Token, must be logged in"}</code>
-          </pre>
-        ),
-      });
-      ;
+          title: "Error",
+          description: (
+            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+              <code className="text-red-500">
+                {"Internal Server Error: 500"}
+              </code>
+            </pre>
+          ),
+        });
       }
 
       const userData = await response.json();
@@ -134,15 +140,49 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
       });
 
       if (articleResponse.ok) {
-        console.log("Article created successfully");
+        toast({
+          title: "Success!",
+          description: (
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="mx-2 bg-pub" />{" "}
+              <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                Article successfuly created
+              </h4>
+            </div>
+          ),
+        });
+        setTimeout(() => {
+          router.push("/article-list");
+        }, 5000);
+
         // Handle success, e.g., redirect or update UI
       } else {
-        console.error("Error creating article:", articleResponse.status);
-        // Handle the case where creating the article fails
+        toast({
+          title: "Error",
+          description: (
+            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+              <code className="text-red-500">
+                {`Error creating article: ${articleResponse.status}`}
+              </code>
+            </pre>
+          ),
+        });
       }
     } catch (error) {
+      toast({
+        title: "Error",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-red-500">
+              {`Error creating article: ${error}`}
+            </code>
+          </pre>
+        ),
+      });
       console.error("An error occurred while creating the article:", error);
       // Handle the general error case
+    } finally {
+      setSubmitting(false);
     }
   }
 
