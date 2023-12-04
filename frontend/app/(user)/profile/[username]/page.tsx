@@ -20,35 +20,29 @@ interface Article {
   content_preview: string;
   date_created: string;
   last_edited: string;
-  author: {
-    id: number;
-    username: string;
-    name: string;
-    profile_picture: string;
-    is_active: boolean;
-  };
+  author: Author;
   url: string;
 }
 
+interface Author {
+  id: number;
+  username: string;
+  name: string;
+  profile_picture: string;
+  is_active: boolean;
+}
+
 const Profile: React.FC = () => {
-  const [user, setUser] = useState<User>({
-    username: "",
-    name: "",
-    profile_picture: "",
-    is_active: true,
-    followers: [],
-    following: [],
-    bio: "",
-    articles: [],
-  });
+  const [user, setUser] = useState<User | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
     const getUserData = async () => {
       const authToken = localStorage.getItem("authToken");
       try {
+        // Fetch user data
         const response = await fetch(
-          "https://localhost:8000/settings/profile",
+          "https://localhost:8000/settings/profile", // Replace with your actual API server URL
           {
             method: "GET",
             headers: {
@@ -61,10 +55,9 @@ const Profile: React.FC = () => {
         console.log(data);
         setUser(data);
 
-        
         // Fetch user's articles
         const articlesResponse = await fetch(
-          `https://localhost:8000/api/${data.username}/articles/`,
+          `https://localhost:8000/api/${data.username}/articles/`, // Replace with your actual API server URL
           {
             method: "GET",
             headers: {
@@ -83,6 +76,10 @@ const Profile: React.FC = () => {
 
     getUserData();
   }, []);
+
+  if (!user) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="prose mx-auto max-w-2xl mt-16">

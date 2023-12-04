@@ -8,6 +8,7 @@ import * as z from "zod";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
 import roboto from "@/app/fonts/roboto";
 
 import {
@@ -97,7 +98,15 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
 
       if (!response.ok) {
         // Handle the case where fetching the username fails
-        return;
+        toast({
+        title: "Error",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">{"Invalid Token, must be logged in"}</code>
+          </pre>
+        ),
+      });
+      ;
       }
 
       const userData = await response.json();

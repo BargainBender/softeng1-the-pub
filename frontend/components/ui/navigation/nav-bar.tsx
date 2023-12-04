@@ -350,10 +350,10 @@ export default function NavigationMenuBar({ userData }: NavigationMenuBarProps) 
                         <DropdownMenuLabel></DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                          <DropdownMenuItem>
+                         <Link href={`/profile/${userData?.username}`}> <DropdownMenuItem>
                             <User className="mr-2 h-4 w-4" />
                             <span>Profile</span>
-                          </DropdownMenuItem>
+                          </DropdownMenuItem></Link>
                           <DropdownMenuItem>
                             <Bookmark className="mr-2 h-4 w-4" />
                             <span>Bookmarks</span>
