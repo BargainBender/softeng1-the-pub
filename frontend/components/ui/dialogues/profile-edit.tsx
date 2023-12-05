@@ -44,7 +44,7 @@ export default function EditProfile() {
                   </Avatar>
                 </div>
                 <div className="col-span-2">
-                  <Button
+                  <Button   
                     variant="ghost"
                     className="text-sm font-medium leading-none text-pub hover:text-pub-darker hover:bg-pub"
                   >

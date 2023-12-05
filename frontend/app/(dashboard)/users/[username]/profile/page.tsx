@@ -4,6 +4,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState({});
@@ -33,6 +35,46 @@ const Profile: React.FC = () => {
     getUserData();
   }, []);
 
+  const handleFollow = async () => {
+    const authToken = localStorage.getItem('authToken');
+    try {
+      const response = await fetch(
+        "{{host}}/api/follow/sebastian/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      const data = await response.json();
+      alert(JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    const authToken = localStorage.getItem('authToken');
+    try {
+      const response = await fetch(
+        "{{host}}/api/follow/sebastian/",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      const data = await response.json();
+      alert(JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error("Error unfollowing user:", error);
+    }
+  };
+
   function handleUserData() {}
 
   return (
@@ -57,10 +99,10 @@ const Profile: React.FC = () => {
         </div>
         <div className="flex flex-row items-center justify-center mx-auto space-x-4">
           <div className="flex-1">
-            <small>{"user.followers"}</small>
+            <Link href="/user/followers" className ="flex-1 hover:text-pub-darker" onClick={handleFollow}>{"user.followers"}</Link>
           </div>
           <div>
-            <small className="flex-1">{"user.following"}</small>
+          <Link href="/user/following" className ="flex-1 hover:text-pub-darker" onClick={handleUnfollow}>{"user.following"}</Link>
           </div>
         </div>
       </div>
