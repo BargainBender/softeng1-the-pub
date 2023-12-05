@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import ArticleHeading from "./components/article-heading";
@@ -10,8 +9,6 @@ import ArticleMetadata from "./components/article-metadata";
 const Editor = dynamic(() => import("./components/editor-view"), {
   ssr: false,
 });
-// TODO: Status if not draft, show publicly and show UserData
-const content = ["Hello"];
 
 interface Author {
   id: number;
@@ -27,6 +24,8 @@ interface Article {
   content: string;
   date_created: string;
   last_edited: string;
+  upvotes: number;
+  downvotes: number;
   author: Author;
   url: string;
 }
@@ -38,53 +37,74 @@ export default function ArticlePage({
     viewurl: string;
   };
 }) {
-  const [articleData, setArticleData] = useState<Article[] | Article | null>(null);  const [upvotes, setUpvotes] = useState(12);
-  const [downvotes, setDownvotes] = useState(12);
+  const [articleData, setArticleData] = useState<Article[] | Article | null>(
+    null
+  );
   const [bookmarked, setBookmarked] = useState(true);
-  const [hasUpvoted, setHasUpvoted] = useState(false);
-  const [hasDownvoted, setHasDownvoted] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8000" + searchParams.viewurl)
-      .then((response) => response.json())
-      .then((data: Article[] | Article) => {
-        if (Array.isArray(data)) {
-          setArticleData(data);
-        } else {
-          setArticleData([data]);
-        }
-      })
-      .catch((error) => console.error("Error fetching articles:", error));
+    const intervalId = setInterval(() => {
+      // Fetch article data
+      fetch("http://localhost:8000" + searchParams.viewurl)
+        .then((response) => response.json())
+        .then((data: Article[] | Article) => {
+          if (Array.isArray(data)) {
+            setArticleData(data);
+          } else {
+            setArticleData([data]);
+          }
+        })
+        .catch((error) => console.error("Error fetching articles:", error));
+    }, 5000); // Fetch data every 5 seconds (adjust as needed)
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, [searchParams.viewurl]);
 
-  const handleUpvote = () => {
-    if (!hasUpvoted && !hasDownvoted) {
-      // Update the upvote logic, e.g., increment the upvote count
-      setUpvotes((prevUpvotes) => prevUpvotes + 1);
-      setHasUpvoted(true);
-    } else if (hasUpvoted) {
-      // Remove the upvote logic, e.g., decrement the upvote count
-      setUpvotes((prevUpvotes) => prevUpvotes - 1);
-      setHasUpvoted(false);
-    }
-    // No action if the user has already downvoted
-  };
+  const handleVote = async (isUpvote: boolean) => {
+    try {
+      const token = localStorage.getItem("authToken");
 
-  const handleDownvote = () => {
-    if (!hasUpvoted && !hasDownvoted) {
-      // Update the downvote logic, e.g., increment the downvote count
-      setDownvotes((prevDownvotes) => prevDownvotes + 1);
-      setHasDownvoted(true);
-    } else if (hasDownvoted) {
-      // Remove the downvote logic, e.g., decrement the downvote count
-      setDownvotes((prevDownvotes) => prevDownvotes - 1);
-      setHasDownvoted(false);
+      const response = await fetch(
+        `http://localhost:8000${searchParams.viewurl}vote/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            is_upvote: isUpvote,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // Fetch article data after voting to update the UI
+        fetch("http://localhost:8000" + searchParams.viewurl)
+          .then((response) => response.json())
+          .then((data: Article[] | Article) => {
+            setArticleData((prevData) => {
+              if (Array.isArray(data)) {
+                return data;
+              } else {
+                return [data];
+              }
+            });
+          })
+          .catch((error) => console.error("Error fetching articles:", error));
+      } else {
+        // Handle error scenarios
+      }
+    } catch (error) {
+      console.error(
+        `Error ${isUpvote ? "upvoting" : "downvoting"} article:`,
+        error
+      );
     }
-    // No action if the user has already upvoted
   };
 
   const handleToggleBookmark = () => {
-    // Update the bookmark logic, e.g., toggle the bookmarked state
     setBookmarked((prevBookmarked) => !prevBookmarked);
   };
 
@@ -98,7 +118,7 @@ export default function ArticlePage({
                 <div key={article.id}>
                   <ArticleHeading
                     title={article.title}
-                    tags={["Programming", "Sports"]} // You can replace this with the actual tags if available
+                    tags={["Programming", "Sports"]}
                   />
                   <ArticleCreator
                     username={article.author.username}
@@ -107,20 +127,16 @@ export default function ArticlePage({
                   />
                   <Separator className="my-3" />
                   <ArticleMetadata
-                    upvotes={upvotes} // You may want to replace these with actual values from the article
-                    downvotes={downvotes}
+                    upvotes={article.upvotes}
+                    downvotes={article.downvotes}
                     bookmarked={bookmarked}
-                    onUpvote={handleUpvote}
-                    onDownvote={handleDownvote}
+                    onUpvote={() => handleVote(true)}
+                    onDownvote={() => handleVote(false)}
                     onToggleBookmark={handleToggleBookmark}
                   />
                   <Separator className="my-3" />
                   <div className="max-w-prose">
-                    {/* Use actual content data from the article */}
-                    <Editor
-                      initialContent={article.content}
-                      editable={false}
-                    />
+                    <Editor initialContent={article.content} editable={false} />
                   </div>
                 </div>
               ))
@@ -128,7 +144,7 @@ export default function ArticlePage({
               <div key={articleData.id}>
                 <ArticleHeading
                   title={articleData.title}
-                  tags={["Programming", "Sports"]} // You can replace this with the actual tags if available
+                  tags={["Programming", "Sports"]}
                 />
                 <ArticleCreator
                   username={articleData.author.username}
@@ -137,16 +153,15 @@ export default function ArticlePage({
                 />
                 <Separator className="my-3" />
                 <ArticleMetadata
-                  upvotes={upvotes} // You may want to replace these with actual values from the article
-                  downvotes={downvotes}
+                  upvotes={articleData.upvotes}
+                  downvotes={articleData.downvotes}
                   bookmarked={bookmarked}
-                  onUpvote={handleUpvote}
-                  onDownvote={handleDownvote}
+                  onUpvote={() => handleVote(true)}
+                  onDownvote={() => handleVote(false)}
                   onToggleBookmark={handleToggleBookmark}
                 />
                 <Separator className="my-3" />
                 <div className="max-w-prose">
-                  {/* Use actual content data from the article */}
                   <Editor
                     initialContent={articleData.content}
                     editable={false}
