@@ -2,21 +2,21 @@ from rest_framework import serializers
 
 from django.urls import reverse
 
-from .models import Article, Thread, ArticleThread, ArticleVote, ThreadVote
+from .models import Article, Thread, ArticleThread, ArticleVote, ThreadVote, ArticleTag, Tag
 from core.serializers import ArticleUserProfileSerializer
 from django.contrib.auth.models import User
-# import logging
-# logger = logging.getLogger(__name__)
+import logging
+logger = logging.getLogger(__name__)
 class ListArticleSerializer(serializers.ModelSerializer):
     author = ArticleUserProfileSerializer(read_only=True, many=False)
     content_preview = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
     upvotes = serializers.SerializerMethodField()
     downvotes = serializers.SerializerMethodField()
-
+    tags = serializers.SerializerMethodField()
     class Meta:
         model = Article
-        fields = ["id", "title", "content_preview", "date_created", "last_edited", "author", "url", "upvotes", "downvotes"]
+        fields = ["id", "title", "content_preview", "date_created", "last_edited", "author", "url", "upvotes", "downvotes", "tags"]
         
     def get_content_preview(self, obj):
         # Limit the content to a certain number of characters for the preview
@@ -34,19 +34,47 @@ class ListArticleSerializer(serializers.ModelSerializer):
     def get_downvotes(self, obj):
         return obj.votes.filter(is_upvote=False).count()
     
+    def get_tags(self, obj):
+        tags = obj.tags.filter(article=obj)
+        tags_list = []
+        for tag in tags:
+            tags_list.append(tag.tag.tag)
+        return tags_list
+    
 class ArticleSerializer(serializers.ModelSerializer):
     author = ArticleUserProfileSerializer(read_only=True, many=False)
     upvotes = serializers.SerializerMethodField()
     downvotes = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
     class Meta:
         model = Article
-        fields = ["id", "title", "content", "date_created", "last_edited", "author", "upvotes", "downvotes"]
+        fields = ["id", "title", "content", "date_created", "last_edited", "author", "upvotes", "downvotes", "tags"]
     
     def get_upvotes(self, obj):
         return obj.votes.filter(is_upvote=True).count()
 
     def get_downvotes(self, obj):
         return obj.votes.filter(is_upvote=False).count()
+    
+    def get_tags(self, obj):
+        tags = obj.tags.filter(article=obj)
+        tags_list = []
+        for tag in tags:
+            tags_list.append(tag.tag.tag)
+        return tags_list
+    
+    def validate(self, data):
+        # Check if 'tags' is in the request data
+        tags = self.context['request'].data.get('tags', [])
+
+        # Validate 'tags' format
+        if tags:
+            if not isinstance(tags, list):
+                raise serializers.ValidationError({'tags': ['Tags must be a list.']})
+
+        return data
+
+    
 
 class CreateArticleSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
@@ -56,6 +84,17 @@ class CreateArticleSerializer(serializers.ModelSerializer):
 
     def get_url(self, obj):
         return reverse('article', kwargs={'username': obj.author.user.username, 'pk': obj.id, 'title': obj.title})
+    
+    def validate(self, data):
+        # Check if 'tags' is in the request data
+        tags = self.context['request'].data.get('tags', [])
+
+        # Validate 'tags' format
+        if tags:
+            if not isinstance(tags, list):
+                raise serializers.ValidationError({'tags': ['Tags must be a list.']})
+
+        return data
 
 
 class ListThreadSerializer(serializers.ModelSerializer):
@@ -144,3 +183,7 @@ class ArticleVoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArticleVote
         fields = ["is_upvote"]
+
+
+class TagListSerializer(serializers.Serializer):
+    tags = serializers.ListField(child=serializers.CharField())
