@@ -55,7 +55,7 @@ export default function ArticlePage({
           }
         })
         .catch((error) => console.error("Error fetching articles:", error));
-    }, 5000); // Fetch data every 5 seconds (adjust as needed)
+    }, 1000); // Fetch data every 1 second (adjust as needed)
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
@@ -65,36 +65,47 @@ export default function ArticlePage({
     try {
       const token = localStorage.getItem("authToken");
 
-      const response = await fetch(
-        `http://localhost:8000${searchParams.viewurl}vote/`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            is_upvote: isUpvote,
-          }),
-        }
-      );
+      if (articleData) {
+        const voteEndpoint = `http://localhost:8000${searchParams.viewurl}vote/`;
 
-      if (response.ok) {
-        // Fetch article data after voting to update the UI
-        fetch("http://localhost:8000" + searchParams.viewurl)
-          .then((response) => response.json())
-          .then((data: Article[] | Article) => {
-            setArticleData((prevData) => {
+        // Check if the user is removing their vote
+        const isRemovingVote =
+          (isUpvote && "upvotes" in articleData) ||
+          (!isUpvote && "downvotes" in articleData);
+
+        const response = await fetch(
+          voteEndpoint,
+          {
+            method: isRemovingVote ? "DELETE" : "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: isRemovingVote
+              ? JSON.stringify({
+                  // Include any necessary parameters for removing the vote
+                })
+              : JSON.stringify({
+                  is_upvote: isUpvote,
+                }),
+          }
+        );
+
+        if (response.ok) {
+          // Fetch article data after voting or removing vote to update the UI
+          // Fetch article data
+          fetch("http://localhost:8000" + searchParams.viewurl)
+            .then((response) => response.json())
+            .then((data: Article[] | Article) => {
               if (Array.isArray(data)) {
-                return data;
+                setArticleData(data);
               } else {
-                return [data];
+                setArticleData([data]);
               }
             });
-          })
-          .catch((error) => console.error("Error fetching articles:", error));
-      } else {
-        // Handle error scenarios
+        } else {
+          // Handle error scenarios
+        }
       }
     } catch (error) {
       console.error(
