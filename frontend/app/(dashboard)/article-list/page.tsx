@@ -30,6 +30,7 @@ export default function Articles() {
         .then((response) => response.json())
         .then((data: Article[]) => setArticles(data))
         .catch((error) => console.error('Error fetching articles:', error));
+        console.log("Articles: ",articles);
     }, []);
 
 
@@ -43,7 +44,7 @@ export default function Articles() {
         <div className="flex h-screen gap-52">
             <div className="flex flex-col gap-3 p-2 sm:grid-cols-2 md:gap-6 md:p-6 lg:grid-cols">
             {articles.map((article) => (
-                <PostCard key={article.id} article={article} />
+                <PostCard key={article.id} article={article} isProfilePage={false} />
             ))}
             </div>
 

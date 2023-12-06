@@ -61,6 +61,7 @@ export function UserSignInForm({ className }: { className: string }): JSX.Elemen
 
                 // Store the token in localStorage
                 localStorage.setItem('authToken', token);
+                router.push('article-list')
 
                 // Redirect or perform other actions as needed
                 console.log('Sign-in successful');

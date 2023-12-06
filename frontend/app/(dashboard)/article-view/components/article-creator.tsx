@@ -25,7 +25,7 @@ const ArticleCreator: React.FC<ArticleCreatorProps> = ({
       <div className="grid grid-rows-2 grid-cols-1">
         <div className="col-auto">
           <small className="text-sm font-medium leading-none md:hover:border-b-2 border-pub">
-            <Link href={"/"}>{username}</Link>
+            <Link href={`/profile/${username}`}>{username}</Link>
           </small>
           <small className="text-lg font-medium leading-none mx-2 text-muted-foreground">
             ·
