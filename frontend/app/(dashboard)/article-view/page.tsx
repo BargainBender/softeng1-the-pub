@@ -40,10 +40,11 @@ export default function ArticlePage({
   const [articleData, setArticleData] = useState<Article[] | Article | null>(
     null
   );
+  const [hasUpvoted, setHasUpvoted] = useState<boolean>(true);
+  const [hasDownVoted, setHasDownVoted] = useState<boolean>(false);
   const [bookmarked, setBookmarked] = useState(true);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
       // Fetch article data
       fetch("http://localhost:8000" + searchParams.viewurl)
         .then((response) => response.json())
@@ -55,10 +56,7 @@ export default function ArticlePage({
           }
         })
         .catch((error) => console.error("Error fetching articles:", error));
-    }, 1000); // Fetch data every 1 second (adjust as needed)
 
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
   }, [searchParams.viewurl]);
 
   const handleVote = async (isUpvote: boolean) => {
@@ -73,6 +71,7 @@ export default function ArticlePage({
           (isUpvote && "upvotes" in articleData) ||
           (!isUpvote && "downvotes" in articleData);
 
+          console.log(isRemovingVote);
         const response = await fetch(
           voteEndpoint,
           {

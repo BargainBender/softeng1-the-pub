@@ -360,7 +360,7 @@ export default function NavigationMenuBar({ userData }: NavigationMenuBarProps) 
                           </DropdownMenuItem>
                           <DropdownMenuItem>
                             <Settings className="mr-2 h-4 w-4" />
-                            <Link href={"/"}>
+                            <Link href={"/settings"}>
                               <span>Settings</span>
                             </Link>
                           </DropdownMenuItem>
