@@ -36,7 +36,7 @@ export default function Articles() {
 
 
     return (
-        <div className="container m-auto pb-48">
+        <div className="container m-auto pb-20">
         <div className="mb-10">
             <h1 className="text-6xl font-bold">Browse the latest topics</h1>
         </div>
