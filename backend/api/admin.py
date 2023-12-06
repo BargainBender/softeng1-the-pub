@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article, Thread, ArticleThread, Tag, ArticleTag
+from .models import Article, Thread, ArticleThread, Tag, ArticleTag, ArticleVote
 # Register your models here.
 
 class ArticleTagInline(admin.TabularInline):
@@ -36,6 +36,10 @@ class ThreadModelAdmin(admin.ModelAdmin):
 @admin.register(ArticleTag)
 class ArticleTagModelAdmin(admin.ModelAdmin):
     list_display = ("article", "tag")
+    
+@admin.register(ArticleVote)
+class ArticleVoteModelAdmin(admin.ModelAdmin):
+    list_display = ("voter", "article", "is_upvote")
 
 @admin.register(ArticleThread)
 class ArticleThreadModelAdmin(admin.ModelAdmin):

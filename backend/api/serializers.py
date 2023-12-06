@@ -63,6 +63,27 @@ class ArticleSerializer(serializers.ModelSerializer):
             tags_list.append(tag.tag.tag)
         return tags_list
     
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        # Access the authenticated user from the context
+        user = self.context['request'].user
+
+        # Set vote_status to 'unvoted' by default
+        vote_status = "unvoted"
+
+        if user.is_authenticated:
+            try:
+                article_vote = ArticleVote.objects.get(voter=user.profile, article=instance)
+                vote_status = "upvoted" if article_vote.is_upvote else "downvoted"
+            except ArticleVote.DoesNotExist:
+                pass
+
+        # Include the vote_status in the serialized data
+        data['vote_status'] = vote_status
+
+        return data
+    
     def validate(self, data):
         # Check if 'tags' is in the request data
         tags = self.context['request'].data.get('tags', [])
