@@ -71,9 +71,13 @@ export default function RootLayout({
       <body className={merriWeather.className}>
         <NavigationMenuBar userData={userData}/>
           {children}
-          <Footer/>
+          
         <Toaster />
       </body>
+      <footer>
+      <Footer />
+      </footer>
+      
     </html>
   )
 }
