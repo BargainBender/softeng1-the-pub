@@ -9,21 +9,19 @@ export const metadata: Metadata = {
   description: "Manage your User Account",
 }
 
-const userId = 1;
-
 const sidebarNavItems = [
   {
     title: "Profile",
-    href: `/users/${userId}/settings`,
+    href: `/settings`,
   },
   {
     title: "Account",
-    href: `/users/${userId}/settings/account`,
+    href: `/settings/account`,
   },
 
   {
     title: "Tags",
-    href: `/users/${userId}/settings/notifications`,
+    href: `/settings/tags`,
   },
 ]
 
