@@ -76,3 +76,16 @@ class ArticleTag(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["article", "tag"], name="unique_article_tag")
         ]
+        
+
+class ProfileTag(models.Model):
+    profile = models.ForeignKey(UserProfile, blank=False, on_delete=models.CASCADE, related_name="preferred_tags")
+    tag = models.ForeignKey(Tag, null=False, related_name="profiles", on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.profile.user.username} - {self.tag.tag}"
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["profile", "tag"], name="unique_profile_tag")
+        ]

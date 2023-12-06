@@ -76,7 +76,10 @@ Authorization: Bearer {{token}}
 {
   "is_active": false,
   "profile_picture": "https://api.dicebear.com/7.x/notionists-neutral/svg?seed=ABCDE",
-  "bio": "I am raymond!"
+  "bio": "lorem",
+  "preferred_tags": [
+    "c++"
+  ]
 }
 
 ### Follow a user

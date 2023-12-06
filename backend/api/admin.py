@@ -33,6 +33,10 @@ class ThreadModelAdmin(admin.ModelAdmin):
     content_substr.short_description = "content"
 
 
+@admin.register(ArticleTag)
+class ArticleTagModelAdmin(admin.ModelAdmin):
+    list_display = ("article", "tag")
+
 @admin.register(ArticleThread)
 class ArticleThreadModelAdmin(admin.ModelAdmin):
     list_display = ("article", "thread")

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from django.urls import reverse
 
-from .models import Article, Thread, ArticleThread, ArticleVote, ThreadVote, ArticleTag, Tag
+from .models import Article, Thread, ArticleThread, ArticleVote, ProfileTag
 from core.serializers import ArticleUserProfileSerializer
 from django.contrib.auth.models import User
 import logging
