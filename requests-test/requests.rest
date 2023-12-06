@@ -124,8 +124,10 @@ Authorization: Bearer {{token}}
 @articleUrl = {{postArticle.response.body.url}}
 
 ### Retrieve article
-GET {{host}}{{articleUrl}}
+### Authorization is optional.
+GET {{host}}/api/jacegonzales25/20-A%20title/
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ### Update article
 ### tags is an optional field. if you don't provide
@@ -190,7 +192,7 @@ Authorization: Bearer {{token}}
 # Just replace "raymond3/19-A%20title" with
 # appropriate article url
 ### Upvote article
-PUT {{host}}/api/jacegonzales25/17-Weak%20by%20SWV/vote/
+PUT {{host}}/api/jacegonzales25/20-A%20title/vote/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -199,7 +201,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Downvote article
-PUT {{host}}/api/jacegonzales25/17-Weak%20by%20SWV/vote/
+PUT {{host}}/api/jacegonzales25/20-A%20title/vote/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -208,7 +210,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Delete vote
-DELETE {{host}}/api/jacegonzales25/17-Weak%20by%20SWV/vote/
+DELETE {{host}}/api/jacegonzales25/20-A%20title/vote/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 ### ========================= Content actions ========================= 
