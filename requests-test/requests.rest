@@ -1,8 +1,8 @@
-@username = jacegonzales25
-@password = JaceGonzales25!
-@firstName = Jace
-@lastName = Gonzales
-@email = jacegonzales25@gmail.com
+@username = raymond
+@password = raymond1!
+@firstName = Raymond
+@lastName = Postrero
+@email = raymond@gmail.com
 @host = http://localhost:8000
 
 ### ========================= Authentication =========================
@@ -190,7 +190,7 @@ Authorization: Bearer {{token}}
 # Just replace "raymond3/19-A%20title" with
 # appropriate article url
 ### Upvote article
-PUT {{host}}/api/raymond3/19-A%20title/vote/
+PUT {{host}}/api/jacegonzales25/17-Weak%20by%20SWV/vote/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -199,7 +199,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Downvote article
-PUT {{host}}/api/raymond3/19-A%20title/vote/
+PUT {{host}}/api/jacegonzales25/17-Weak%20by%20SWV/vote/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -208,7 +208,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Delete vote
-DELETE {{host}}/api/raymond3/19-A%20title/vote/
+DELETE {{host}}/api/jacegonzales25/17-Weak%20by%20SWV/vote/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 ### ========================= Content actions ========================= 

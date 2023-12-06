@@ -37,26 +37,20 @@ export default function ArticlePage({
     viewurl: string;
   };
 }) {
-  const [articleData, setArticleData] = useState<Article[] | Article | null>(
-    null
-  );
-  const [hasUpvoted, setHasUpvoted] = useState<boolean>(true);
+  const [articleData, setArticleData] = useState<Article | null>(null);
+  // Const store data at time.
+  const [hasUpvoted, setHasUpvoted] = useState<boolean>(false);
   const [hasDownVoted, setHasDownVoted] = useState<boolean>(false);
   const [bookmarked, setBookmarked] = useState(true);
 
   useEffect(() => {
-      // Fetch article data
-      fetch("http://localhost:8000" + searchParams.viewurl)
-        .then((response) => response.json())
-        .then((data: Article[] | Article) => {
-          if (Array.isArray(data)) {
-            setArticleData(data);
-          } else {
-            setArticleData([data]);
-          }
-        })
-        .catch((error) => console.error("Error fetching articles:", error));
-
+    // Fetch article data
+    fetch("http://localhost:8000" + searchParams.viewurl)
+      .then((response) => response.json())
+      .then((data: Article) => {
+        setArticleData(data);
+      })
+      .catch((error) => console.error("Error fetching articles:", error));
   }, [searchParams.viewurl]);
 
   const handleVote = async (isUpvote: boolean) => {
@@ -67,44 +61,33 @@ export default function ArticlePage({
         const voteEndpoint = `http://localhost:8000${searchParams.viewurl}vote/`;
 
         // Check if the user is removing their vote
-        const isRemovingVote =
-          (isUpvote && "upvotes" in articleData) ||
-          (!isUpvote && "downvotes" in articleData);
+        // const isRemovingVote =
+        //   (isUpvote && "upvotes" in articleData) ||
+        //   (!isUpvote && "downvotes" in articleData);
 
-          console.log(isRemovingVote);
-        const response = await fetch(
-          voteEndpoint,
-          {
-            method: isRemovingVote ? "DELETE" : "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: isRemovingVote
-              ? JSON.stringify({
-                  // Include any necessary parameters for removing the vote
-                })
-              : JSON.stringify({
-                  is_upvote: isUpvote,
-                }),
-          }
-        );
+        console.log(isUpvote);
+        // const response = await fetch(voteEndpoint, {
+        //   method: isRemovingVote ? "DELETE" : "PUT",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        //   body: isRemovingVote
+        //     ? JSON.stringify({
+        //         // Include any necessary parameters for removing the vote
+        //       })
+        //     : JSON.stringify({
+        //         is_upvote: isUpvote,
+        //       }),
+        // });
 
-        if (response.ok) {
-          // Fetch article data after voting or removing vote to update the UI
-          // Fetch article data
-          fetch("http://localhost:8000" + searchParams.viewurl)
-            .then((response) => response.json())
-            .then((data: Article[] | Article) => {
-              if (Array.isArray(data)) {
-                setArticleData(data);
-              } else {
-                setArticleData([data]);
-              }
-            });
-        } else {
-          // Handle error scenarios
-        }
+        // if (response.ok) {
+        //   if (isUpvote) {
+        //   } else {
+        //   }
+        // } else {
+        //   // Handle error scenarios
+        // }
       }
     } catch (error) {
       console.error(
