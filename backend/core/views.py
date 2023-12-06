@@ -8,15 +8,17 @@ from rest_framework import authentication, generics, mixins, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import ValidationError
 
 from api.authentication import TokenAuthentication
 
 from .models import UserProfile, Follower
+from api.models import ProfileTag, Tag
 from .permissions import EditProfilePermission
 from . import serializers
 
-# import logging
-# logger = logging.getLogger(__name__)
+import logging
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -42,6 +44,38 @@ class UserProfileSettingsAPIView(generics.RetrieveUpdateAPIView):
     
     def get_object(self):
         return self.request.user.profile
+    
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+        
+        logger.info("working")
+
+        # Handle the tags directly in the view
+        if "preferred_tags" in data:
+            new_tags = data.get('preferred_tags', [])
+
+            # Validate that 'tags' is an array
+            if not isinstance(new_tags, list):
+                raise ValidationError({'tags': ['Preferred tags must be an array.']})
+
+            # Delete existing profile tags for the user profile
+            ProfileTag.objects.filter(profile=instance).delete()
+
+            # Create new profile tags for the user profile
+            # TODO: Instead of auto creating in profile, validation
+            # should just allow existing tags.
+            for tag_name in new_tags:
+                tag_obj, created = Tag.objects.get_or_create(tag=tag_name)
+                ProfileTag.objects.create(profile=instance, tag=tag_obj)
+
+        # Update the other fields using the serializer
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
 
 class UserListAPIView(generics.ListAPIView):
     queryset = User.objects.all()

@@ -54,3 +54,38 @@ class ThreadVote(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["voter", "thread"], name="unique_thread_voter")
         ]
+
+class Tag(models.Model):
+    tag = models.CharField(max_length=25, null=False, blank=False, default="")
+    
+    def __str__(self):
+        return self.tag
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["tag"], name="unique_tag")
+        ]
+
+class ArticleTag(models.Model):
+    article = models.ForeignKey(Article, null=False, related_name="tags", on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, null=False, related_name="articles", on_delete=models.PROTECT)
+    
+    def __str__(self):
+        return f"{self.article.title} - {self.tag.tag}"
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["article", "tag"], name="unique_article_tag")
+        ]
+        
+
+class ProfileTag(models.Model):
+    profile = models.ForeignKey(UserProfile, blank=False, on_delete=models.CASCADE, related_name="preferred_tags")
+    tag = models.ForeignKey(Tag, null=False, related_name="profiles", on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.profile.user.username} - {self.tag.tag}"
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["profile", "tag"], name="unique_profile_tag")
+        ]

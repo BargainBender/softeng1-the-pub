@@ -2,12 +2,14 @@ from rest_framework import authentication, generics, mixins, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, renderer_classes, permission_classes
 from rest_framework.renderers import StaticHTMLRenderer
+from rest_framework.filters import SearchFilter
+from rest_framework.exceptions import ValidationError
 
 from django.shortcuts import render, get_object_or_404
 from django.db import IntegrityError
 from django.http import Http404
 
-from .models import Article, Thread, ArticleVote
+from .models import Article, Thread, ArticleVote, ArticleTag, Tag
 from .serializers import ListArticleSerializer, CreateArticleSerializer, ListThreadSerializer, CreateThreadSerializer, ArticleSerializer
 from . import serializers
 from .permissions import IsOwnerOrReadOnly
@@ -36,7 +38,22 @@ class UserArticleListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Get UserProfile from User
         user_profile = self.request.user.profile
-        serializer.save(author=user_profile)
+
+        # Check if 'tags' is in the request data
+        tags = self.request.data.get('tags', [])
+
+        # Validate 'tags' format
+        if tags:
+            if not isinstance(tags, list):
+                raise serializers.ValidationError({'tags': ['Tags must be a list.']})
+
+        # Create the article with or without tags
+        article = serializer.save(author=user_profile)
+
+        # Add tags to the article if present
+        for tag_name in tags:
+            tag_obj, created = Tag.objects.get_or_create(tag=tag_name)
+            ArticleTag.objects.create(article=article, tag=tag_obj)
     
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -54,7 +71,32 @@ class ArticleRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         article = get_object_or_404(Article, pk=self.kwargs.get('pk'), title=self.kwargs.get('title'))
 
         return article
+    
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
 
+        # Handle the tags directly in the view
+        if "tags" in data:
+            new_tags = data.get('tags', [])
+
+            # Validate that 'tags' is an array
+            if not isinstance(new_tags, list):
+                # TODO: Investigate why we can't just use Response() or like with
+                # UserArticleListCreateView, we can't add validate() to serializer class...
+                raise ValidationError({'tags': ['Tags must be an array.']})
+
+            ArticleTag.objects.filter(article=instance).delete()
+            for tag_name in new_tags:
+                tag_obj, created = Tag.objects.get_or_create(tag=tag_name)
+                ArticleTag.objects.create(article=instance, tag=tag_obj)
+
+        # Update the other fields using the serializer
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
 
 class ThreadListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -153,3 +195,14 @@ class ArticleVoteView(generics.GenericAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         return Response({'detail': 'Vote not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+class TagListView(generics.ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = serializers.TagListSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['tag']
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        tags = queryset.values_list('tag', flat=True)
+        return Response({'tags': list(tags)})

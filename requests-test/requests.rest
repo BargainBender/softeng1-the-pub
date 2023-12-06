@@ -76,7 +76,10 @@ Authorization: Bearer {{token}}
 {
   "is_active": false,
   "profile_picture": "https://api.dicebear.com/7.x/notionists-neutral/svg?seed=ABCDE",
-  "bio": "I am raymond!"
+  "bio": "lorem",
+  "preferred_tags": [
+    "c++"
+  ]
 }
 
 ### Follow a user
@@ -100,6 +103,8 @@ GET {{host}}/api/{{username}}/articles/
 Content-Type: application/json
 
 ### Create article
+### tags is an optional field. you don't have to provide an empty array
+### if you want no tags
 # @name postArticle
 POST {{host}}/api/{{username}}/articles/
 Content-Type: application/json
@@ -107,7 +112,11 @@ Authorization: Bearer {{token}}
 
 {
     "title": "A title",
-    "content": "Some content"
+    "content": "Some content",
+    "tags": [
+        "health",
+        "meditation"
+    ]
 }
 
 ### ID of created article
@@ -119,13 +128,16 @@ GET {{host}}{{articleUrl}}
 Content-Type: application/json
 
 ### Update article
-PUT {{host}}{{articleUrl}}
+### tags is an optional field. if you don't provide
+### an array of tags, it will assume you don't want to update it
+PUT {{host}}{{postArticle.response.body.url}}
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "title": "New title",
-    "content": "New content"
+    "title": "New title!!!!!",
+    "content": "New content!!!!!",
+    "tags": 1
 }
 
 ### Delete article

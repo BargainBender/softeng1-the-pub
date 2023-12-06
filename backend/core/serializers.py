@@ -33,10 +33,10 @@ class ThreadUserProfileSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     followers = serializers.SerializerMethodField()
     following = serializers.SerializerMethodField()
-
+    preferred_tags = serializers.SerializerMethodField()
     class Meta:
         model = UserProfile
-        fields = ["username", "name", "profile_picture", "is_active", "followers", "following", "bio"]
+        fields = ["username", "name", "profile_picture", "is_active", "followers", "following", "bio", "preferred_tags"]
 
     def get_followers(self, obj):
         followers = obj.followers.filter(following=obj)
@@ -51,6 +51,25 @@ class UserProfileSerializer(serializers.ModelSerializer):
         for following_data in following:
             following_list.append(following_data.following.user.username)
         return following_list
+    
+    def get_preferred_tags(self, obj):
+        tags = obj.preferred_tags.filter(profile=obj)
+        tags_list = []
+        for tag in tags:
+            tags_list.append(tag.tag.tag)
+        return tags_list
+    
+    def validate(self, data):
+        # Check if 'tags' is in the request data
+        tags = self.context['request'].data.get('tags', [])
+
+        # Validate 'tags' format
+        if tags:
+            if not isinstance(tags, list):
+                raise serializers.ValidationError({'tags': ['Tags must be a list.']})
+
+        return data
+
     
 class CreateUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)

@@ -4,7 +4,8 @@
   "description": "A website for blog articles and discussion threads.",
   "scripts": {
     "backend:makemigrations": "docker exec -it django_server python manage.py makemigrations",
-    "backend:migrate": "docker exec -it django_server python manage.py migrate"
+    "backend:migrate": "docker exec -it django_server python manage.py migrate",
+    "backend:createsuperuser": "docker exec -it django_server python manage.py createsuperuser"
   },
   "author": "",
   "license": "ISC"
