@@ -85,6 +85,7 @@ export default function EditArticle({
   );
   const [isSubmitting, setSubmitting] = useState(false);
   const router = useRouter();
+  console.log("Article Data:" + searchParams.viewurl);
 
 
 
