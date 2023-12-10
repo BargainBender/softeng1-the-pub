@@ -125,7 +125,7 @@ Authorization: Bearer {{token}}
 
 ### Retrieve article
 ### Authorization is optional.
-GET {{host}}/api/jacegonzales25/20-A%20title/
+GET {{host}}/api/jacegonzales25/10-Ikaw%20at%20Ako/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
