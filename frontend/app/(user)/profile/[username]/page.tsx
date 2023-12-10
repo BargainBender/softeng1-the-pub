@@ -125,7 +125,7 @@ const Profile: React.FC = () => {
           </h3>
         </div>
         {/* </div><div className="flex flex-row items-center justify-center mx-auto space-x-4"> */}
-        <div className="flex flex-col gap-3 p-2 sm:grid-cols-2 md:gap-6 md:p-6 lg:grid-cols">
+        <div className="flex flex-col gap-3 p-2 sm:grid-cols-2 md:gap-6 md:p-6 lg:grid-cols items-center">
           {articleData.map((article) => (
             <PostCard key={article.id} article={article} isProfilePage={true} />
           ))}
