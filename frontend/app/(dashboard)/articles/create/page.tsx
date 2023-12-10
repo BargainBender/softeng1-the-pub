@@ -72,10 +72,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
 
   // Creates a new editor instance.
   const editor: BlockNoteEditor = useBlockNote({
-    // Listens for when the editor's contents change.
-    onEditorContentChange: (editor) =>
-      // Converts the editor's contents to an array of Block objects.
-      console.log(JSON.stringify(editor.topLevelBlocks, null, 2)),
+    
   });
 
   const form = useForm<CreateFormValues>({

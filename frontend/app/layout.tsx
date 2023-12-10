@@ -74,9 +74,9 @@ export default function RootLayout({
           
         <Toaster />
       </body>
-      <footer>
-      <Footer />
-      </footer>
+      
+      {/* <Footer /> */}
+      
       
     </html>
   )

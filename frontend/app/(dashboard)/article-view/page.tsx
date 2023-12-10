@@ -66,6 +66,7 @@ export default function ArticlePage({
         //   (!isUpvote && "downvotes" in articleData);
 
         console.log(isUpvote);
+        
         // const response = await fetch(voteEndpoint, {
         //   method: isRemovingVote ? "DELETE" : "PUT",
         //   headers: {
