@@ -5,6 +5,7 @@ from django.urls import reverse
 from .models import Article, Thread, ArticleThread, ArticleVote, ProfileTag
 from core.serializers import ArticleUserProfileSerializer
 from django.contrib.auth.models import User
+import json
 import logging
 logger = logging.getLogger(__name__)
 class ListArticleSerializer(serializers.ModelSerializer):
@@ -20,10 +21,28 @@ class ListArticleSerializer(serializers.ModelSerializer):
         
     def get_content_preview(self, obj):
         # Limit the content to a certain number of characters for the preview
-        max_length = 200
-        if len(obj.content) > max_length:
-            return obj.content[:max_length] + '...'
-        return obj.content
+        try:
+            # logger.info(json.loads(obj.content))
+            for block in json.loads(obj.content):
+                first_paragraph_object = block
+                break
+            
+            max_length = 200
+            if len(first_paragraph_object["content"][0]["text"]) > max_length:
+                return first_paragraph_object["content"][0]["text"][:max_length] + '...'
+            return first_paragraph_object["content"][0]["text"]
+        except:
+            pass
+            # logger.info("Cannot convert to json, ignoring.")
+        
+            # if block.get('type') == 'paragraph':
+            #     first_paragraph_object = block
+            #     break
+            max_length = 200
+            if len(obj.content) > max_length:
+                return obj.content[:max_length] + '...'
+            return obj.content
+        
 
     def get_url(self, obj):
         return reverse('article', kwargs={'username': obj.author.user.username, 'pk': obj.id, 'title': obj.title})
