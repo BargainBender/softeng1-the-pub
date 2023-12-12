@@ -17,19 +17,3 @@ export default function Footer() {
     );
 }
 
-//     <footer style={{
-    // return isVisible && (
-    //     <div style={{
-    //         bottom: '0',
-    //         width: '100%',
-    //         backgroundColor: 'white',
-    //         display: 'flex',
-    //         flexDirection: 'column', // Changed to column to stack items vertically
-    //         justifyContent: 'center', // Centered vertically
-    //         alignItems: 'center', // Centered horizontally
-    //         height: '100px', // Increased height to accommodate stacked items
-    //         boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)',
-    //         padding: '10px 20px', // Adjusted padding for spacing
-    //     }}>
-            // 
-
