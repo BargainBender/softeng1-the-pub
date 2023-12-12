@@ -1,7 +1,7 @@
 // Create Form for Article
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -192,6 +192,35 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
     // setChosenTags([]);
   };
 
+  // buggy code, need improvement
+  // const isBlocksEmpty = !editor.topLevelBlocks || editor.topLevelBlocks.every(
+  //   block => block.type !== 'paragraph' || !block.content || block.content.every(
+  //     contentItem => contentItem.type !== 'text' || contentItem.text.trim() === ''
+  //   )
+  // );
+
+  const [isBlocksEmpty, setIsBlocksEmpty] = useState(true);
+
+  useEffect(() => {
+    const analyzeEditorContent = () => {
+      const currentContent = editor.topLevelBlocks;
+
+      const hasNonEmptyParagraphs = !currentContent || currentContent.some(
+        block => block.type === 'paragraph' && block.content && block.content.some(
+          contentItem => contentItem.type === 'text' && contentItem.text.trim() !== ''
+        )
+      );
+
+      setIsBlocksEmpty(!hasNonEmptyParagraphs);
+    };
+
+    const intervalId = setInterval(() => {
+      analyzeEditorContent();
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [editor]);
+
   return (
     <>
       <div className="prose mx-auto max-w-2xl mt-16 min-h-screen">
@@ -262,7 +291,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
               onSubmit();
             }}
             variant={"pub"}
-            disabled={!form.getValues().title}
+            disabled={!form.getValues().title || isBlocksEmpty}
           >
             Submit
           </Button>
