@@ -22,8 +22,6 @@ export default function Footer() {
 
     return (
         <footer style={{
-    return isVisible && (
-        <div style={{
             bottom: '0',
             width: '100%',
             backgroundColor: 'white',
@@ -38,13 +36,11 @@ export default function Footer() {
             <p style={{ margin: '0' }}>
                 © 2023 | All rights reserved | <span style={{ color: 'rgba(59, 178, 130, 0.54)', fontWeight: 'bold' }}>The Pub Official</span>
             </p>
-            <div  className="flex justify-center my-3">
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                 <FaFacebookF size={30} style={{ margin: '0 10px' }} />
                 <FaTwitter size={30} style={{ margin: '0 10px' }} />
                 <FaInstagram size={30} style={{ margin: '0 10px' }} />
             </div>
-        </div>
+        </footer>
     );
 }
-
-
