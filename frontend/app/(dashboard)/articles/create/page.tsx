@@ -194,7 +194,7 @@ const CreateArticlePage: React.FC<CreateArticlePageProps> = () => {
 
   return (
     <>
-      <div className="prose mx-auto max-w-2xl mt-16">
+      <div className="prose mx-auto max-w-2xl mt-16 min-h-screen">
         <div className="max-w-prose">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

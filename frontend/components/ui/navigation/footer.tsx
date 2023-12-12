@@ -3,26 +3,27 @@ import React, { useState, useEffect } from 'react';
 import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 export default function Footer() {
-    const [isVisible, setIsVisible] = useState(false);
-    let lastScrollTop = 0;
+    // const [isVisible, setIsVisible] = useState(false);
+    // let lastScrollTop = 0;
 
-    useEffect(() => {
-        window.onscroll = () => {
-            let st = window.pageYOffset || document.documentElement.scrollTop;
-            if (st > lastScrollTop) {
-                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-                    setIsVisible(true);
-                }
-            } else {
-                setIsVisible(false);
-            }
-            lastScrollTop = st <= 0 ? 0 : st;
-        };
-    }, []);
+    // useEffect(() => {
+    //     window.onscroll = () => {
+    //         let st = window.pageYOffset || document.documentElement.scrollTop;
+    //         if (st > lastScrollTop) {
+    //             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+    //                 setIsVisible(true);
+    //             }
+    //         } else {
+    //             setIsVisible(false);
+    //         }
+    //         lastScrollTop = st <= 0 ? 0 : st;
+    //     };
+    // }, []);
 
+    return (
+        <footer style={{
     return isVisible && (
         <div style={{
-            position: 'fixed',
             bottom: '0',
             width: '100%',
             backgroundColor: 'white',
