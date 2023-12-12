@@ -124,7 +124,9 @@ const PostCard = ({ article, isProfilePage }: PostCardProps) => {
                                 {/* Your dropdown items */}
                                 <span className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 roun">
                                     <FaEdit />
+                                    <Link href={{ pathname:"/articles/edit", query:{viewurl: article.url} }} key={article.id}>
                                     <p className="">Edit post</p>
+                                    </Link>
                                 </span>
                                 <span className="flex items-center gap-2 cursor-pointer hover:bg-gray-100" onClick={deleteArticle}>
                                     <FaTrashCan />

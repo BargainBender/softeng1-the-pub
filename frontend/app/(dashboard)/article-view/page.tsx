@@ -28,6 +28,8 @@ interface Article {
   downvotes: number;
   author: Author;
   url: string;
+  tags: string[]; 
+  vote_status: string; 
 }
 
 export default function ArticlePage({
@@ -37,82 +39,63 @@ export default function ArticlePage({
     viewurl: string;
   };
 }) {
-  const [articleData, setArticleData] = useState<Article[] | Article | null>(
-    null
-  );
-  const [hasUpvoted, setHasUpvoted] = useState<boolean>(true);
-  const [hasDownVoted, setHasDownVoted] = useState<boolean>(false);
-  const [bookmarked, setBookmarked] = useState(true);
+  const [articleData, setArticleData] = useState<Article | null>(null);
+  const [bookmarked, setBookmarked] = useState<boolean>(true);
+  const [voteStatus, setVoteStatus] = useState<string>('unvoted');
+  const [upvotes, setUpvotes] = useState<number>(0);
+  const [downvotes, setDownvotes] = useState<number>(0);
+  const [tags, setTags] = useState<string[]>([]);
+
 
   useEffect(() => {
-      // Fetch article data
-      fetch("http://localhost:8000" + searchParams.viewurl)
-        .then((response) => response.json())
-        .then((data: Article[] | Article) => {
-          if (Array.isArray(data)) {
-            setArticleData(data);
-          } else {
-            setArticleData([data]);
-          }
-        })
-        .catch((error) => console.error("Error fetching articles:", error));
-
+    // Fetch article data
+    fetch("http://localhost:8000" + searchParams.viewurl)
+      .then((response) => response.json())
+      .then((data: Article) => {
+        setArticleData(data);
+        setVoteStatus(data.vote_status);
+        setUpvotes(data.upvotes);
+        setDownvotes(data.downvotes);
+        setTags(data.tags);
+      })
+      .catch((error) => console.error("Error fetching articles:", error));
   }, [searchParams.viewurl]);
 
   const handleVote = async (isUpvote: boolean) => {
     try {
       const token = localStorage.getItem("authToken");
-
+  
       if (articleData) {
         const voteEndpoint = `http://localhost:8000${searchParams.viewurl}vote/`;
-
-        // Check if the user is removing their vote
-        const isRemovingVote =
-          (isUpvote && "upvotes" in articleData) ||
-          (!isUpvote && "downvotes" in articleData);
-
-          console.log(isRemovingVote);
-        const response = await fetch(
-          voteEndpoint,
-          {
-            method: isRemovingVote ? "DELETE" : "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: isRemovingVote
-              ? JSON.stringify({
-                  // Include any necessary parameters for removing the vote
-                })
-              : JSON.stringify({
-                  is_upvote: isUpvote,
-                }),
-          }
-        );
-
+  
+        const response = await fetch(voteEndpoint, {
+          method: isUpvote ? "PUT" : "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            is_upvote: isUpvote,
+          }),
+        });
+  
         if (response.ok) {
-          // Fetch article data after voting or removing vote to update the UI
-          // Fetch article data
-          fetch("http://localhost:8000" + searchParams.viewurl)
-            .then((response) => response.json())
-            .then((data: Article[] | Article) => {
-              if (Array.isArray(data)) {
-                setArticleData(data);
-              } else {
-                setArticleData([data]);
-              }
-            });
+          // Update local state after voting
+          if (isUpvote) {
+            setVoteStatus((prevStatus) => (prevStatus === 'upvoted' ? 'unvoted' : 'upvoted'));
+            setUpvotes((prevUpvotes) => (voteStatus === 'upvoted' ? prevUpvotes - 1 : prevUpvotes + 1));
+          } else {
+            setVoteStatus((prevStatus) => (prevStatus === 'downvoted' ? 'unvoted' : 'downvoted'));
+            setDownvotes((prevDownvotes) => (voteStatus === 'downvoted' ? prevDownvotes + 1 : prevDownvotes + 1));
+          }
         } else {
           // Handle error scenarios
         }
       }
     } catch (error) {
-      console.error(
-        `Error ${isUpvote ? "upvoting" : "downvoting"} article:`,
-        error
-      );
+      console.error(`Error ${isUpvote ? "upvoting" : "downvoting"} article:`, error);
     }
-  };
+  };  
 
   const handleToggleBookmark = () => {
     setBookmarked((prevBookmarked) => !prevBookmarked);
@@ -120,67 +103,33 @@ export default function ArticlePage({
 
   return (
     <>
-      <div className="prose mx-auto max-w-2xl mt-16">
-        <div className="max-w-prose">
-          {articleData &&
-            (Array.isArray(articleData) ? (
-              articleData.map((article: Article) => (
-                <div key={article.id}>
-                  <ArticleHeading
-                    title={article.title}
-                    tags={["Programming", "Sports"]}
-                  />
-                  <ArticleCreator
-                    username={article.author.username}
-                    date={article.date_created}
-                    avatar={article.author.profile_picture}
-                  />
-                  <Separator className="my-3" />
-                  <ArticleMetadata
-                    upvotes={article.upvotes}
-                    downvotes={article.downvotes}
-                    bookmarked={bookmarked}
-                    onUpvote={() => handleVote(true)}
-                    onDownvote={() => handleVote(false)}
-                    onToggleBookmark={handleToggleBookmark}
-                  />
-                  <Separator className="my-3" />
-                  <div className="max-w-prose">
-                    <Editor initialContent={article.content} editable={false} />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div key={articleData.id}>
-                <ArticleHeading
-                  title={articleData.title}
-                  tags={["Programming", "Sports"]}
-                />
-                <ArticleCreator
-                  username={articleData.author.username}
-                  date={articleData.date_created}
-                  avatar={articleData.author.profile_picture}
-                />
-                <Separator className="my-3" />
-                <ArticleMetadata
-                  upvotes={articleData.upvotes}
-                  downvotes={articleData.downvotes}
-                  bookmarked={bookmarked}
-                  onUpvote={() => handleVote(true)}
-                  onDownvote={() => handleVote(false)}
-                  onToggleBookmark={handleToggleBookmark}
-                />
-                <Separator className="my-3" />
-                <div className="max-w-prose">
-                  <Editor
-                    initialContent={articleData.content}
-                    editable={false}
-                  />
-                </div>
-              </div>
-            ))}
-        </div>
+    <div className="prose mx-auto max-w-2xl mt-16">
+      <div className="max-w-prose">
+        {articleData && (
+          <div key={articleData.id}>
+            <ArticleHeading title={articleData.title} tags={tags} />
+            <ArticleCreator
+              username={articleData.author.username}
+              date={articleData.date_created}
+              avatar={articleData.author.profile_picture}
+            />
+            <Separator className="my-3" />
+            <ArticleMetadata
+              upvotes={upvotes}
+              downvotes={downvotes}
+              bookmarked={bookmarked}
+              onUpvote={() => handleVote(true)}
+              onDownvote={() => handleVote(false)}
+              onToggleBookmark={handleToggleBookmark}
+            />
+            <Separator className="my-3" />
+            <div className="max-w-prose">
+              <Editor initialContent={articleData.content} editable={false} />
+            </div>
+          </div>
+        )}
       </div>
-    </>
+    </div>
+  </>
   );
 }

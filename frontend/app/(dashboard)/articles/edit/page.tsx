@@ -21,7 +21,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Block, BlockNoteEditor } from "@blocknote/core";
+import { Block, BlockNoteEditor, PartialBlock } from "@blocknote/core";
 import {
   BlockNoteView,
   lightDefaultTheme,
@@ -62,7 +62,10 @@ interface Article {
   url: string;
 }
 
-
+interface EditorProps {
+  initialContent?: string;
+  editable?: boolean;
+}
 
 // const allTags = [
 //   "Academics",
@@ -72,7 +75,6 @@ interface Article {
 //   "Technology",
 // ];
 
-
 export default function EditArticle({
   searchParams,
 }: {
@@ -80,61 +82,60 @@ export default function EditArticle({
     viewurl: string;
   };
 }) {
-  const [articleData, setArticleData] = useState<Article[] | Article | null>(
-    null
-  );
+  const [articleData, setArticleData] = useState<Article | null>(null);
   const [isSubmitting, setSubmitting] = useState(false);
   const router = useRouter();
-
-
+  console.log("Article Data:" + searchParams.viewurl);
 
   useEffect(() => {
-    try{
+    try {
       fetch("http://localhost:8000" + searchParams.viewurl)
-            .then((response) => response.json())
-            .then((data: Article[] | Article) => {
-              if (Array.isArray(data)) {
-                setArticleData(data);
-              } else {
-                setArticleData([data]);
-              }
-            });
+        .then((response) => response.json())
+        .then((data: Article) => {
+          setArticleData(data);
+        });
     } catch (error) {
       console.log(error);
     }
   }, [searchParams.viewurl]);
 
   // This can come from your database or API.
-const defaultValues: Partial<CreateFormValues> = {
-  title: Array.isArray(articleData) ? articleData[0]?.title : articleData?.title,
-};
- // Creates a new editor instance.
- const editor: BlockNoteEditor = useBlockNote({
-  // Listens for when the editor's contents change.
-  onEditorContentChange: (editor) =>
-    // Converts the editor's contents to an array of Block objects.
-    console.log(JSON.stringify(editor.topLevelBlocks, null, 2)),
-});
+  const defaultValues: Partial<CreateFormValues> = {
+    title: articleData?.title,
+  };
+  // Creates a new editor instance.
+  const editor: BlockNoteEditor = useBlockNote({
+    // Listens for when the editor's contents change.
+    onEditorContentChange: (editor) =>
+      // Converts the editor's contents to an array of Block objects.
+      console.log(JSON.stringify(editor.topLevelBlocks, null, 2)),
+  });
 
-const form = useForm<CreateFormValues>({
-  resolver: zodResolver(createFormSchema),
-  defaultValues,
-});
+  const form = useForm<CreateFormValues>({
+    resolver: zodResolver(createFormSchema),
+    defaultValues,
+  });
 
+  const clearForm = () => {
+    form.reset(); // Reset form values
+    editor.removeBlocks(editor.topLevelBlocks); // Clear editor content
+    // setChosenTags([]);
+  };
 
-const clearForm = () => {
-  form.reset(); // Reset form values
-  editor.removeBlocks(editor.topLevelBlocks); // Clear editor content
-  // setChosenTags([]);
-};
+  const Editor = ({ initialContent, editable }: EditorProps) => {
+    const editor: BlockNoteEditor = useBlockNote({
+      editable,
+      initialContent: initialContent
+        ? (JSON.parse(initialContent) as PartialBlock[])
+        : undefined,
+    });
+  }
 
-async function onSubmit(){
-  
-}
-  
-  return(
+  async function onSubmit() {}
+
+  return (
     <>
-     <div className="prose mx-auto max-w-2xl mt-16">
+      <div className="prose mx-auto max-w-2xl mt-16">
         <div className="max-w-prose">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -209,5 +210,5 @@ async function onSubmit(){
         </div>
       </div>
     </>
-  )
+  );
 }
